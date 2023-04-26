@@ -2,6 +2,7 @@
 plugins {
   alias(libs.plugins.com.android.application)
   alias(libs.plugins.org.jetbrains.kotlin.android)
+  id("com.diffplug.spotless") version "6.18.0"
 }
 
 android {
@@ -64,4 +65,13 @@ dependencies {
   androidTestImplementation(libs.ui.test.junit4)
   debugImplementation(libs.ui.tooling)
   debugImplementation(libs.ui.test.manifest)
+}
+
+spotless {
+  kotlin {
+    target("**/*.kt", "**/*.kts")
+    targetExclude("$buildDir/**/*.kt", "bin/**/*.kt", "buildSrc/**/*.kt")
+
+    ktlint()
+  }
 }

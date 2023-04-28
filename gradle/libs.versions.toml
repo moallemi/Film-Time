@@ -33,6 +33,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version = "2.9.0" }
 retrofit-kotlinx-serialization = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
+lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
+lifecycle-viewmodel-compose-runtime = "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }

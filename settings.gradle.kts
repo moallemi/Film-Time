@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "Film Time"
 include(":app")
 include(":data:network")
+include(":data:model")

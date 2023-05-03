@@ -1,19 +1,24 @@
 [versions]
 agp = "8.1.0-beta01"
+hilt-android = "2.45"
+hilt-navigation-compose = "1.0.0"
 kotlin = "1.8.10"
-core-ktx = "1.9.0"
+core-ktx = "1.10.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 lifecycle-runtime-ktx = "2.6.1"
 activity-compose = "1.7.1"
-compose-bom = "2023.03.00"
+compose-bom = "2023.04.01"
 org-jetbrains-kotlin-jvm = "1.8.10"
 appcompat = "1.6.1"
 material = "1.8.0"
 
 [libraries]
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-android" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
@@ -42,6 +47,7 @@ org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.re
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
 com-android-library = { id = "com.android.library", version.ref = "agp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt-android" }
 
 [bundles]
 

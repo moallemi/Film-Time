@@ -3,6 +3,9 @@ plugins {
   alias(libs.plugins.com.android.application)
   alias(libs.plugins.org.jetbrains.kotlin.android)
   id("com.diffplug.spotless") version "6.18.0"
+
+  kotlin("kapt")
+  alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -22,6 +25,11 @@ android {
     }
   }
 
+  // Allow references to generated code
+  kapt {
+    correctErrorTypes = true
+  }
+
   buildTypes {
     release {
       isMinifyEnabled = false
@@ -29,11 +37,11 @@ android {
     }
   }
   compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
   }
   kotlinOptions {
-    jvmTarget = "1.8"
+    jvmTarget = "17"
   }
   buildFeatures {
     compose = true
@@ -60,6 +68,12 @@ dependencies {
   implementation(libs.ui.graphics)
   implementation(libs.ui.tooling.preview)
   implementation(libs.material3)
+
+  implementation(libs.hilt.android)
+  kapt(libs.dagger.hilt.android.compiler)
+
+  implementation(libs.androidx.hilt.navigation.compose)
+
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.test.ext.junit)
   androidTestImplementation(libs.espresso.core)

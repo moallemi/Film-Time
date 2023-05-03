@@ -2,8 +2,9 @@ package io.fimltime.data.tmdb.movies
 
 import io.filmtime.data.api.tmdb.TmdbMoviesRemoteSource
 import io.filmtime.data.model.VideoThumbnail
+import javax.inject.Inject
 
-internal class TmdbMovieRepositoryImpl(
+internal class TmdbMovieRepositoryImpl @Inject constructor(
   private val tmdbMoviesRemoteSource: TmdbMoviesRemoteSource,
 ) : TmdbMovieRepository {
 

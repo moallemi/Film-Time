@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import io.filmtime.feature.movie.detail.MovieDetailScreen
+import io.filmtime.feature.home.HomeScreen
 import io.filmtime.ui.theme.FilmTimeTheme
 
 @AndroidEntryPoint
@@ -23,7 +23,8 @@ class MainActivity : ComponentActivity() {
       FilmTimeTheme {
         // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-          MovieDetailScreen(viewModel = hiltViewModel())
+          // MovieDetailScreen(viewModel = hiltViewModel())
+          HomeScreen(viewModel = hiltViewModel())
         }
       }
     }

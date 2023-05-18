@@ -58,6 +58,7 @@ android {
 dependencies {
 
   implementation(project(":feature:movie-detail"))
+  implementation(project(":feature:home"))
 
   implementation(libs.core.ktx)
   implementation(libs.lifecycle.runtime.ktx)

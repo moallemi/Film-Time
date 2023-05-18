@@ -2,6 +2,9 @@
 plugins {
   alias(libs.plugins.com.android.library)
   alias(libs.plugins.org.jetbrains.kotlin.android)
+
+  kotlin("kapt")
+  alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -15,6 +18,14 @@ android {
     consumerProguardFiles("consumer-rules.pro")
   }
 
+  buildFeatures {
+    compose = true
+  }
+
+  composeOptions {
+    kotlinCompilerExtensionVersion = "1.4.3"
+  }
+
   buildTypes {
     release {
       isMinifyEnabled = false
@@ -22,19 +33,37 @@ android {
     }
   }
   compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
   }
   kotlinOptions {
-    jvmTarget = "1.8"
+    jvmTarget = "17"
   }
 }
 
 dependencies {
 
+  implementation(project(":domain:tmdb-movies"))
+  implementation(project(":data:model"))
+
   implementation(libs.core.ktx)
   implementation(libs.appcompat)
   implementation(libs.material)
+
+  implementation(platform(libs.compose.bom))
+  implementation(libs.ui)
+  implementation(libs.ui.graphics)
+  implementation(libs.ui.tooling.preview)
+  implementation(libs.material3)
+
+  implementation(libs.coil.compose)
+
+  implementation(libs.hilt.android)
+  kapt(libs.dagger.hilt.android.compiler)
+
+  implementation(libs.lifecycle.viewmodel.compose)
+  implementation(libs.lifecycle.viewmodel.compose.runtime)
+
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.test.ext.junit)
   androidTestImplementation(libs.espresso.core)

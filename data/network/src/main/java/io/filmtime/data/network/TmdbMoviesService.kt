@@ -14,7 +14,12 @@ interface TmdbMoviesService {
   suspend fun getMovieDetails(
     @Path("movie_id") movieId: Int,
     @Query("api_key") apiKey: String = BuildConfig.TMDB_API_KEY,
-    ): TmdbMovieDetailsResponse
+  ): TmdbMovieDetailsResponse
+
+  @GET("trending/movie/day")
+  suspend fun getTrendingMovies(
+    @Query("api_key") apiKey: String = BuildConfig.TMDB_API_KEY,
+  ): TmdbVideoListResponse
 }
 
 suspend fun main() {
@@ -29,6 +34,6 @@ suspend fun main() {
     .build()
 
   val tmdbMoviesService = retrofit.create(TmdbMoviesService::class.java)
-  val result = tmdbMoviesService.getMovieDetails(550)
+  val result = tmdbMoviesService.getTrendingMovies()
   println(result)
 }

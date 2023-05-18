@@ -1,5 +1,6 @@
 [versions]
 agp = "8.1.0-beta01"
+coil-compose = "2.3.0"
 hilt-android = "2.45"
 hilt-navigation-compose = "1.0.0"
 kotlin = "1.8.10"
@@ -16,6 +17,7 @@ material = "1.8.0"
 
 [libraries]
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 dagger-hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-android" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android" }

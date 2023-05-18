@@ -24,6 +24,6 @@ class MovieDetailViewModel @Inject constructor(
   fun load(videoId: Int) = viewModelScope.launch {
     _state.value = _state.value.copy(isLoading = true)
     val result = getMovieDetail(videoId)
-    _state.value = _state.value.copy(videoThumbnail = result, isLoading = false)
+    _state.value = _state.value.copy(videoDetail = result, isLoading = false)
   }
 }

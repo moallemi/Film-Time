@@ -1,8 +1,8 @@
 package io.filmtime.feature.movie.detail
 
-import io.filmtime.data.model.VideoThumbnail
+import io.filmtime.data.model.VideoDetail
 
 data class MovieDetailState(
   val isLoading: Boolean = false,
-  val videoThumbnail: VideoThumbnail? = null,
+  val videoDetail: VideoDetail? = null,
 )

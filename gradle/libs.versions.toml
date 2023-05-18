@@ -1,5 +1,5 @@
 [versions]
-agp = "8.1.0-beta01"
+agp = "8.1.0-beta02"
 coil-compose = "2.3.0"
 hilt-android = "2.45"
 hilt-navigation-compose = "1.0.0"

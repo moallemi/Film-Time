@@ -11,6 +11,6 @@ internal abstract class TmdbMoviesModule {
 
   @Binds
   abstract fun bindTmdbMoviesRemoteSource(
-    impl: TmdbMovieRepositoryImpl
+    impl: TmdbMovieRepositoryImpl,
   ): TmdbMovieRepository
 }

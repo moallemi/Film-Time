@@ -34,8 +34,6 @@ fun MovieDetailScreen(
         .padding(16.dp),
       verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-
-
       AsyncImage(
         modifier = Modifier
           .width(200.dp)

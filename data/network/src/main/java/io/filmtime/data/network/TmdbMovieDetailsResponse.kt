@@ -1,12 +1,11 @@
 package io.filmtime.data.network
 
-import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.*
-import kotlinx.serialization.encoding.*
-import kotlinx.serialization.json.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
-data class TmdbMovieDetailsResponse (
+data class TmdbMovieDetailsResponse(
   val adult: Boolean? = null,
 
   @SerialName("backdrop_path")
@@ -59,17 +58,17 @@ data class TmdbMovieDetailsResponse (
   val voteAverage: Double? = null,
 
   @SerialName("vote_count")
-  val voteCount: Long? = null
+  val voteCount: Long? = null,
 )
 
 @Serializable
-data class Genre (
+data class Genre(
   val id: Long? = null,
-  val name: String? = null
+  val name: String? = null,
 )
 
 @Serializable
-data class ProductionCompany (
+data class ProductionCompany(
   val id: Long? = null,
 
   @SerialName("logo_path")
@@ -78,25 +77,24 @@ data class ProductionCompany (
   val name: String? = null,
 
   @SerialName("origin_country")
-  val originCountry: String? = null
+  val originCountry: String? = null,
 )
 
 @Serializable
-data class ProductionCountry (
+data class ProductionCountry(
   @SerialName("iso_3166_1")
   val iso3166_1: String? = null,
 
-  val name: String? = null
+  val name: String? = null,
 )
 
 @Serializable
-data class SpokenLanguage (
+data class SpokenLanguage(
   @SerialName("english_name")
   val englishName: String? = null,
 
   @SerialName("iso_639_1")
   val iso639_1: String? = null,
 
-  val name: String? = null
+  val name: String? = null,
 )
-

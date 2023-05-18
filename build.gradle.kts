@@ -7,6 +7,16 @@ plugins {
   alias(libs.plugins.com.android.library) apply false
   alias(libs.plugins.kotlinx.serialization) apply false
 
+  id("com.diffplug.spotless") version "6.18.0"
   alias(libs.plugins.hilt.android) apply false
 }
 true // Needed to make the Suppress annotation work for the plugins block
+
+spotless {
+  kotlin {
+    target("**/*.kt", "**/*.kts")
+    targetExclude("$buildDir/**/*.kt", "bin/**/*.kt", "buildSrc/**/*.kt")
+
+    ktlint()
+  }
+}

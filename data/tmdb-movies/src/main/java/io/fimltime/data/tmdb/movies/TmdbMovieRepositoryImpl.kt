@@ -14,4 +14,13 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
 
   override suspend fun getTrendingMovies(): List<VideoThumbnail> =
     tmdbMoviesRemoteSource.getTrendingMovies()
+
+  override suspend fun getPopularMovies(): List<VideoThumbnail> =
+    tmdbMoviesRemoteSource.getPopularMovies()
+
+  override suspend fun getTopRatedMovies(): List<VideoThumbnail> =
+    tmdbMoviesRemoteSource.getTopRatedMovies()
+
+  override suspend fun getNowPlayingMovies(): List<VideoThumbnail> =
+    tmdbMoviesRemoteSource.getNowPlayingMovies()
 }

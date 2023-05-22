@@ -1,5 +1,6 @@
 package io.filmtime.feature.movie.detail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,14 +12,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
+  savedStateHandle: SavedStateHandle,
   private val getMovieDetail: GetMovieDetailsUseCase,
 ) : ViewModel() {
 
+  private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
   private val _state: MutableStateFlow<MovieDetailState> = MutableStateFlow(MovieDetailState())
   val state = _state.asStateFlow()
 
   init {
-    load(550)
+    load(videoId)
   }
 
   fun load(videoId: Int) = viewModelScope.launch {

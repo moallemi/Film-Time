@@ -1,5 +1,6 @@
 package io.filmtime.feature.home
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import io.filmtime.data.model.VideoThumbnail
 @Composable
 fun HomeScreen(
   viewModel: HomeViewModel,
+  onVideoClick: (tmdbId: Int) -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -43,6 +45,7 @@ fun HomeScreen(
         VideoSectionRow(
           title = videoSection.title,
           items = videoSection.items,
+          onVideoClick = onVideoClick,
         )
       }
     }
@@ -54,6 +57,7 @@ fun HomeScreen(
 fun VideoSectionRow(
   title: String,
   items: List<VideoThumbnail>,
+  onVideoClick: (tmdbId: Int) -> Unit,
 ) {
   Column {
     Text(
@@ -77,6 +81,13 @@ fun VideoSectionRow(
             .fillParentMaxHeight()
             .aspectRatio(2 / 3f),
           videoThumbnail = item,
+          onClick = {
+            item.ids.tmdbId?.let {
+              onVideoClick(it)
+            } ?: run {
+              Log.e("HomeScreen", "tmdbId is null")
+            }
+          },
         )
       }
     }

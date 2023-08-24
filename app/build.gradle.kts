@@ -9,12 +9,12 @@ plugins {
 
 android {
   namespace = "io.filmtime"
-  compileSdk = 33
+  compileSdk = 34
 
   defaultConfig {
     applicationId = "io.filmtime"
     minSdk = 27
-    targetSdk = 33
+    targetSdk = 34
     versionCode = 1
     versionName = "1.0"
 
@@ -46,7 +46,7 @@ android {
     compose = true
   }
   composeOptions {
-    kotlinCompilerExtensionVersion = "1.4.3"
+    kotlinCompilerExtensionVersion = "1.5.2"
   }
   packaging {
     resources {

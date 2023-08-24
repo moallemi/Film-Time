@@ -9,7 +9,7 @@ plugins {
 
 android {
   namespace = "io.filmtime.feature.movie.detail"
-  compileSdk = 33
+  compileSdk = 34
 
   defaultConfig {
     minSdk = 27
@@ -23,7 +23,7 @@ android {
   }
 
   composeOptions {
-    kotlinCompilerExtensionVersion = "1.4.3"
+    kotlinCompilerExtensionVersion = "1.5.2"
   }
 
   buildTypes {

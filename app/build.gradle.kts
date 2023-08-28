@@ -59,6 +59,7 @@ dependencies {
 
   implementation(project(":feature:movie-detail"))
   implementation(project(":feature:home"))
+  implementation(project(":feature:player"))
 
   implementation(libs.core.ktx)
   implementation(libs.lifecycle.runtime.ktx)

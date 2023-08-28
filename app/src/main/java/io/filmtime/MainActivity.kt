@@ -1,5 +1,6 @@
 package io.filmtime
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +17,7 @@ import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import io.filmtime.feature.home.HomeScreen
 import io.filmtime.feature.movie.detail.MovieDetailScreen
+import io.filmtime.feature.player.VideoPlayer
 import io.filmtime.ui.theme.FilmTimeTheme
 
 @AndroidEntryPoint
@@ -44,7 +46,25 @@ class MainActivity : ComponentActivity() {
                 },
               ),
             ) {
-              MovieDetailScreen(viewModel = hiltViewModel())
+              MovieDetailScreen(
+                viewModel = hiltViewModel(),
+                onStreamReady = { streamUrl ->
+                  val encoded = Uri.encode(streamUrl)
+                  navController.navigate("player/$encoded")
+                },
+              )
+            }
+            composable(
+              route = "player/{stream_url}",
+              arguments = listOf(
+                navArgument("stream_url") {
+                  type = NavType.StringType
+                },
+              ),
+            ) { backStackEntry ->
+              val streamUrl = backStackEntry.arguments?.getString("stream_url")
+              val decoded = Uri.decode(streamUrl)
+              VideoPlayer(uri = Uri.parse(decoded))
             }
           }
         }

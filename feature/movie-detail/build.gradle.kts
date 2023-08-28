@@ -43,8 +43,9 @@ android {
 
 dependencies {
 
-  implementation(project(":domain:tmdb-movies"))
   implementation(project(":data:model"))
+  implementation(project(":domain:tmdb-movies"))
+  implementation(project(":domain:stream"))
 
   implementation(libs.core.ktx)
   implementation(libs.appcompat)

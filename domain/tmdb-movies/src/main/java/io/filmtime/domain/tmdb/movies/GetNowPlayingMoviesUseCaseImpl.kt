@@ -1,5 +1,7 @@
 package io.filmtime.domain.tmdb.movies
 
+import io.filmtime.data.model.GeneralError
+import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoThumbnail
 import io.fimltime.data.tmdb.movies.TmdbMovieRepository
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +12,7 @@ internal class GetNowPlayingMoviesUseCaseImpl @Inject constructor(
   private val tmdbMovieRepository: TmdbMovieRepository,
 ) : GetNowPlayingMoviesUseCase {
 
-  override suspend fun invoke(): Flow<List<VideoThumbnail>> = flow {
+  override suspend fun invoke(): Flow<Result<List<VideoThumbnail>, GeneralError>> = flow {
     emit(tmdbMovieRepository.getNowPlayingMovies())
   }
 }

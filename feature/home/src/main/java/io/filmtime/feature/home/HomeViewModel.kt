@@ -3,6 +3,8 @@ package io.filmtime.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.filmtime.data.model.Result.Failure
+import io.filmtime.data.model.Result.Success
 import io.filmtime.domain.tmdb.movies.GetTrendingMoviesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,9 +31,17 @@ class HomeViewModel @Inject constructor(
           _state.update { state -> state.copy(isLoading = true) }
         }
         .onCompletion { _state.update { state -> state.copy(isLoading = false) } }
-        .onEach {
-          _state.update { state ->
-            state.copy(videoSections = state.videoSections + listOf(VideoSection("Trending", it)))
+        .onEach { result ->
+          when (result) {
+            is Success -> {
+              _state.update { state ->
+                state.copy(videoSections = state.videoSections + listOf(VideoSection("Trending", result.data)))
+              }
+            }
+
+            is Failure -> {
+              // TODO: Handle error
+            }
           }
         }
         .collect()

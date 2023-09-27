@@ -7,7 +7,7 @@ import io.filmtime.data.model.VideoThumbnail
 
 interface TmdbMoviesRemoteSource {
 
-  suspend fun getMovieDetails(movieId: Int): VideoDetail
+  suspend fun getMovieDetails(movieId: Int): Result<VideoDetail, GeneralError>
 
   suspend fun getTrendingMovies(): Result<List<VideoThumbnail>, GeneralError>
 

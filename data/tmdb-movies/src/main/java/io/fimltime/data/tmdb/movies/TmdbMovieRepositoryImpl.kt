@@ -11,7 +11,7 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
   private val tmdbMoviesRemoteSource: TmdbMoviesRemoteSource,
 ) : TmdbMovieRepository {
 
-  override suspend fun getMovieDetails(movieId: Int): VideoDetail =
+  override suspend fun getMovieDetails(movieId: Int): Result<VideoDetail, GeneralError> =
     tmdbMoviesRemoteSource.getMovieDetails(movieId)
 
   override suspend fun getTrendingMovies(): Result<List<VideoThumbnail>, GeneralError> =

@@ -24,9 +24,25 @@ internal class TmdbMoviesMoviesRemoteSourceImpl @Inject constructor(
   override suspend fun getNowPlayingMovies(): Result<List<VideoThumbnail>, GeneralError> =
     getMovieList(ListType.NOW_PLAYING)
 
-  override suspend fun getMovieDetails(movieId: Int): VideoDetail =
-    tmdbMoviesService.getMovieDetails(movieId)
-      .toVideoDetail()
+  override suspend fun getMovieDetails(movieId: Int): Result<VideoDetail, GeneralError> =
+    when (val result = tmdbMoviesService.getMovieDetails(movieId = movieId)) {
+      is NetworkResponse.Success -> {
+        val videoDetailResponse = result.body
+        if (videoDetailResponse == null) {
+          Result.Failure(GeneralError.UnknownError(Throwable("Video detail response is null")))
+        } else {
+          Result.Success(videoDetailResponse.toVideoDetail())
+        }
+      }
+
+      is NetworkResponse.ApiError -> {
+        val errorResponse = result.body
+        Result.Failure(GeneralError.ApiError(errorResponse.statusMessage, errorResponse.statusCode))
+      }
+
+      is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
+      is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
+    }
 
   private suspend fun getMovieList(type: ListType): Result<List<VideoThumbnail>, GeneralError> =
     when (val result = tmdbMoviesService.getMovieList(type.value)) {

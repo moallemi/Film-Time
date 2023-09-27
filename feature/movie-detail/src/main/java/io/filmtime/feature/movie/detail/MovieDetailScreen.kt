@@ -40,6 +40,8 @@ fun MovieDetailScreen(
 
   if (state.isLoading) {
     CircularProgressIndicator()
+  } else if (state.message != null) {
+    Text(text = state.message!!)
   } else if (videoDetail != null) {
     Column(
       modifier = Modifier

@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.filmtime.data.model.Result.Failure
+import io.filmtime.data.model.Result.Success
 import io.filmtime.domain.stream.GetStreamInfoUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,8 +35,17 @@ class MovieDetailViewModel @Inject constructor(
 
   fun load(videoId: Int) = viewModelScope.launch {
     _state.value = _state.value.copy(isLoading = true)
-    val result = getMovieDetail(videoId)
-    _state.value = _state.value.copy(videoDetail = result, isLoading = false)
+
+    when (val result = getMovieDetail(videoId)) {
+      is Success -> {
+        _state.value = _state.value.copy(videoDetail = result.data, isLoading = false)
+      }
+
+      is Failure -> {
+        // TODO add in depth error handling
+        _state.value = _state.value.copy(message = result.error.toString(), isLoading = false)
+      }
+    }
   }
 
   fun loadStreamInfo() = viewModelScope.launch {

@@ -11,7 +11,7 @@ interface TmdbMoviesService {
   suspend fun getMovieDetails(
     @Path("movie_id") movieId: Int,
     @Query("api_key") apiKey: String = BuildConfig.TMDB_API_KEY,
-  ): TmdbMovieDetailsResponse
+  ): NetworkResponse<TmdbMovieDetailsResponse, TmdbErrorResponse>
 
   @GET("trending/movie/{list_type}")
   suspend fun getMovieList(

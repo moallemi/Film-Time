@@ -1,17 +1,17 @@
 [versions]
-agp = "8.1.1"
+agp = "8.1.2"
 coil-compose = "2.4.0"
-hilt-android = "2.47"
+hilt-android = "2.48"
 hilt-navigation-compose = "1.0.0"
-kotlin = "1.9.0"
-core-ktx = "1.10.1"
+kotlin = "1.9.10"
+core-ktx = "1.12.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
-lifecycle-runtime-ktx = "2.6.1"
+lifecycle-runtime-ktx = "2.6.2"
 activity-compose = "1.7.2"
-compose-bom = "2023.08.00"
-navigation-compose = "2.7.1"
+compose-bom = "2023.09.02"
+navigation-compose = "2.7.3"
 appcompat = "1.6.1"
 material = "1.9.0"
 media3-exoplayer = "1.1.1"
@@ -44,9 +44,9 @@ material = { group = "com.google.android.material", name = "material", version.r
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version = "2.9.0" }
 retrofit-kotlinx-serialization = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
-kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
-lifecycle-viewmodel-compose-runtime = "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
+kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
+lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
+lifecycle-viewmodel-compose-runtime = "androidx.lifecycle:lifecycle-runtime-compose:2.6.2"
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }

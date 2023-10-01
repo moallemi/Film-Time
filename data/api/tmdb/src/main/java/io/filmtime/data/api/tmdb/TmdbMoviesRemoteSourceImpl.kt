@@ -8,7 +8,7 @@ import io.filmtime.data.network.TmdbMoviesService
 import io.filmtime.data.network.adapter.NetworkResponse
 import javax.inject.Inject
 
-internal class TmdbMoviesMoviesRemoteSourceImpl @Inject constructor(
+internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
   private val tmdbMoviesService: TmdbMoviesService,
 ) : TmdbMoviesRemoteSource {
 

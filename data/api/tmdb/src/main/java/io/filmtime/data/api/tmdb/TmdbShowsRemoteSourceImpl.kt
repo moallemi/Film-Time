@@ -2,6 +2,7 @@ package io.filmtime.data.api.tmdb
 
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
+import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.network.TmdbErrorResponse
 import io.filmtime.data.network.TmdbShowsService
@@ -12,6 +13,26 @@ import javax.inject.Inject
 class TmdbShowsRemoteSourceImpl @Inject constructor(
   private val tmdbShowsService: TmdbShowsService,
 ) : TmdbShowsRemoteSource {
+
+  override suspend fun getShowDetails(showId: Int): Result<VideoDetail, GeneralError> =
+    when (val result = tmdbShowsService.getShowDetails(seriesId = showId)) {
+      is NetworkResponse.Success -> {
+        val videoDetailResponse = result.body
+        if (videoDetailResponse == null) {
+          Result.Failure(GeneralError.UnknownError(Throwable("Video detail response is null")))
+        } else {
+          Result.Success(videoDetailResponse.toVideoDetail())
+        }
+      }
+
+      is NetworkResponse.ApiError -> {
+        val errorResponse = result.body
+        Result.Failure(GeneralError.ApiError(errorResponse.statusMessage, errorResponse.statusCode))
+      }
+
+      is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
+      is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
+    }
 
   override suspend fun getTrendingShows(): Result<List<VideoThumbnail>, GeneralError> =
     getShowsList {

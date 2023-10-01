@@ -45,6 +45,12 @@ object NetworkModule {
 
   @Provides
   @Singleton
+  fun providesTmdbShowsService(retrofit: Retrofit): TmdbShowsService {
+    return retrofit.create(TmdbShowsService::class.java)
+  }
+
+  @Provides
+  @Singleton
   fun providesNetworkCallAdapterFactory(): CallAdapter.Factory {
     return NetworkCallAdapterFactory()
   }

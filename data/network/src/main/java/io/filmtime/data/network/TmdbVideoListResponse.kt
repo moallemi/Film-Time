@@ -60,4 +60,7 @@ data class TmdbVideoResultResponse(
 enum class MediaType(val value: String) {
   @SerialName("movie")
   Movie("movie"),
+
+  @SerialName("tv")
+  TV("tv"),
 }

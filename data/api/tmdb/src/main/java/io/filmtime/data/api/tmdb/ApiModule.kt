@@ -10,7 +10,8 @@ import dagger.hilt.components.SingletonComponent
 internal abstract class ApiModule {
 
   @Binds
-  abstract fun bindTmdbMovieService(
-    impl: TmdbMoviesMoviesRemoteSourceImpl,
-  ): TmdbMoviesRemoteSource
+  abstract fun bindTmdbMovieService(impl: TmdbMoviesMoviesRemoteSourceImpl): TmdbMoviesRemoteSource
+
+  @Binds
+  abstract fun bindTmdbShowService(impl: TmdbShowsRemoteSourceImpl): TmdbShowsRemoteSource
 }

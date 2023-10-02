@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -39,7 +40,10 @@ fun MovieDetailScreen(
   }
 
   if (state.isLoading) {
-    CircularProgressIndicator()
+    CircularProgressIndicator(
+      modifier = Modifier
+        .wrapContentSize()
+    )
   } else if (state.message != null) {
     Text(text = state.message!!)
   } else if (videoDetail != null) {

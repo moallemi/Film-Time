@@ -2,18 +2,19 @@ package io.filmtime.feature.home
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,10 +33,7 @@ fun HomeScreen(
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   if (state.isLoading) {
-    CircularProgressIndicator(
-      modifier = Modifier
-        .wrapContentSize(),
-    )
+    LoadingVideoSectionRow()
   } else {
     LazyColumn(
       contentPadding = PaddingValues(top = 16.dp),
@@ -89,6 +87,33 @@ fun VideoSectionRow(
             }
           },
         )
+      }
+    }
+  }
+}
+
+@Composable
+fun LoadingVideoSectionRow() {
+  Column {
+    Box(
+      modifier = Modifier
+        .height(20.dp)
+        .background(shimmerBrush(targetValue = 1300f, showShimmer = true)),
+    )
+    LazyRow(
+      modifier = Modifier
+        .height(200.dp)
+        .fillMaxWidth(),
+      contentPadding = PaddingValues(16.dp),
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+      items(10) { index ->
+        Card(
+          modifier = Modifier
+            .fillParentMaxHeight()
+            .aspectRatio(2 / 3f)
+            .background(shimmerBrush(showShimmer = true, targetValue = 1300f)),
+        ) {}
       }
     }
   }

@@ -1,10 +1,15 @@
 package io.filmtime.feature.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.filmtime.data.model.VideoThumbnail
 
@@ -36,7 +42,20 @@ fun VideoThumbnailCard(
       }
       .focusable(),
   ) {
-    VideoThumbnailCardContent(videoThumbnail = videoThumbnail)
+    Row {
+
+      Card {
+        VideoThumbnailCardContent(videoThumbnail = videoThumbnail)
+      }
+
+      AnimatedVisibility(visible = selected) {
+        Column(
+          modifier = Modifier.padding(16.dp),
+        ) {
+          Text(videoThumbnail.title)
+        }
+      }
+    }
   }
 }
 

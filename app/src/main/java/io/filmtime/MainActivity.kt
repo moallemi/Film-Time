@@ -52,6 +52,9 @@ class MainActivity : ComponentActivity() {
                   val encoded = Uri.encode(streamUrl)
                   navController.navigate("player/$encoded")
                 },
+                onBackPressed = {
+                  navController.popBackStack()
+                }
               )
             }
             composable(

@@ -43,11 +43,9 @@ fun VideoThumbnailCard(
       .focusable(),
   ) {
     Row {
-
       Card {
         VideoThumbnailCardContent(videoThumbnail = videoThumbnail)
       }
-
       AnimatedVisibility(visible = selected) {
         Column(
           modifier = Modifier.padding(16.dp),

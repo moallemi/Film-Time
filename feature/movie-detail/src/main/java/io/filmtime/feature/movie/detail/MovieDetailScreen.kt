@@ -78,7 +78,7 @@ fun MovieDetailContent(
   ) {
     Box(
       modifier = Modifier
-        .height(300.dp)
+        .height(300.dp),
     ) {
       AsyncImage(
         modifier = Modifier
@@ -92,7 +92,7 @@ fun MovieDetailContent(
       Card(
         modifier = Modifier
           .align(Alignment.BottomStart)
-          .padding(start = 16.dp)
+          .padding(start = 16.dp),
       ) {
         AsyncImage(
           modifier = Modifier
@@ -114,7 +114,6 @@ fun MovieDetailContent(
     )
     Text(
       modifier = Modifier.padding(horizontal = 16.dp),
-
       text = videoDetail.description,
     )
 
@@ -136,18 +135,23 @@ fun MovieDetailContent(
       modifier = Modifier.padding(horizontal = 16.dp),
       horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-      Text(text = "Year: ${videoDetail.year}")
-      Text(text = "Original language: ${videoDetail.originalLanguage}")
-      Text(text = videoDetail.spokenLanguages.joinToString(", "))
+      Text(
+        text = "Year: ${videoDetail.year}",
+      )
+      Text(
+        text = "Original language: ${videoDetail.originalLanguage}",
+      )
+      Text(
+        text = videoDetail.spokenLanguages.joinToString(", "),
+      )
     }
     Text(
       modifier = Modifier.padding(start = 16.dp),
       text = "Genres",
     )
     Text(
-      modifier = Modifier.padding(horizontal = 16.dp),
       text = videoDetail.genres.joinToString(", "),
+      modifier = Modifier.padding(horizontal = 16.dp),
     )
   }
 }
-

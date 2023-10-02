@@ -5,6 +5,7 @@ import io.filmtime.data.model.VideoId
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.network.TmdbMovieDetailsResponse
 import io.filmtime.data.network.TmdbShowDetailsResponse
+import io.filmtime.data.network.TmdbShowResultResponse
 import io.filmtime.data.network.TmdbVideoResultResponse
 
 private val TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original/"
@@ -57,6 +58,13 @@ fun TmdbShowDetailsResponse.toVideoDetail() =
 fun TmdbVideoResultResponse.toVideoThumbnail() = VideoThumbnail(
   ids = VideoId(traktId = null, tmdbId = id),
   title = title.orEmpty(),
+  posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
+  year = releaseDate?.take(4)?.toInt() ?: 0,
+)
+
+fun TmdbShowResultResponse.toVideoThumbnail() = VideoThumbnail(
+  ids = VideoId(traktId = null, tmdbId = id),
+  title = name.orEmpty(),
   posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
   year = releaseDate?.take(4)?.toInt() ?: 0,
 )

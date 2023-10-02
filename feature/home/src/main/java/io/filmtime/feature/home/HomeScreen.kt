@@ -68,18 +68,16 @@ fun VideoSectionRow(
     )
     LazyRow(
       modifier = Modifier
-        .height(200.dp)
-        .fillMaxWidth(),
+          .height(200.dp)
+          .fillMaxWidth(),
       contentPadding = PaddingValues(16.dp),
-      horizontalArrangement = Arrangement.spacedBy(8.dp),
+      horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
       items(items) { item ->
         VideoThumbnailCard(
           modifier = Modifier
-            .testTag("discover_carousel_item")
-            .animateItemPlacement()
-            .fillParentMaxHeight()
-            .aspectRatio(2 / 3f),
+              .testTag("discover_carousel_item")
+              .animateItemPlacement(),
           videoThumbnail = item,
           onClick = {
             item.ids.tmdbId?.let {
@@ -105,25 +103,25 @@ fun LoadingVideoSectionRow(
     items(numberOfSections) {
       Box(
         modifier = Modifier
-          .padding(start = 16.dp)
-          .size(50.dp, 20.dp)
-          .clip(RoundedCornerShape(4.dp))
-          .background(shimmerBrush()),
+            .padding(start = 16.dp)
+            .size(50.dp, 20.dp)
+            .clip(RoundedCornerShape(4.dp))
+            .background(shimmerBrush()),
       )
       LazyRow(
         modifier = Modifier
-          .height(200.dp)
-          .fillMaxWidth(),
+            .height(200.dp)
+            .fillMaxWidth(),
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
       ) {
         items(10) {
           Box(
             modifier = Modifier
-              .fillParentMaxHeight()
-              .aspectRatio(2 / 3f)
-              .clip(RoundedCornerShape(16.dp))
-              .background(shimmerBrush()),
+                .fillParentMaxHeight()
+                .aspectRatio(2 / 3f)
+                .clip(RoundedCornerShape(16.dp))
+                .background(shimmerBrush()),
 
             )
         }

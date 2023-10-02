@@ -15,6 +15,8 @@ navigation-compose = "2.7.3"
 appcompat = "1.6.1"
 material = "1.9.0"
 media3-exoplayer = "1.1.1"
+tv-compose = "1.0.0-alpha09"
+
 
 [libraries]
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3-exoplayer" }
@@ -32,6 +34,8 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "tv-compose" }
+tv-material = { module = "androidx.tv:tv-material", version.ref = "tv-compose" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }

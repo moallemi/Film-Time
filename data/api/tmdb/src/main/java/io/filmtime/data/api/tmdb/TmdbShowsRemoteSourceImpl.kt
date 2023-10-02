@@ -5,8 +5,8 @@ import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.network.TmdbErrorResponse
+import io.filmtime.data.network.TmdbShowListResponse
 import io.filmtime.data.network.TmdbShowsService
-import io.filmtime.data.network.TmdbVideoListResponse
 import io.filmtime.data.network.adapter.NetworkResponse
 import javax.inject.Inject
 
@@ -40,7 +40,7 @@ class TmdbShowsRemoteSourceImpl @Inject constructor(
     }
 
   private suspend fun getShowsList(
-    apiCall: suspend () -> NetworkResponse<TmdbVideoListResponse, TmdbErrorResponse>,
+    apiCall: suspend () -> NetworkResponse<TmdbShowListResponse, TmdbErrorResponse>,
   ): Result<List<VideoThumbnail>, GeneralError> =
     when (val result = apiCall()) {
       is NetworkResponse.Success -> {

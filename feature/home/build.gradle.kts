@@ -57,6 +57,9 @@ dependencies {
   implementation(libs.ui.tooling.preview)
   implementation(libs.material3)
 
+  implementation(libs.tv.foundation)
+  implementation(libs.tv.material)
+
   implementation(libs.coil.compose)
 
   implementation(libs.hilt.android)

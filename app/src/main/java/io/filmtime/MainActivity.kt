@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                 },
                 onBackPressed = {
                   navController.popBackStack()
-                }
+                },
               )
             }
             composable(

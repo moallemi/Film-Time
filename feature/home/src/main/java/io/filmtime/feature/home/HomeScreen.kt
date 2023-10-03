@@ -124,8 +124,7 @@ fun LoadingVideoSectionRow(
               .aspectRatio(2 / 3f)
               .clip(RoundedCornerShape(16.dp))
               .background(shimmerBrush()),
-
-            )
+          )
         }
       }
     }

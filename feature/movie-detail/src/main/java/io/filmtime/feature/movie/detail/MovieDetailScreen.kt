@@ -78,7 +78,7 @@ fun MovieDetailContent(
   ) {
     Box(
       modifier = Modifier
-        .height(300.dp)
+        .height(300.dp),
     ) {
       AsyncImage(
         modifier = Modifier
@@ -92,7 +92,7 @@ fun MovieDetailContent(
       Card(
         modifier = Modifier
           .align(Alignment.BottomStart)
-          .padding(start = 16.dp)
+          .padding(start = 16.dp),
       ) {
         AsyncImage(
           modifier = Modifier
@@ -150,4 +150,3 @@ fun MovieDetailContent(
     )
   }
 }
-

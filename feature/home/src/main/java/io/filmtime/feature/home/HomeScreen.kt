@@ -26,11 +26,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.filmtime.data.model.VideoThumbnail
+import io.filmtime.data.model.VideoType
 
 @Composable
 fun HomeScreen(
   viewModel: HomeViewModel,
-  onVideoClick: (tmdbId: Int) -> Unit,
+  onMovieClick: (tmdbId: Int) -> Unit,
+  onShowClick: (tmdbId: Int) -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -45,7 +47,8 @@ fun HomeScreen(
         VideoSectionRow(
           title = videoSection.title,
           items = videoSection.items,
-          onVideoClick = onVideoClick,
+          onMovieClick = onMovieClick,
+          onShowClick = onShowClick,
         )
       }
     }
@@ -57,7 +60,8 @@ fun HomeScreen(
 fun VideoSectionRow(
   title: String,
   items: List<VideoThumbnail>,
-  onVideoClick: (tmdbId: Int) -> Unit,
+  onMovieClick: (tmdbId: Int) -> Unit,
+  onShowClick: (tmdbId: Int) -> Unit,
 ) {
   Column {
     Text(
@@ -83,7 +87,10 @@ fun VideoSectionRow(
           videoThumbnail = item,
           onClick = {
             item.ids.tmdbId?.let {
-              onVideoClick(it)
+              when (item.type) {
+                VideoType.Movie -> onMovieClick(it)
+                VideoType.Show -> onShowClick(it)
+              }
             } ?: run {
               Log.e("HomeScreen", "tmdbId is null")
             }

@@ -18,6 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.filmtime.feature.home.HomeScreen
 import io.filmtime.feature.movie.detail.MovieDetailScreen
 import io.filmtime.feature.player.VideoPlayer
+import io.filmtime.feature.show.detail.ShowDetailScreen
 import io.filmtime.ui.theme.FilmTimeTheme
 
 @AndroidEntryPoint
@@ -33,8 +34,11 @@ class MainActivity : ComponentActivity() {
             composable("home") {
               HomeScreen(
                 viewModel = hiltViewModel(),
-                onVideoClick = { tmdbId ->
+                onMovieClick = { tmdbId ->
                   navController.navigate("detail/$tmdbId")
+                },
+                onShowClick = { tmdbId ->
+                  navController.navigate("show/detail/$tmdbId")
                 },
               )
             }
@@ -68,6 +72,19 @@ class MainActivity : ComponentActivity() {
               val streamUrl = backStackEntry.arguments?.getString("stream_url")
               val decoded = Uri.decode(streamUrl)
               VideoPlayer(uri = Uri.parse(decoded))
+            }
+
+            composable(
+              route = "show/detail/{video_id}",
+              arguments = listOf(
+                navArgument("video_id") {
+                  type = NavType.IntType
+                },
+              ),
+            ) {
+              ShowDetailScreen(
+                viewModel = hiltViewModel(),
+              )
             }
           }
         }

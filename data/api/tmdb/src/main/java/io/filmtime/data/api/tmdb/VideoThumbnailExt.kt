@@ -3,23 +3,13 @@ package io.filmtime.data.api.tmdb
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoId
 import io.filmtime.data.model.VideoThumbnail
+import io.filmtime.data.model.VideoType
 import io.filmtime.data.network.TmdbMovieDetailsResponse
 import io.filmtime.data.network.TmdbShowDetailsResponse
 import io.filmtime.data.network.TmdbShowResultResponse
 import io.filmtime.data.network.TmdbVideoResultResponse
 
 private val TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original/"
-
-fun TmdbMovieDetailsResponse.toVideoThumbnail() =
-  VideoThumbnail(
-    ids = VideoId(
-      traktId = null,
-      tmdbId = id,
-    ),
-    title = title ?: "",
-    posterUrl = posterPath ?: "",
-    year = releaseDate?.take(4)?.toInt() ?: 0,
-  )
 
 fun TmdbMovieDetailsResponse.toVideoDetail() =
   VideoDetail(
@@ -60,6 +50,7 @@ fun TmdbVideoResultResponse.toVideoThumbnail() = VideoThumbnail(
   title = title.orEmpty(),
   posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
   year = releaseDate?.take(4)?.toInt() ?: 0,
+  type = VideoType.Movie,
 )
 
 fun TmdbShowResultResponse.toVideoThumbnail() = VideoThumbnail(
@@ -67,4 +58,5 @@ fun TmdbShowResultResponse.toVideoThumbnail() = VideoThumbnail(
   title = name.orEmpty(),
   posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
   year = releaseDate?.take(4)?.toInt() ?: 0,
+  type = VideoType.Show,
 )

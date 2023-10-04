@@ -40,6 +40,7 @@ fun HomeScreen(
   viewModel: HomeViewModel,
   onMovieClick: (tmdbId: Int) -> Unit,
   onShowClick: (tmdbId: Int) -> Unit,
+  onTraktClick: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -48,7 +49,7 @@ fun HomeScreen(
       TopAppBar(
         title = { Text("FilmTime") },
         actions = {
-          IconButton(onClick = { /*TODO*/ }) {
+          IconButton(onClick = onTraktClick) {
             Icon(painter = painterResource(id = R.drawable.trakt), contentDescription = "trakt")
           }
         },

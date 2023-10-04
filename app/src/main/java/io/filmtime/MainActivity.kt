@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavDeepLink
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,6 +20,7 @@ import io.filmtime.feature.home.HomeScreen
 import io.filmtime.feature.movie.detail.MovieDetailScreen
 import io.filmtime.feature.player.VideoPlayer
 import io.filmtime.feature.show.detail.ShowDetailScreen
+import io.filmtime.feature.trakt.login.TraktLoginWebView
 import io.filmtime.ui.theme.FilmTimeTheme
 
 @AndroidEntryPoint
@@ -40,6 +42,9 @@ class MainActivity : ComponentActivity() {
                 onShowClick = { tmdbId ->
                   navController.navigate("show/detail/$tmdbId")
                 },
+                onTraktClick = {
+                  navController.navigate("trakt/login")
+                }
               )
             }
             composable(
@@ -84,6 +89,20 @@ class MainActivity : ComponentActivity() {
             ) {
               ShowDetailScreen(
                 viewModel = hiltViewModel(),
+              )
+            }
+            composable(
+              route = "trakt/login",
+              deepLinks = listOf(NavDeepLink("filmtime://"))
+            ) {
+              TraktLoginWebView(
+                onBackPressed = {
+                  navController.popBackStack()
+                },
+                onSuccess = {
+                  navController.popBackStack()
+                  println("access token is $it")
+                }
               )
             }
           }

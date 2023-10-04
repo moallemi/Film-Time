@@ -16,18 +16,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.model.VideoType
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
   viewModel: HomeViewModel,
@@ -36,23 +43,40 @@ fun HomeScreen(
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
 
-  if (state.isLoading) {
-    LoadingVideoSectionRow(numberOfSections = 2)
-  } else {
-    LazyColumn(
-      contentPadding = PaddingValues(top = 16.dp),
-      verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-      items(state.videoSections) { videoSection ->
-        VideoSectionRow(
-          title = videoSection.title,
-          items = videoSection.items,
-          onMovieClick = onMovieClick,
-          onShowClick = onShowClick,
-        )
+  Scaffold(
+    topBar = {
+      TopAppBar(
+        title = { Text("FilmTime") },
+        actions = {
+          IconButton(onClick = { /*TODO*/ }) {
+            Icon(painter = painterResource(id = R.drawable.trakt), contentDescription = "trakt")
+          }
+        },
+      )
+    },
+  ) {
+    Box(modifier = Modifier.padding(it)) {
+      if (state.isLoading) {
+        LoadingVideoSectionRow(numberOfSections = 2)
+      } else {
+        LazyColumn(
+          contentPadding = PaddingValues(top = 16.dp),
+          verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+          items(state.videoSections) { videoSection ->
+            VideoSectionRow(
+              title = videoSection.title,
+              items = videoSection.items,
+              onMovieClick = onMovieClick,
+              onShowClick = onShowClick,
+            )
+          }
+        }
       }
     }
   }
+
+
 }
 
 @OptIn(ExperimentalFoundationApi::class)

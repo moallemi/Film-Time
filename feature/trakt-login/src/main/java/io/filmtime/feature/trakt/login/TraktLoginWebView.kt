@@ -23,6 +23,7 @@ private const val TRAKT_LOGIN_URL =
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TraktLoginWebView(
+  viewModel: TraktLoginViewModel,
   onBackPressed: () -> Unit,
   onSuccess: (String) -> Unit,
 ) {

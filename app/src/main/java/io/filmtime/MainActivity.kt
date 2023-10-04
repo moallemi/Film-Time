@@ -96,13 +96,14 @@ class MainActivity : ComponentActivity() {
               deepLinks = listOf(NavDeepLink("filmtime://"))
             ) {
               TraktLoginWebView(
+                viewModel = hiltViewModel(),
                 onBackPressed = {
                   navController.popBackStack()
                 },
                 onSuccess = {
                   navController.popBackStack()
                   println("access token is $it")
-                }
+                },
               )
             }
           }

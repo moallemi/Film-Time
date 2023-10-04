@@ -2,6 +2,9 @@
 plugins {
   alias(libs.plugins.com.android.library)
   alias(libs.plugins.org.jetbrains.kotlin.android)
+
+  kotlin("kapt")
+  alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -51,6 +54,8 @@ dependencies {
   implementation(libs.ui.graphics)
   implementation(libs.material3)
 
+  implementation(libs.hilt.android)
+  kapt(libs.dagger.hilt.android.compiler)
 
   implementation(libs.core.ktx)
   implementation(libs.appcompat)

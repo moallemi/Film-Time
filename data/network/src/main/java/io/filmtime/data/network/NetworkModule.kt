@@ -51,6 +51,12 @@ object NetworkModule {
 
   @Provides
   @Singleton
+  fun providesTraktAuthService(retrofit: Retrofit): TraktAuthService {
+    return retrofit.create(TraktAuthService::class.java)
+  }
+
+  @Provides
+  @Singleton
   fun providesNetworkCallAdapterFactory(): CallAdapter.Factory {
     return NetworkCallAdapterFactory()
   }

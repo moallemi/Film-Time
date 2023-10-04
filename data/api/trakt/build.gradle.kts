@@ -2,35 +2,29 @@
 plugins {
   alias(libs.plugins.com.android.library)
   alias(libs.plugins.org.jetbrains.kotlin.android)
-  id("kotlinx-serialization")
 
   kotlin("kapt")
   alias(libs.plugins.hilt.android)
 }
 
 android {
-  namespace = "io.filmtime.data.network"
-  compileSdk = 33
+  namespace = "io.filmtime.data.api.trakt"
+  compileSdk = 34
 
   defaultConfig {
     minSdk = 27
-
-    buildConfigField("String", "TMDB_API_KEY", "\"${System.getenv("FILM_TIME_TMDB_API_KEY")}\"")
-    buildConfigField("String", "TRAKT_CLIENT_ID", "\"${System.getenv("FILM_TIME_TRAKT_CLIENT_ID")}\"")
-    buildConfigField("String", "TRAKT_CLIENT_SECRET", "\"${System.getenv("FILM_TIME_TRAKT_CLIENT_SECRET")}\"")
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     consumerProguardFiles("consumer-rules.pro")
   }
 
-  buildFeatures {
-    buildConfig = true
-  }
-
   buildTypes {
     release {
       isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+      proguardFiles(
+        getDefaultProguardFile("proguard-android-optimize.txt"),
+        "proguard-rules.pro",
+      )
     }
   }
   compileOptions {
@@ -45,18 +39,14 @@ android {
 dependencies {
 
   implementation(project(":data:model"))
-
-  implementation(libs.core.ktx)
-  implementation(libs.appcompat)
-  implementation(libs.material)
-
-  implementation(libs.retrofit)
-  implementation(libs.retrofit.kotlinx.serialization)
-  implementation(libs.kotlinx.serialization.json)
+  implementation(project(":data:network"))
 
   implementation(libs.hilt.android)
   kapt(libs.dagger.hilt.android.compiler)
 
+  implementation(libs.core.ktx)
+  implementation(libs.appcompat)
+  implementation(libs.material)
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.test.ext.junit)
   androidTestImplementation(libs.espresso.core)

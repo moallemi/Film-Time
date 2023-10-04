@@ -61,6 +61,7 @@ dependencies {
   implementation(project(":feature:show-detail"))
   implementation(project(":feature:home"))
   implementation(project(":feature:player"))
+  implementation(project(":feature:trakt-login"))
 
   implementation(libs.core.ktx)
   implementation(libs.lifecycle.runtime.ktx)

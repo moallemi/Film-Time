@@ -9,7 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavDeepLink
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -93,7 +92,6 @@ class MainActivity : ComponentActivity() {
             }
             composable(
               route = "trakt/login",
-              deepLinks = listOf(NavDeepLink("filmtime://"))
             ) {
               TraktLoginWebView(
                 viewModel = hiltViewModel(),

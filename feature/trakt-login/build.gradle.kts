@@ -49,6 +49,9 @@ android {
 
 dependencies {
 
+  implementation(project(":data:model"))
+  implementation(project(":domain:trakt:auth"))
+
   implementation(platform(libs.compose.bom))
   implementation(libs.ui)
   implementation(libs.ui.graphics)
@@ -56,6 +59,9 @@ dependencies {
 
   implementation(libs.hilt.android)
   kapt(libs.dagger.hilt.android.compiler)
+
+  implementation(libs.lifecycle.viewmodel.compose)
+  implementation(libs.lifecycle.viewmodel.compose.runtime)
 
   implementation(libs.core.ktx)
   implementation(libs.appcompat)

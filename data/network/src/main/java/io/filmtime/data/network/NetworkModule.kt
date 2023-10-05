@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.filmtime.data.network.adapter.NetworkCallAdapterFactory
+import io.filmtime.data.network.annotations.TraktNetwork
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
 import retrofit2.CallAdapter
@@ -39,6 +40,20 @@ object NetworkModule {
 
   @Provides
   @Singleton
+  @TraktNetwork
+  fun providesTraktRetrofit(
+    json: Json,
+    networkCallAdapterFactory: CallAdapter.Factory,
+  ): Retrofit {
+    return Retrofit.Builder()
+      .baseUrl("https://api.trakt.tv/")
+      .addConverterFactory(json.asConverterFactory(MediaType.get("application/json")))
+      .addCallAdapterFactory(networkCallAdapterFactory)
+      .build()
+  }
+
+  @Provides
+  @Singleton
   fun providesTmdbMovieService(retrofit: Retrofit): TmdbMoviesService {
     return retrofit.create(TmdbMoviesService::class.java)
   }
@@ -51,7 +66,7 @@ object NetworkModule {
 
   @Provides
   @Singleton
-  fun providesTraktAuthService(retrofit: Retrofit): TraktAuthService {
+  fun providesTraktAuthService(@TraktNetwork retrofit: Retrofit): TraktAuthService {
     return retrofit.create(TraktAuthService::class.java)
   }
 

@@ -35,6 +35,7 @@ android {
 
 dependencies {
   implementation(project(":data:api:tmdb"))
+  implementation(project(":data:api:trakt"))
   implementation(project(":data:model"))
 
   implementation(libs.core.ktx)

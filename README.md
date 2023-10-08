@@ -32,6 +32,36 @@ This app follows the MVVM architectural pattern.
 2. Open the project in **Android Studio**.
 3. Sync the Gradle files and run the app!
 
+## Development setup
+
+First off, you require the latest [Android Studio Flamingo](https://developer.android.com/studio/preview) (or newer) to be able to build the app.
+
+### Code style
+
+This project uses [ktlint](https://github.com/pinterest/ktlint), provided via
+the [spotless](https://github.com/diffplug/spotless) gradle plugin, and the bundled project IntelliJ codestyle.
+
+If you find that one of your pull reviews does not pass the CI server check due to a code style conflict, you can
+easily fix it by running: `./gradlew spotlessApply`.
+
+### API keys
+
+You need to supply API / client keys for the various services the
+app uses:
+
+- [TMDb](https://developers.themoviedb.org)
+
+You can find information about how to gain access [here](docs/API-Keys.md).
+
+Add this to your system environment variables:
+
+```shell
+# Get this from TMDb
+FILM_TIME_TMDB_API_KEY=<insert>
+```
+
+Do not forget to restart Android Studio to apply changes to your environment.
+
 ## Contributions 🙌
 
 This project is open for contributions. We encourage all developers to contribute and help improve the app. If you're looking to contribute, please follow the standard GitHub pull request process.
@@ -42,4 +72,4 @@ This project is open for contributions. We encourage all developers to contribut
 
 ## License 📝
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details.

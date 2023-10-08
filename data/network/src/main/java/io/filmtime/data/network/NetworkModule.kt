@@ -72,6 +72,12 @@ object NetworkModule {
 
   @Provides
   @Singleton
+  fun providesTraktIDLookupService(@TraktNetwork retrofit: Retrofit): TraktSearchService {
+    return retrofit.create(TraktSearchService::class.java)
+  }
+
+  @Provides
+  @Singleton
   fun providesNetworkCallAdapterFactory(): CallAdapter.Factory {
     return NetworkCallAdapterFactory()
   }

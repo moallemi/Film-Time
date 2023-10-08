@@ -1,4 +1,4 @@
-package io.filmtime.data.trakt_auth
+package io.filmtime.data.trakt.auth
 
 import io.filmtime.data.api.trakt.TraktAuthRemoteSource
 import io.filmtime.data.model.GeneralError
@@ -18,7 +18,6 @@ class TraktAuthRepositoryImpl @Inject constructor(
     }
     return result
   }
-
 
   override suspend fun refreshTokenByAccessToken(accessToken: String) {
     TODO("Not yet implemented")

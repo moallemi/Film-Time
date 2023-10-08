@@ -1,4 +1,4 @@
-package io.filmtime.data.trakt_auth
+package io.filmtime.data.trakt.auth
 
 import dagger.Binds
 import dagger.Module

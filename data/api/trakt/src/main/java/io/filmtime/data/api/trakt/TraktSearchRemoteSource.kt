@@ -3,7 +3,6 @@ package io.filmtime.data.api.trakt
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 
-
 enum class TmdbType {
   MOVIE,
   SHOW,

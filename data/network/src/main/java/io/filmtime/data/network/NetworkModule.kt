@@ -6,11 +6,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.filmtime.data.network.adapter.NetworkCallAdapterFactory
-import io.filmtime.data.network.annotations.TraktNetwork
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -82,3 +82,14 @@ object NetworkModule {
     return NetworkCallAdapterFactory()
   }
 }
+
+@Qualifier
+@Target(
+  AnnotationTarget.FUNCTION,
+  AnnotationTarget.PROPERTY_GETTER,
+  AnnotationTarget.PROPERTY_SETTER,
+  AnnotationTarget.FIELD,
+  AnnotationTarget.VALUE_PARAMETER,
+)
+@Retention(AnnotationRetention.BINARY)
+annotation class TraktNetwork

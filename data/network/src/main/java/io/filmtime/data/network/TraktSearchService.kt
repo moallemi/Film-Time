@@ -10,7 +10,7 @@ interface TraktSearchService {
   @GET("search/{id_type}/{id}?type=movie")
   @Headers(
     "trakt-api-key: ${BuildConfig.TRAKT_CLIENT_ID}",
-    "trakt-api-version: 2"
+    "trakt-api-version: 2",
   )
   suspend fun movieIDLookup(
     @Path("id_type") idType: String,

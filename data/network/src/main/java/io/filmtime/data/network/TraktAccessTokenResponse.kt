@@ -1,13 +1,10 @@
 package io.filmtime.data.network
 
-
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
-import kotlinx.serialization.descriptors.*
-import kotlinx.serialization.encoding.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
-data class TraktAccessTokenResponse (
+data class TraktAccessTokenResponse(
   @SerialName("access_token")
   val accessToken: String,
 
@@ -23,5 +20,5 @@ data class TraktAccessTokenResponse (
   val scope: String,
 
   @SerialName("created_at")
-  val createdAt: Long
+  val createdAt: Long,
 )

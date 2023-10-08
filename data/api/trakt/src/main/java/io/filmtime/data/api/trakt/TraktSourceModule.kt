@@ -11,11 +11,11 @@ abstract class TraktSourceModule {
 
   @Binds
   abstract fun bindsTraktAuthRemoteSource(
-    sourceImpl: TraktAuthRemoteSourceImpl
+    sourceImpl: TraktAuthRemoteSourceImpl,
   ): TraktAuthRemoteSource
 
   @Binds
   abstract fun bindsTraktSearchRemoteSource(
-    sourceImpl: TraktSearchRemoteSourceImpl
+    sourceImpl: TraktSearchRemoteSourceImpl,
   ): TraktSearchRemoteSource
 }

@@ -23,7 +23,6 @@ class TraktAuthLocalSourceImpl @Inject constructor(
       TraktTokens(accessToken, refreshToken)
     }
 
-
   override suspend fun storeAuthTokens(token: TraktTokens) {
     dataStore.edit { preferences ->
       preferences[accessTokenKey] = token.accessToken

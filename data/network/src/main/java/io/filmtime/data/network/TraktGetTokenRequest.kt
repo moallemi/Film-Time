@@ -1,12 +1,9 @@
 package io.filmtime.data.network
 
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
-import kotlinx.serialization.descriptors.*
-import kotlinx.serialization.encoding.*
-
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 @Serializable
-data class TraktGetTokenRequest (
+data class TraktGetTokenRequest(
   val code: String,
 
   @SerialName("client_id")
@@ -19,5 +16,5 @@ data class TraktGetTokenRequest (
   val redirectURI: String,
 
   @SerialName("grant_type")
-  val grantType: String
+  val grantType: String,
 )

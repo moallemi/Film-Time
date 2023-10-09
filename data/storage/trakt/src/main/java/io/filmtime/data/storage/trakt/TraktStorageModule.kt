@@ -43,6 +43,6 @@ internal object TraktStorageModule {
 internal abstract class TraktStorageAbstractModule {
   @Binds
   abstract fun providesTraktAuthLocalSource(
-    impl: TraktAuthLocalSourceImpl
+    impl: TraktAuthLocalSourceImpl,
   ): TraktAuthLocalSource
 }

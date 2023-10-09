@@ -83,8 +83,6 @@ fun HomeScreen(
       }
     }
   }
-
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)

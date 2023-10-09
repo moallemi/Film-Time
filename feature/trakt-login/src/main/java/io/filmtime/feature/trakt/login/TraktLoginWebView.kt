@@ -25,7 +25,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private const val TRAKT_LOGIN_URL =
-  "https://api.trakt.tv/oauth/authorize?response_type=code&client_id=${BuildConfig.TRAKT_CLIENT_ID}&redirect_uri=filmtime://"
+  "https://api.trakt.tv/oauth/authorize?response_type=code&client_id=" +
+    "${BuildConfig.TRAKT_CLIENT_ID}&redirect_uri=filmtime://"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +35,6 @@ fun TraktLoginWebView(
   onBackPressed: () -> Unit,
   onSuccess: () -> Unit,
 ) {
-
   val state by viewModel.loginState.collectAsStateWithLifecycle()
 
   LaunchedEffect(key1 = state) {
@@ -44,8 +44,6 @@ fun TraktLoginWebView(
       else -> {}
     }
   }
-
-
 
   Scaffold(
     topBar = {
@@ -62,7 +60,6 @@ fun TraktLoginWebView(
     Box(
       modifier = Modifier.padding(it),
     ) {
-
       when (state) {
         LoginState.Initial -> {
           AndroidView(
@@ -74,7 +71,6 @@ fun TraktLoginWebView(
                 )
                 webViewClient = object : WebViewClient() {
                   override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-
                     request?.url?.let { uri ->
                       println(uri.host)
                       if (uri.scheme == "filmtime") {
@@ -83,10 +79,8 @@ fun TraktLoginWebView(
                     }
                     return super.shouldOverrideUrlLoading(view, request)
                   }
-
                 }
                 loadUrl(TRAKT_LOGIN_URL)
-
               }
             },
             update = {
@@ -105,7 +99,6 @@ fun TraktLoginWebView(
 
         else -> {}
       }
-
     }
   }
 }

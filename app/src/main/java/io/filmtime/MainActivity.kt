@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
                 },
                 onTraktClick = {
                   navController.navigate("trakt/login")
-                }
+                },
               )
             }
             composable(

@@ -1,5 +1,6 @@
 package io.filmtime.feature.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -61,7 +62,9 @@ class HomeViewModel @Inject constructor(
           }
 
           is Failure -> {
+            Log.e("loadTrendingMovies", result.error.toString())
             // TODO: Handle error
+            result.error
           }
         }
       }

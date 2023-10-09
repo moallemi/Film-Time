@@ -4,8 +4,8 @@ import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.TraktTokens
 import io.filmtime.data.network.BuildConfig
-import io.filmtime.data.network.TraktAuthService
-import io.filmtime.data.network.TraktGetTokenRequest
+import io.filmtime.data.network.trakt.TraktAuthService
+import io.filmtime.data.network.trakt.TraktGetTokenRequest
 import io.filmtime.data.network.adapter.NetworkResponse
 import javax.inject.Inject
 

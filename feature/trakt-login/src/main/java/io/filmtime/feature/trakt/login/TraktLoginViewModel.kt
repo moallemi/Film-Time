@@ -17,14 +17,12 @@ class TraktLoginViewModel @Inject constructor(
   private val getTraktAccessTokenUseCase: GetTraktAccessTokenUseCase,
 ) : ViewModel() {
 
-
   private val _loginState: MutableStateFlow<LoginState> = MutableStateFlow(value = LoginState.Initial)
   val loginState = _loginState.asStateFlow()
 
-
   fun getAccessToken(code: String) = viewModelScope.launch {
     _loginState.update { LoginState.Loading }
-    when(val result = getTraktAccessTokenUseCase(code)) {
+    when (val result = getTraktAccessTokenUseCase(code)) {
       is Result.Failure -> {
         _loginState.update { LoginState.Failed(result.error) }
         println(result.error)
@@ -35,15 +33,14 @@ class TraktLoginViewModel @Inject constructor(
       }
     }
   }
-
 }
 
 sealed class LoginState {
-  data object Initial: LoginState()
+  data object Initial : LoginState()
 
-  data object Loading: LoginState()
+  data object Loading : LoginState()
 
-  data class Failed(val error: GeneralError): LoginState()
+  data class Failed(val error: GeneralError) : LoginState()
 
-  data object Success: LoginState()
+  data object Success : LoginState()
 }

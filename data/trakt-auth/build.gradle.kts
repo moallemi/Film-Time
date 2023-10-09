@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-  namespace = "io.filmtime.data.trakt_auth"
+  namespace = "io.filmtime.data.trakt.auth"
   compileSdk = 34
 
   defaultConfig {

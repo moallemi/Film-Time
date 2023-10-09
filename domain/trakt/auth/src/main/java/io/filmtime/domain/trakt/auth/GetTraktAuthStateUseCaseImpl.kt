@@ -10,7 +10,10 @@ class GetTraktAuthStateUseCaseImpl @Inject constructor(
 ) : GetTraktAuthStateUseCase {
   override suspend fun invoke(): Flow<TraktAuthState> =
     traktAuthLocalSource.tokens.map {
-      if (it == null) TraktAuthState.SignedOut
-      else TraktAuthState.LoggedIn
+      if (it == null) {
+        TraktAuthState.SignedOut
+      } else {
+        TraktAuthState.LoggedIn
+      }
     }
 }

@@ -2,8 +2,8 @@ package io.filmtime.data.api.trakt
 
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
-import io.filmtime.data.network.trakt.TraktSearchService
 import io.filmtime.data.network.adapter.NetworkResponse
+import io.filmtime.data.network.trakt.TraktSearchService
 import javax.inject.Inject
 
 class TraktSearchRemoteSourceImpl @Inject constructor(

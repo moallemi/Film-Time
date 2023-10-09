@@ -27,12 +27,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.model.VideoType
+import io.filmtime.domain.trakt.auth.TraktAuthState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,6 +45,7 @@ fun HomeScreen(
   onTraktClick: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
+  val traktState by viewModel.traktState.collectAsStateWithLifecycle()
 
   Scaffold(
     topBar = {
@@ -50,7 +53,11 @@ fun HomeScreen(
         title = { Text("FilmTime") },
         actions = {
           IconButton(onClick = onTraktClick) {
-            Icon(painter = painterResource(id = R.drawable.trakt), contentDescription = "trakt")
+            Icon(
+              painter = painterResource(id = R.drawable.trakt),
+              contentDescription = "trakt",
+              tint = if (traktState == TraktAuthState.LoggedIn) Color.Green else MaterialTheme.colorScheme.onBackground,
+            )
           }
         },
       )

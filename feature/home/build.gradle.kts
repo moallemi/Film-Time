@@ -45,6 +45,7 @@ dependencies {
 
   implementation(project(":domain:tmdb-movies"))
   implementation(project(":domain:tmdb-shows"))
+  implementation(project(":domain:trakt:auth"))
   implementation(project(":data:model"))
 
   implementation(libs.core.ktx)

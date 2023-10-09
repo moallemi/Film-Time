@@ -13,4 +13,9 @@ abstract class TraktAuthModule {
   abstract fun bindGetAccessTokenUseCase(
     getTraktAccessTokenUseCaseImpl: GetTraktAccessTokenUseCaseImpl,
   ): GetTraktAccessTokenUseCase
+
+  @Binds
+  abstract fun bindsGetTraktAuthStateUseCase(
+    getTraktAuthStateUseCase: GetTraktAuthStateUseCaseImpl,
+  ): GetTraktAuthStateUseCase
 }

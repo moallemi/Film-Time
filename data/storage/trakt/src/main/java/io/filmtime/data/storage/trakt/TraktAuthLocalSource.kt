@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface TraktAuthLocalSource {
 
-  val tokens: Flow<TraktTokens>
+  val tokens: Flow<TraktTokens?>
   suspend fun storeAuthTokens(token: TraktTokens)
 }

@@ -16,10 +16,11 @@ class TraktAuthLocalSourceImpl @Inject constructor(
   private val accessTokenKey = stringPreferencesKey("access_token")
   private val refreshTokenKey = stringPreferencesKey("refresh_token")
 
-  override val tokens: Flow<TraktTokens>
+  override val tokens: Flow<TraktTokens?>
     get() = dataStore.data.map { preferences ->
-      val accessToken = preferences[accessTokenKey] ?: ""
-      val refreshToken = preferences[refreshTokenKey] ?: ""
+      val accessToken = preferences[accessTokenKey]
+      val refreshToken = preferences[refreshTokenKey]
+      if (accessToken == null || refreshToken == null) return@map null
       TraktTokens(accessToken, refreshToken)
     }
 

@@ -6,6 +6,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.filmtime.data.network.adapter.NetworkCallAdapterFactory
+import io.filmtime.data.network.trakt.TraktAuthService
+import io.filmtime.data.network.trakt.TraktSearchService
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
 import retrofit2.CallAdapter

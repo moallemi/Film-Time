@@ -1,5 +1,6 @@
-package io.filmtime.data.network
+package io.filmtime.data.network.trakt
 
+import io.filmtime.data.network.BuildConfig
 import io.filmtime.data.network.adapter.NetworkResponse
 import retrofit2.http.GET
 import retrofit2.http.Headers

@@ -1,19 +1,19 @@
-package io.filmtime.data.network
+package io.filmtime.data.network.trakt
 
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class TraktMovieIDLookupResponse(
-  val type: String,
-  val score: Long,
-  val movie: Movie,
+    val type: String,
+    val score: Long,
+    val movie: Movie,
 )
 
 @Serializable
 data class Movie(
-  val title: String,
-  val year: Long,
-  val ids: IDS,
+    val title: String,
+    val year: Long,
+    val ids: IDS,
 )
 
 @Serializable

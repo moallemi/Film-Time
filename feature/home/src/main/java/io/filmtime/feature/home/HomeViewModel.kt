@@ -1,5 +1,6 @@
 package io.filmtime.feature.home
 
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,53 +28,81 @@ class HomeViewModel @Inject constructor(
   val state = _state.asStateFlow()
 
   init {
+
+    loadTrendingMovies()
+    loadTrendingShows()
+
+  }
+
+  fun loadTrendingMovies() {
     viewModelScope.launch {
-      loadTrendingMovies()
-      loadTrendingShows()
+      getTrendingMovies()
+        .onStart {
+          _state.update { state -> state.copy(isLoading = true) }
+
+        }
+        .onCompletion { _state.update { state -> state.copy(isLoading = false) } }
+        .onEach { result ->
+          when (result) {
+            is Success -> {
+              _state.update { state ->
+                state.copy(videoSections = state.videoSections + listOf(VideoSection("Trending Movies", result.data)))
+              }
+
+
+            }
+
+            is Failure -> {
+              _state.update { state ->
+                state.copy(error = result.error, isLoading = false)
+
+              }
+
+            }
+          }
+
+        }
+        .collect()
     }
   }
 
-  private suspend fun loadTrendingMovies() {
-    getTrendingMovies()
-      .onStart {
-        _state.update { state -> state.copy(isLoading = true) }
-      }
-      .onCompletion { _state.update { state -> state.copy(isLoading = false) } }
-      .onEach { result ->
-        when (result) {
-          is Success -> {
-            _state.update { state ->
-              state.copy(videoSections = state.videoSections + listOf(VideoSection("Trending Movies", result.data)))
+    fun loadTrendingShows() {
+      viewModelScope.launch {
+        getTrendingShows()
+          .onStart {
+            _state.update { state -> state.copy(isLoading = true) }
+
+          }
+          .onCompletion { _state.update { state -> state.copy(isLoading = false) } }
+          .onEach { result ->
+            when (result) {
+              is Success -> {
+                _state.update { state ->
+                  state.copy(
+                    isLoading = true,
+                    videoSections = state.videoSections + listOf(VideoSection("Trending Shows", result.data))
+                  )
+                }
+
+              }
+
+              is Failure -> {
+                _state.update { state ->
+                  state.copy(error = result.error, isLoading = false, videoSections = emptyList())
+
+                }
+
+              }
+
+
             }
           }
-
-          is Failure -> {
-            // TODO: Handle error
-          }
-        }
+          .collect()
       }
-      .collect()
-  }
+    }
 
-  private suspend fun loadTrendingShows() {
-    getTrendingShows()
-      .onStart {
-        _state.update { state -> state.copy(isLoading = true) }
-      }
-      .onCompletion { _state.update { state -> state.copy(isLoading = false) } }
-      .onEach { result ->
-        when (result) {
-          is Success -> {
-            _state.update { state ->
-              state.copy(videoSections = state.videoSections + listOf(VideoSection("Trending Shows", result.data)))
-            }
-          }
+ fun retry (){
+   _state.update { state-> state.copy(isLoading = true, error = null) }
+ }
 
-          is Failure -> {
-            // TODO: Handle error
-          }
-        }
-      }
-      .collect()
-  }
 }

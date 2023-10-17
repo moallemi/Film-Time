@@ -34,9 +34,9 @@ class TmdbShowsRemoteSourceImpl @Inject constructor(
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
     }
 
-  override suspend fun getTrendingShows(): Result<List<VideoThumbnail>, GeneralError> =
+  override suspend fun getTrendingShows(page:Long): Result<List<VideoThumbnail>, GeneralError> =
     getShowsList {
-      tmdbShowsService.getTrendingShows(timeWindow = TimeWindow.DAY.value)
+      tmdbShowsService.getTrendingShows(timeWindow = TimeWindow.DAY.value, page = page)
     }
 
   private suspend fun getShowsList(

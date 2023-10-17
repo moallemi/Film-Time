@@ -17,5 +17,6 @@ interface TmdbShowsService {
   suspend fun getTrendingShows(
     @Path("time_window") timeWindow: String,
     @Query("api_key") apiKey: String = BuildConfig.TMDB_API_KEY,
+    @Query("page")page:Long
   ): NetworkResponse<TmdbShowListResponse, TmdbErrorResponse>
 }

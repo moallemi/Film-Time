@@ -47,13 +47,16 @@ fun AllTrendingMedia(
 ) {
 
   val moviePagingItems = viewModel.TrendingMovies.collectAsLazyPagingItems()
-
+  val showPagingItems = viewModel.TrendingShows.collectAsLazyPagingItems()
   when (title){
     "Trending Movies"-> {
       AllThumbnails(pagingItems = moviePagingItems, onBackPressed = onBackPressed,
         onMovieClick =onMovieClick , onShowClick =onShowClick, title = title )
     }
-    "Trending Shows"  -> {}
+    "Trending Shows"  -> {
+      AllThumbnails(pagingItems = showPagingItems, onBackPressed = onBackPressed,
+        onMovieClick =onMovieClick , onShowClick =onShowClick, title = title )
+    }
   }
 
 

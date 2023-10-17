@@ -12,17 +12,17 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
   private val tmdbMoviesService: TmdbMoviesService,
 ) : TmdbMoviesRemoteSource {
 
-  override suspend fun getTrendingMovies(): Result<List<VideoThumbnail>, GeneralError> =
-    getMovieList(ListType.DAY)
+  override suspend fun getTrendingMovies(page:Long): Result<List<VideoThumbnail>, GeneralError> =
+    getMovieList(ListType.DAY,page)
 
-  override suspend fun getPopularMovies(): Result<List<VideoThumbnail>, GeneralError> =
-    getMovieList(ListType.POPULAR)
+  override suspend fun getPopularMovies(page:Long): Result<List<VideoThumbnail>, GeneralError> =
+    getMovieList(ListType.POPULAR, page)
 
-  override suspend fun getTopRatedMovies(): Result<List<VideoThumbnail>, GeneralError> =
-    getMovieList(ListType.TOP_RATED)
+  override suspend fun getTopRatedMovies(page: Long): Result<List<VideoThumbnail>, GeneralError> =
+    getMovieList(ListType.TOP_RATED, page)
 
-  override suspend fun getNowPlayingMovies(): Result<List<VideoThumbnail>, GeneralError> =
-    getMovieList(ListType.NOW_PLAYING)
+  override suspend fun getNowPlayingMovies(page: Long): Result<List<VideoThumbnail>, GeneralError> =
+    getMovieList(ListType.NOW_PLAYING,page)
 
   override suspend fun getMovieDetails(movieId: Int): Result<VideoDetail, GeneralError> =
     when (val result = tmdbMoviesService.getMovieDetails(movieId = movieId)) {
@@ -44,8 +44,8 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
     }
 
-  private suspend fun getMovieList(type: ListType): Result<List<VideoThumbnail>, GeneralError> =
-    when (val result = tmdbMoviesService.getMovieList(type.value)) {
+  private suspend fun getMovieList(type: ListType, page: Long): Result<List<VideoThumbnail>, GeneralError> =
+    when (val result = tmdbMoviesService.getMovieList(type.value, page=page)) {
       is NetworkResponse.Success -> {
         val videoListResponse = result.body?.results ?: emptyList()
         Result.Success(videoListResponse.map { it.toVideoThumbnail() })

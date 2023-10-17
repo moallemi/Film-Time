@@ -49,8 +49,9 @@ fun TmdbVideoResultResponse.toVideoThumbnail() = VideoThumbnail(
   ids = VideoId(traktId = null, tmdbId = id),
   title = title.orEmpty(),
   posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
-  year = releaseDate?.take(4)?.toInt() ?: 0,
-  type = VideoType.Movie,
+  year=  if (releaseDate?.isNotEmpty() == true)
+    releaseDate!!.take(4).toInt() else 0,
+    type = VideoType.Movie,
 )
 
 fun TmdbShowResultResponse.toVideoThumbnail() = VideoThumbnail(

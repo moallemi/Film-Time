@@ -1,11 +1,15 @@
 package io.filmtime.feature.home
 
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
+import io.filmtime.data.model.VideoType
+import io.filmtime.domain.tmdb.movies.GetTrendingMoviePagingUsecase
 import io.filmtime.domain.tmdb.movies.GetTrendingMoviesUseCase
 import io.filmtime.domain.tmdb.shows.GetTrendingShowsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +26,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
   private val getTrendingMovies: GetTrendingMoviesUseCase,
   private val getTrendingShows: GetTrendingShowsUseCase,
+
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(HomeUiState(isLoading = false))
@@ -33,6 +38,7 @@ class HomeViewModel @Inject constructor(
     loadTrendingShows()
 
   }
+
 
   fun loadTrendingMovies() {
     viewModelScope.launch {
@@ -89,11 +95,8 @@ class HomeViewModel @Inject constructor(
               is Failure -> {
                 _state.update { state ->
                   state.copy(error = result.error, isLoading = false, videoSections = emptyList())
-
                 }
-
               }
-
 
             }
           }
@@ -104,5 +107,6 @@ class HomeViewModel @Inject constructor(
  fun retry (){
    _state.update { state-> state.copy(isLoading = true, error = null) }
  }
+
 
 }

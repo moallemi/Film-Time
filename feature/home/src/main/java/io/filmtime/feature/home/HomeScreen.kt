@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,9 +43,12 @@ import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.VideoThumbnail
@@ -54,6 +59,7 @@ fun HomeScreen(
   viewModel: HomeViewModel,
   onMovieClick: (tmdbId: Int) -> Unit,
   onShowClick: (tmdbId: Int) -> Unit,
+  onMoreClick:(title:String)->Unit
 ) {
 
 
@@ -99,12 +105,16 @@ fun HomeScreen(
       contentPadding = PaddingValues(top = 16.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+
       items(state.videoSections) { videoSection ->
+
         VideoSectionRow(
           title = videoSection.title,
           items = videoSection.items,
           onMovieClick = onMovieClick,
           onShowClick = onShowClick,
+          onMoreClick = onMoreClick,
+
         )
       }
     }
@@ -119,6 +129,7 @@ fun VideoSectionRow(
   items: List<VideoThumbnail>,
   onMovieClick: (tmdbId: Int) -> Unit,
   onShowClick: (tmdbId: Int) -> Unit,
+  onMoreClick: (title : String) -> Unit
 ) {
   Column {
     Text(
@@ -127,6 +138,10 @@ fun VideoSectionRow(
       text = title,
       style = MaterialTheme.typography.titleMedium,
     )
+  Text(text = "More", modifier = Modifier
+    .clickable { onMoreClick(title) }
+    .align(Alignment.End)
+    .padding(end = 4.dp))
     LazyRow(
       modifier = Modifier
         .height(200.dp)
@@ -180,7 +195,8 @@ fun ApiErrorScreen(onRetry:()->Unit) {
 
     Image(painter = painterResource(id = R.drawable.apierror),
       contentDescription ="not_found",
-      modifier = Modifier.clip(shape = CircleShape)
+      modifier = Modifier
+        .clip(shape = CircleShape)
         .size(150.dp)
 
     )

@@ -19,6 +19,7 @@ import io.filmtime.feature.home.HomeScreen
 import io.filmtime.feature.movie.detail.MovieDetailScreen
 import io.filmtime.feature.player.VideoPlayer
 import io.filmtime.feature.show.detail.ShowDetailScreen
+import io.filmtime.feature.thumbnails.AllTrendingMedia
 import io.filmtime.ui.theme.FilmTimeTheme
 
 @AndroidEntryPoint
@@ -30,6 +31,7 @@ class MainActivity : ComponentActivity() {
       FilmTimeTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
           val navController = rememberNavController()
+
           NavHost(navController = navController, startDestination = "home") {
             composable("home") {
               HomeScreen(
@@ -39,6 +41,9 @@ class MainActivity : ComponentActivity() {
                 },
                 onShowClick = { tmdbId ->
                   navController.navigate("show/detail/$tmdbId")
+                },
+                onMoreClick = {
+                  navController.navigate("all_movies/$it")
                 },
               )
             }
@@ -85,6 +90,25 @@ class MainActivity : ComponentActivity() {
               ShowDetailScreen(
                 viewModel = hiltViewModel(),
               )
+            }
+            composable( route = "all_movies/{title}", listOf(
+              navArgument("title"){
+                type = NavType.StringType
+              }
+            )){ backStackEntry ->
+              val title = backStackEntry.arguments?.getString("title")!!
+              AllTrendingMedia(
+                title = title,
+                viewModel = hiltViewModel(),
+                onBackPressed = { navController.popBackStack() },
+                onMovieClick = { tmdbId ->
+                  navController.navigate("detail/$tmdbId")
+                },
+                onShowClick = { tmdbId ->
+                  navController.navigate("show/detail/$tmdbId")
+                },
+
+                )
             }
           }
         }

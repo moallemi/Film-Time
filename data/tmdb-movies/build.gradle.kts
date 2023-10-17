@@ -42,9 +42,16 @@ dependencies {
   implementation(libs.material)
 
   implementation(libs.hilt.android)
+
   kapt(libs.dagger.hilt.android.compiler)
 
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.test.ext.junit)
   androidTestImplementation(libs.espresso.core)
+
+  implementation(libs.paging)
+
+  implementation(libs.square.okhttp)
+  implementation(libs.square.okhttp.logging)
+  implementation(libs.retrofit)
 }

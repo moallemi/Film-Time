@@ -61,6 +61,7 @@ dependencies {
   implementation(project(":feature:show-detail"))
   implementation(project(":feature:home"))
   implementation(project(":feature:player"))
+  implementation(project(":feature:thumbnails-list"))
 
   implementation(libs.core.ktx)
   implementation(libs.lifecycle.runtime.ktx)
@@ -72,6 +73,7 @@ dependencies {
   implementation(libs.material3)
 
   implementation(libs.hilt.android)
+  implementation(project(mapOf("path" to ":data:model")))
   kapt(libs.dagger.hilt.android.compiler)
 
   implementation(libs.androidx.hilt.navigation.compose)

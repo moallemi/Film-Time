@@ -8,4 +8,5 @@ import kotlinx.coroutines.flow.Flow
 interface GetTrendingMoviesUseCase {
 
   suspend operator fun invoke(): Flow<Result<List<VideoThumbnail>, GeneralError>>
+
 }

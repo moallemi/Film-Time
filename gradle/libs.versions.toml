@@ -48,6 +48,13 @@ kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1
 lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
 lifecycle-viewmodel-compose-runtime = "androidx.lifecycle:lifecycle-runtime-compose:2.6.2"
 
+square-okhttp = "com.squareup.okhttp3:okhttp:4.11.0"
+square-okhttp-logging ="com.squareup.okhttp3:logging-interceptor:4.11.0"
+paging = "androidx.paging:paging-compose:3.3.0-alpha02"
+swipe-refresh = "com.google.accompanist:accompanist-swiperefresh:0.24.13-rc"
+
+
+
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

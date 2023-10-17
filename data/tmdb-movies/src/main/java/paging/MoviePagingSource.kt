@@ -26,7 +26,7 @@ class MoviePagingSource @Inject constructor(
   override suspend fun load(params: LoadParams<Int>): LoadResult<Int, VideoThumbnail> {
     val position = params.key?:1
     return try {
-      delay(3000)
+
       val remoteData =
         tmdbMoviesRemoteSource.getTrendingMovies(position.toLong())
       when (remoteData) {

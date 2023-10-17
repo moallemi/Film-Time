@@ -10,7 +10,7 @@ class GetTrendingMoviePagingUsecaseImpl @Inject constructor(
   private val tmdbMovieRepository: TmdbMovieRepository
 ):GetTrendingMoviePagingUsecase {
   override  fun invoke(): Flow<PagingData<VideoThumbnail>> {
-     return  tmdbMovieRepository.getAllTrendingMovies()
+   return tmdbMovieRepository.getAllTrendingMovies()
   }
 
 }

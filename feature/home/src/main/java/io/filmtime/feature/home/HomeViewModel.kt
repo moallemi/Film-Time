@@ -1,15 +1,9 @@
 package io.filmtime.feature.home
-
-
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
-import io.filmtime.data.model.VideoType
-import io.filmtime.domain.tmdb.movies.GetTrendingMoviePagingUsecase
 import io.filmtime.domain.tmdb.movies.GetTrendingMoviesUseCase
 import io.filmtime.domain.tmdb.shows.GetTrendingShowsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow

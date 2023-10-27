@@ -40,6 +40,7 @@ dependencies {
 
   implementation(project(":data:model"))
   implementation(project(":data:network"))
+  implementation(project(":data:storage:trakt"))
 
   implementation(libs.hilt.android)
   kapt(libs.dagger.hilt.android.compiler)

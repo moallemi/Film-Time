@@ -8,6 +8,7 @@ import dagger.hilt.components.SingletonComponent
 import io.filmtime.data.network.adapter.NetworkCallAdapterFactory
 import io.filmtime.data.network.trakt.TraktAuthService
 import io.filmtime.data.network.trakt.TraktSearchService
+import io.filmtime.data.network.trakt.TraktSyncService
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
 import retrofit2.CallAdapter
@@ -76,6 +77,12 @@ object NetworkModule {
   @Singleton
   fun providesTraktIDLookupService(@TraktNetwork retrofit: Retrofit): TraktSearchService {
     return retrofit.create(TraktSearchService::class.java)
+  }
+
+  @Provides
+  @Singleton
+  fun provideTraktSync(@TraktNetwork retrofit: Retrofit): TraktSyncService {
+    return retrofit.create(TraktSyncService::class.java)
   }
 
   @Provides

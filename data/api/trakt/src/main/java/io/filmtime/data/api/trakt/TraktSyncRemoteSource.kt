@@ -8,4 +8,6 @@ interface TraktSyncRemoteSource {
   suspend fun getAllHistories(): Result<Nothing, GeneralError>
 
   suspend fun getHistoryById(id: String): Result<Boolean, GeneralError>
+
+  suspend fun addToHistory(id: String): Result<Unit, GeneralError>
 }

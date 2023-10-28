@@ -8,8 +8,8 @@ plugins {
 }
 
 android {
-  namespace = "io.filmtime.feature.movie.detail"
-  compileSdk = 34
+  namespace = "io.filmtime.data.trakt"
+  compileSdk = 33
 
   defaultConfig {
     minSdk = 27
@@ -18,18 +18,13 @@ android {
     consumerProguardFiles("consumer-rules.pro")
   }
 
-  buildFeatures {
-    compose = true
-  }
-
-  composeOptions {
-    kotlinCompilerExtensionVersion = "1.5.3"
-  }
-
   buildTypes {
     release {
       isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+      proguardFiles(
+        getDefaultProguardFile("proguard-android-optimize.txt"),
+        "proguard-rules.pro",
+      )
     }
   }
   compileOptions {
@@ -42,30 +37,15 @@ android {
 }
 
 dependencies {
-
+  implementation(project(":data:api:trakt"))
   implementation(project(":data:model"))
-  implementation(project(":domain:tmdb-movies"))
-  implementation(project(":domain:stream"))
-  implementation(project(":data:trakt"))
-
-  implementation(libs.core.ktx)
-  implementation(libs.appcompat)
-  implementation(libs.material)
-
-  implementation(platform(libs.compose.bom))
-  implementation(libs.ui)
-  implementation(libs.ui.graphics)
-  implementation(libs.ui.tooling.preview)
-  implementation(libs.material3)
-
-  implementation(libs.coil.compose)
 
   implementation(libs.hilt.android)
   kapt(libs.dagger.hilt.android.compiler)
 
-  implementation(libs.lifecycle.viewmodel.compose)
-  implementation(libs.lifecycle.viewmodel.compose.runtime)
-
+  implementation(libs.core.ktx)
+  implementation(libs.appcompat)
+  implementation(libs.material)
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.test.ext.junit)
   androidTestImplementation(libs.espresso.core)

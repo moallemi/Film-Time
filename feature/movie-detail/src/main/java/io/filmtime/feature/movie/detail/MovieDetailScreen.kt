@@ -134,23 +134,24 @@ fun MovieDetailContent(
         Text(text = "Play")
       }
     }
-    Button(onClick = { /*TODO*/ }) {
-      if (true) {
-        Row(
-          horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-          Icon(
-            Icons.Filled.Check,
-            contentDescription = "",
-            modifier = Modifier.size(20.dp),
-          )
-          Text("Added to history")
+    videoDetail.isWatched?.let {
+      Button(onClick = { /*TODO*/ }) {
+        if (it) {
+          Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+          ) {
+            Icon(
+              Icons.Filled.Check,
+              contentDescription = "",
+              modifier = Modifier.size(20.dp),
+            )
+            Text("Added to history")
+          }
+        } else {
+          Text("Add to history")
         }
-      } else {
-        Text("Add to history")
       }
     }
-
     Row(
       modifier = Modifier.padding(horizontal = 16.dp),
       horizontalArrangement = Arrangement.spacedBy(16.dp),

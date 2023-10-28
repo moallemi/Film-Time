@@ -18,4 +18,9 @@ abstract class TraktSourceModule {
   abstract fun bindsTraktSearchRemoteSource(
     sourceImpl: TraktSearchRemoteSourceImpl,
   ): TraktSearchRemoteSource
+
+  @Binds
+  abstract fun bindsTraktSyncRemoteSource(
+    sourceImpl: TraktSyncRemoteSourceImpl
+  ): TraktSyncRemoteSource
 }

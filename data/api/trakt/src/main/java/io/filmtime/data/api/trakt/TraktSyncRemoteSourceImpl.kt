@@ -14,7 +14,9 @@ class TraktSyncRemoteSourceImpl
   private val traktAuthLocalSource: TraktAuthLocalSource,
 ) : TraktSyncRemoteSource {
   override suspend fun getAllHistories(): Result<Nothing, GeneralError> {
-    val tokens = traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.NetworkError)
+
+    // TODO: move check token in a function
+    traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
     val result = traktSyncService.getWatchedHistory(
       type = "movies",
       accessToken = "",
@@ -26,23 +28,23 @@ class TraktSyncRemoteSourceImpl
       is NetworkResponse.UnknownError -> TODO()
     }
   }
+  
+  override suspend fun getHistoryById(id: String): Result<Boolean, GeneralError> {
 
-    var nullable: Int? = null
-  override suspend fun getHistoryById(id: String): Result<Nothing, GeneralError> {
-
-
-    val isEven = nullable.takeIf { it != null && it % 2 == 0 }
-
-
+    // TODO: move check token in a function
+    val tokens = traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
     val result = traktSyncService.getHistoryById(
       type = "movies",
       id = id,
-      accessToken = "",
+      accessToken = "Bearer " + tokens.accessToken,
     )
     return when (result) {
       is NetworkResponse.ApiError -> TODO()
       is NetworkResponse.NetworkError -> TODO()
-      is NetworkResponse.Success -> TODO()
+      is NetworkResponse.Success -> {
+        val watched = result.body?.any { it.movie.ids.trakt == id.toLong() } ?: false
+        Result.Success(watched)
+      }
       is NetworkResponse.UnknownError -> TODO()
     }
   }

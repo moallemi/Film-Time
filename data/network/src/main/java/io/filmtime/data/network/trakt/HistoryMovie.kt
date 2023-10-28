@@ -3,7 +3,7 @@ package io.filmtime.data.network.trakt
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 @Serializable
-data class HistoryMovie (
+data class HistoryMovie(
   val id: Long,
 
   @SerialName("watched_at")
@@ -11,5 +11,5 @@ data class HistoryMovie (
 
   val action: String,
   val type: String,
-  val movie: Movie
+  val movie: Movie,
 )

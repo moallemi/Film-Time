@@ -110,7 +110,6 @@ fun MovieDetailContent(
       IconButton(onClick = onBackPressed) {
         Icon(Icons.Filled.ArrowBack, contentDescription = "back")
       }
-
     }
 
     Text(

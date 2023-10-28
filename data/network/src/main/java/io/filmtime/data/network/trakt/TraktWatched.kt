@@ -13,6 +13,5 @@ data class TraktWatched(
   @SerialName("last_updated_at")
   val lastUpdatedAt: String,
 
-  val movie: Movie
+  val movie: Movie,
 )
-

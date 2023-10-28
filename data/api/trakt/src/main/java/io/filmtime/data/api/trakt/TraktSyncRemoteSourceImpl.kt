@@ -17,7 +17,6 @@ class TraktSyncRemoteSourceImpl
   private val traktAuthLocalSource: TraktAuthLocalSource,
 ) : TraktSyncRemoteSource {
   override suspend fun getAllHistories(): Result<Nothing, GeneralError> {
-
     // TODO: move check token in a function
     traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
     val result = traktSyncService.getWatchedHistory(
@@ -33,7 +32,6 @@ class TraktSyncRemoteSourceImpl
   }
 
   override suspend fun getHistoryById(id: String): Result<Boolean, GeneralError> {
-
     // TODO: move check token in a function
     val tokens =
       traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
@@ -69,7 +67,7 @@ class TraktSyncRemoteSourceImpl
         ),
       ),
     )
-    return when(result) {
+    return when (result) {
       is NetworkResponse.ApiError -> TODO()
       is NetworkResponse.NetworkError -> TODO()
       is NetworkResponse.Success -> Result.Success(Unit)

@@ -8,7 +8,7 @@ interface GetTraktAuthStateUseCase {
 }
 
 sealed class TraktAuthState {
-  data object Initial: TraktAuthState()
+  data object Initial : TraktAuthState()
   data object LoggedIn : TraktAuthState()
 
   data object SignedOut : TraktAuthState()

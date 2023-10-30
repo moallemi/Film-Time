@@ -21,6 +21,6 @@ abstract class TraktSourceModule {
 
   @Binds
   abstract fun bindsTraktSyncRemoteSource(
-    sourceImpl: TraktSyncRemoteSourceImpl
+    sourceImpl: TraktSyncRemoteSourceImpl,
   ): TraktSyncRemoteSource
 }

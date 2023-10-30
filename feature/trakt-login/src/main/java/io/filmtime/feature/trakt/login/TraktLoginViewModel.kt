@@ -27,9 +27,9 @@ class TraktLoginViewModel @Inject constructor(
   val traktAuthState = _traktState.asStateFlow()
 
   init {
-      viewModelScope.launch {
-        collectAuthState()
-      }
+    viewModelScope.launch {
+      collectAuthState()
+    }
   }
 
   private suspend fun collectAuthState() {

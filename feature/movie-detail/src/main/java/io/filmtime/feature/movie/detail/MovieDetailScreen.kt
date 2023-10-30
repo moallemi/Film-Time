@@ -21,6 +21,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,6 +63,7 @@ fun MovieDetailScreen(
       state = state,
       onBackPressed = onBackPressed,
       onPlayPressed = viewModel::loadStreamInfo,
+      onAddToHistoryPressed = viewModel::addItemToHistory,
     )
   }
 }
@@ -72,6 +74,7 @@ fun MovieDetailContent(
   state: MovieDetailState,
   onBackPressed: () -> Unit,
   onPlayPressed: () -> Unit,
+  onAddToHistoryPressed: () -> Unit,
 ) {
   Column(
     modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -107,7 +110,6 @@ fun MovieDetailContent(
       IconButton(onClick = onBackPressed) {
         Icon(Icons.Filled.ArrowBack, contentDescription = "back")
       }
-
     }
 
     Text(
@@ -135,8 +137,8 @@ fun MovieDetailContent(
       }
     }
     videoDetail.isWatched?.let {
-      Button(onClick = { /*TODO*/ }) {
-        if (it) {
+      when (it) {
+        true -> OutlinedButton(onClick = {}) {
           Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
           ) {
@@ -147,8 +149,11 @@ fun MovieDetailContent(
             )
             Text("Added to history")
           }
-        } else {
-          Text("Add to history")
+        }
+        false -> {
+          Button(onClick = onAddToHistoryPressed) {
+            Text("Add to history")
+          }
         }
       }
     }

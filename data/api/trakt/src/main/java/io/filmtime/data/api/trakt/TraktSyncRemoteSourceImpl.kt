@@ -3,6 +3,9 @@ package io.filmtime.data.api.trakt
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.network.adapter.NetworkResponse
+import io.filmtime.data.network.trakt.AddHistoryRequest
+import io.filmtime.data.network.trakt.HistoryIDS
+import io.filmtime.data.network.trakt.MovieHistory
 import io.filmtime.data.network.trakt.TraktSyncService
 import io.filmtime.data.storage.trakt.TraktAuthLocalSource
 import kotlinx.coroutines.flow.firstOrNull
@@ -14,7 +17,6 @@ class TraktSyncRemoteSourceImpl
   private val traktAuthLocalSource: TraktAuthLocalSource,
 ) : TraktSyncRemoteSource {
   override suspend fun getAllHistories(): Result<Nothing, GeneralError> {
-
     // TODO: move check token in a function
     traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
     val result = traktSyncService.getWatchedHistory(
@@ -28,11 +30,11 @@ class TraktSyncRemoteSourceImpl
       is NetworkResponse.UnknownError -> TODO()
     }
   }
-  
-  override suspend fun getHistoryById(id: String): Result<Boolean, GeneralError> {
 
+  override suspend fun getHistoryById(id: String): Result<Boolean, GeneralError> {
     // TODO: move check token in a function
-    val tokens = traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
+    val tokens =
+      traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
     val result = traktSyncService.getHistoryById(
       type = "movies",
       id = id,
@@ -45,6 +47,30 @@ class TraktSyncRemoteSourceImpl
         val watched = result.body?.any { it.movie.ids.trakt == id.toLong() } ?: false
         Result.Success(watched)
       }
+
+      is NetworkResponse.UnknownError -> TODO()
+    }
+  }
+
+  override suspend fun addToHistory(id: String): Result<Unit, GeneralError> {
+    val tokens =
+      traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
+    val result = traktSyncService.addMovieToHistory(
+      accessToken = "Bearer " + tokens.accessToken,
+      body = AddHistoryRequest(
+        movies = listOf(
+          MovieHistory(
+            ids = HistoryIDS(
+              trakt = id.toLong(),
+            ),
+          ),
+        ),
+      ),
+    )
+    return when (result) {
+      is NetworkResponse.ApiError -> TODO()
+      is NetworkResponse.NetworkError -> TODO()
+      is NetworkResponse.Success -> Result.Success(Unit)
       is NetworkResponse.UnknownError -> TODO()
     }
   }

@@ -1,6 +1,4 @@
 package io.filmtime.feature.home
-
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +25,7 @@ class HomeViewModel @Inject constructor(
   private val _state = MutableStateFlow(HomeUiState(isLoading = false))
   val state = _state.asStateFlow()
 
+
   init {
 
     loadTrendingMovies()
@@ -34,7 +33,7 @@ class HomeViewModel @Inject constructor(
 
   }
 
-  fun loadTrendingMovies() {
+ private  fun loadTrendingMovies() {
     viewModelScope.launch {
       getTrendingMovies()
         .onStart {
@@ -66,7 +65,7 @@ class HomeViewModel @Inject constructor(
     }
   }
 
-    fun loadTrendingShows() {
+   private fun loadTrendingShows() {
       viewModelScope.launch {
         getTrendingShows()
           .onStart {
@@ -103,6 +102,8 @@ class HomeViewModel @Inject constructor(
 
  fun retry (){
    _state.update { state-> state.copy(isLoading = true, error = null) }
+       loadTrendingMovies()
+       loadTrendingShows()
  }
 
 }

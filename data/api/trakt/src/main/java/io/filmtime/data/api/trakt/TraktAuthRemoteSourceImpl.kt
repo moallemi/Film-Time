@@ -13,7 +13,6 @@ class TraktAuthRemoteSourceImpl @Inject constructor(
   private val traktAuthService: TraktAuthService,
 ) : TraktAuthRemoteSource {
 
-
   override suspend fun getAccessToken(code: String): Result<TraktTokens, GeneralError> {
     val result = traktAuthService.getAccessToken(
       body = TraktGetTokenRequest(

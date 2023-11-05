@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,11 +30,21 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
+import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.VideoDetail
 
 @Composable
@@ -55,8 +67,8 @@ fun MovieDetailScreen(
     CircularProgressIndicator(
       modifier = Modifier.wrapContentSize(),
     )
-  } else if (state.message != null) {
-    Text(text = state.message!!)
+  } else if (state.error != null) {
+    ShowError(error = state.error!!, message = state.message!!, onRefresh = viewModel::load)
   } else if (videoDetail != null) {
     MovieDetailContent(
       videoDetail = videoDetail,
@@ -65,6 +77,48 @@ fun MovieDetailScreen(
       onPlayPressed = viewModel::loadStreamInfo,
       onAddToHistoryPressed = viewModel::addItemToHistory,
     )
+  }
+}
+
+@Composable
+fun ShowError(error: GeneralError, message: String, onRefresh: () -> Unit) {
+  val composition by rememberLottieComposition(
+    LottieCompositionSpec.RawRes(
+      if (error is GeneralError.NetworkError) {
+        R.raw.network_lost
+      } else {
+        R.raw.not_found
+      },
+    ),
+  )
+  Column(
+    modifier = Modifier
+      .fillMaxSize()
+      .padding(horizontal = 16.dp),
+    verticalArrangement = Arrangement.Center,
+    horizontalAlignment = Alignment.CenterHorizontally,
+
+  ) {
+    LottieAnimation(
+      modifier = Modifier.scale(0.8f),
+      composition = composition,
+    )
+    Spacer(modifier = Modifier.size(8.dp))
+    Text(
+      text = message,
+      textAlign = TextAlign.Center,
+      style = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp,
+      ),
+    )
+
+    Spacer(modifier = Modifier.size(60.dp))
+    Button(
+      onClick = onRefresh,
+    ) {
+      Text(text = stringResource(R.string.refresh))
+    }
   }
 }
 
@@ -106,7 +160,6 @@ fun MovieDetailContent(
           contentDescription = null,
         )
       }
-
       IconButton(onClick = onBackPressed) {
         Icon(Icons.Filled.ArrowBack, contentDescription = "back")
       }
@@ -114,7 +167,10 @@ fun MovieDetailContent(
 
     Text(
       modifier = Modifier.padding(horizontal = 16.dp),
-      style = MaterialTheme.typography.titleLarge,
+      style = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp,
+      ),
       text = videoDetail.title,
     )
     Text(

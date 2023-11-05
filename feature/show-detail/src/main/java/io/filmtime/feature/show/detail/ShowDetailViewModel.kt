@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
 import io.filmtime.domain.tmdb.shows.GetShowDetailsUseCase
@@ -26,10 +27,10 @@ class ShowDetailViewModel @Inject constructor(
   val navigateToPlayer = MutableSharedFlow<String?>()
 
   init {
-    load(videoId)
+    load()
   }
 
-  fun load(videoId: Int) = viewModelScope.launch {
+  fun load() = viewModelScope.launch {
     _state.value = _state.value.copy(isLoading = true)
 
     when (val result = getShowDetails(videoId)) {
@@ -38,8 +39,29 @@ class ShowDetailViewModel @Inject constructor(
       }
 
       is Failure -> {
-        // TODO add in depth error handling
-        _state.value = _state.value.copy(message = result.error.toString(), isLoading = false)
+        when (result.error) {
+          is GeneralError.ApiError -> {
+            _state.value = _state.value.copy(
+              error = result.error,
+              message = (result.error as GeneralError.ApiError).message,
+              isLoading = false,
+            )
+          }
+
+          GeneralError.NetworkError -> {
+            _state.value = _state.value.copy(
+              error = result.error,
+              message = "No internet connection. Please check your network settings.",
+              isLoading = false,
+            )
+          }
+
+          is GeneralError.UnknownError -> _state.value = _state.value.copy(
+            error = result.error,
+            message = (result.error as GeneralError.UnknownError).error.message,
+            isLoading = false,
+          )
+        }
       }
     }
   }

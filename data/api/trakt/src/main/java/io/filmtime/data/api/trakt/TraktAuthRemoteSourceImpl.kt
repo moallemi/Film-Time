@@ -12,6 +12,8 @@ import javax.inject.Inject
 class TraktAuthRemoteSourceImpl @Inject constructor(
   private val traktAuthService: TraktAuthService,
 ) : TraktAuthRemoteSource {
+
+
   override suspend fun getAccessToken(code: String): Result<TraktTokens, GeneralError> {
     val result = traktAuthService.getAccessToken(
       body = TraktGetTokenRequest(
@@ -23,8 +25,8 @@ class TraktAuthRemoteSourceImpl @Inject constructor(
       ),
     )
     return when (result) {
-      is NetworkResponse.ApiError -> TODO()
-      is NetworkResponse.NetworkError -> TODO()
+      is NetworkResponse.ApiError -> Result.Failure(GeneralError.ApiError(result.body.error, result.code))
+      is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
       is NetworkResponse.Success -> {
         val response = result.body
         if (response == null) {
@@ -33,10 +35,7 @@ class TraktAuthRemoteSourceImpl @Inject constructor(
           Result.Success(response.toAccessToken())
         }
       }
-      is NetworkResponse.UnknownError -> {
-        println(result.error)
-        TODO()
-      }
+      is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
     }
   }
 }

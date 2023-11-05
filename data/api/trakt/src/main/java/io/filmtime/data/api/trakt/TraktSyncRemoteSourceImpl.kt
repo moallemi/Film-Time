@@ -41,14 +41,13 @@ class TraktSyncRemoteSourceImpl
       accessToken = "Bearer " + tokens.accessToken,
     )
     return when (result) {
-      is NetworkResponse.ApiError -> TODO()
-      is NetworkResponse.NetworkError -> TODO()
+      is NetworkResponse.ApiError -> Result.Failure(GeneralError.ApiError(result.body.error, result.code))
+      is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
+      is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
       is NetworkResponse.Success -> {
         val watched = result.body?.any { it.movie.ids.trakt == id.toLong() } ?: false
         Result.Success(watched)
       }
-
-      is NetworkResponse.UnknownError -> TODO()
     }
   }
 
@@ -68,10 +67,10 @@ class TraktSyncRemoteSourceImpl
       ),
     )
     return when (result) {
-      is NetworkResponse.ApiError -> TODO()
-      is NetworkResponse.NetworkError -> TODO()
+      is NetworkResponse.ApiError -> Result.Failure(GeneralError.ApiError(result.body.error, result.code))
+      is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
+      is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
       is NetworkResponse.Success -> Result.Success(Unit)
-      is NetworkResponse.UnknownError -> TODO()
     }
   }
 }

@@ -9,13 +9,11 @@ interface TmdbShowsService {
 
   @GET("tv/{series_id})")
   suspend fun getShowDetails(
-    @Path("series_id") seriesId: Int,
-    @Query("api_key") apiKey: String = BuildConfig.TMDB_API_KEY,
+    @Path("series_id") seriesId: Int
   ): NetworkResponse<TmdbShowDetailsResponse, TmdbErrorResponse>
 
   @GET("trending/tv/{time_window}")
   suspend fun getTrendingShows(
-    @Path("time_window") timeWindow: String,
-    @Query("api_key") apiKey: String = BuildConfig.TMDB_API_KEY,
+    @Path("time_window") timeWindow: String
   ): NetworkResponse<TmdbShowListResponse, TmdbErrorResponse>
 }

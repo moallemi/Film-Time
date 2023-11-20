@@ -46,33 +46,27 @@ fun HomeScreen(
   onMovieClick: (tmdbId: Int) -> Unit,
   onShowClick: (tmdbId: Int) -> Unit,
 ) {
-
-
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   if (state.isLoading) {
-
     LoadingVideoSectionRow(numberOfSections = 2)
-  }else if (state.error != null){
-    when(state.error){
-      is GeneralError.NetworkError->{
-        NetworkErroScreen(){
+  } else if (state.error != null) {
+    when (state.error) {
+      is GeneralError.NetworkError -> {
+        NetworkErroScreen() {
           viewModel.retry()
         }
-
       }
       is GeneralError.ApiError -> {
-        ApiErrorScreen{
+        ApiErrorScreen {
           viewModel.retry()
         }
       }
-     is GeneralError.UnknownError ->{
-       UnknownErrorScreen()
-     }
-
-      null -> TODO()
+      else -> {
+        UnknownErrorScreen()
+      }
     }
-  }  else {
+  } else {
     LazyColumn(
       contentPadding = PaddingValues(top = 16.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -88,7 +82,6 @@ fun HomeScreen(
     }
   }
 }
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -138,29 +131,28 @@ fun VideoSectionRow(
 
 @Composable
 fun UnknownErrorScreen() {
-
   Text(
     text = stringResource(R.string.unknown_error),
     modifier = Modifier
       .fillMaxSize()
       .padding(start = 20.dp),
-    textAlign = TextAlign.Center
+    textAlign = TextAlign.Center,
   )
-
-  }
+}
 
 @Composable
-fun ApiErrorScreen(onRetry:()->Unit) {
-
-  Column(modifier = Modifier.fillMaxSize(),
+fun ApiErrorScreen(onRetry: () -> Unit) {
+  Column(
+    modifier = Modifier.fillMaxSize(),
     horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center){
-
-    Image(painter = painterResource(id = R.drawable.apierror),
-      contentDescription ="not_found",
+    verticalArrangement = Arrangement.Center,
+  ) {
+    Image(
+      painter = painterResource(id = R.drawable.apierror),
+      contentDescription = "not_found",
       modifier = Modifier
         .clip(shape = CircleShape)
-        .size(150.dp)
+        .size(150.dp),
 
     )
     Spacer(modifier = Modifier.height(8.dp))
@@ -168,50 +160,43 @@ fun ApiErrorScreen(onRetry:()->Unit) {
       text = stringResource(R.string.api_error),
       modifier = Modifier.padding(start = 20.dp),
     )
-    Button(onClick = onRetry,modifier = Modifier.clip(RoundedCornerShape(4.dp))) {
+    Button(onClick = onRetry, modifier = Modifier.clip(RoundedCornerShape(4.dp))) {
       Text(text = "Retry")
-
     }
-
   }
 }
 
 @Composable
-fun NetworkErroScreen(onRetry:()->Unit) {
- val context = LocalContext.current
-  Column(modifier = Modifier.fillMaxSize(),
+fun NetworkErroScreen(onRetry: () -> Unit) {
+  val context = LocalContext.current
+  Column(
+    modifier = Modifier.fillMaxSize(),
     horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center){
-
-
-    Image(painter = painterResource(id = R.drawable.internet_lost),
-      contentDescription ="no_connection",
+    verticalArrangement = Arrangement.Center,
+  ) {
+    Image(
+      painter = painterResource(id = R.drawable.internet_lost),
+      contentDescription = "no_connection",
       modifier = Modifier
         .clip(shape = CircleShape)
-        .size(150.dp)
+        .size(150.dp),
 
-      )
+    )
     Spacer(modifier = Modifier.height(8.dp))
     Text(
       text = stringResource(R.string.network_error),
       modifier = Modifier.padding(start = 20.dp),
     )
     Spacer(modifier = Modifier.height(20.dp))
-     Button(onClick = {
-
-       val intent = Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS)
-       context.startActivity(intent)
-
-
-     }) {
-       Text(text = "Open Device Settings ")
-
-     }
-    Button(onClick = onRetry ) {
+    Button(onClick = {
+      val intent = Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS)
+      context.startActivity(intent)
+    }) {
+      Text(text = "Open Device Settings ")
+    }
+    Button(onClick = onRetry) {
       Text(text = "Retry")
     }
-
-
   }
 }
 

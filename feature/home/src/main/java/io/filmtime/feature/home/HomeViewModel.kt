@@ -25,20 +25,17 @@ class HomeViewModel @Inject constructor(
   private val _state = MutableStateFlow(HomeUiState(isLoading = false))
   val state = _state.asStateFlow()
 
-
   init {
 
     loadTrendingMovies()
     loadTrendingShows()
-
   }
 
- private  fun loadTrendingMovies() {
+  private fun loadTrendingMovies() {
     viewModelScope.launch {
       getTrendingMovies()
         .onStart {
           _state.update { state -> state.copy(isLoading = true) }
-
         }
         .onCompletion { _state.update { state -> state.copy(isLoading = false) } }
         .onEach { result ->
@@ -47,63 +44,51 @@ class HomeViewModel @Inject constructor(
               _state.update { state ->
                 state.copy(videoSections = state.videoSections + listOf(VideoSection("Trending Movies", result.data)))
               }
-
-
             }
 
             is Failure -> {
               _state.update { state ->
                 state.copy(error = result.error, isLoading = false)
-
               }
-
             }
           }
-
         }
         .collect()
     }
   }
 
-   private fun loadTrendingShows() {
-      viewModelScope.launch {
-        getTrendingShows()
-          .onStart {
-            _state.update { state -> state.copy(isLoading = true) }
-
-          }
-          .onCompletion { _state.update { state -> state.copy(isLoading = false) } }
-          .onEach { result ->
-            when (result) {
-              is Success -> {
-                _state.update { state ->
-                  state.copy(
-                    isLoading = true,
-                    videoSections = state.videoSections + listOf(VideoSection("Trending Shows", result.data))
-                  )
-                }
-
+  private fun loadTrendingShows() {
+    viewModelScope.launch {
+      getTrendingShows()
+        .onStart {
+          _state.update { state -> state.copy(isLoading = true) }
+        }
+        .onCompletion { _state.update { state -> state.copy(isLoading = false) } }
+        .onEach { result ->
+          when (result) {
+            is Success -> {
+              _state.update { state ->
+                state.copy(
+                  isLoading = true,
+                  videoSections = state.videoSections + listOf(VideoSection("Trending Shows", result.data)),
+                )
               }
+            }
 
-              is Failure -> {
-                _state.update { state ->
-                  state.copy(error = result.error, isLoading = false, videoSections = emptyList())
-
-                }
-
+            is Failure -> {
+              _state.update { state ->
+                state.copy(error = result.error, isLoading = false, videoSections = emptyList())
               }
-
-
             }
           }
-          .collect()
-      }
+        }
+        .collect()
     }
+  }
 
- fun retry (){
-   _state.update { state-> state.copy(isLoading = true, error = null) }
-       loadTrendingMovies()
-       loadTrendingShows()
- }
-
+  fun retry() {
+    _state.update { state -> state.copy(isLoading = true, error = null) }
+    loadTrendingMovies()
+    loadTrendingShows()
+  }
 }

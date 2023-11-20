@@ -11,7 +11,7 @@ internal abstract class TmdbShowsDomainModule {
 
   @Binds
   abstract fun
-    bindGetTrendingShowsUseCase(impl: GetTrendingShowsUseCaseImpl): GetTrendingShowsUseCase
+  bindGetTrendingShowsUseCase(impl: GetTrendingShowsUseCaseImpl): GetTrendingShowsUseCase
 
   @Binds
   abstract fun bindGetShowDetailsUseCase(impl: GetShowDetailsUseCaseImpl): GetShowDetailsUseCase

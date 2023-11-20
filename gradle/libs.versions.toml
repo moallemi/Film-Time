@@ -47,6 +47,7 @@ retrofit-kotlinx-serialization = "com.jakewharton.retrofit:retrofit2-kotlinx-ser
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
 lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
 lifecycle-viewmodel-compose-runtime = "androidx.lifecycle:lifecycle-runtime-compose:2.6.2"
+lottie = "com.airbnb.android:lottie-compose:6.1.0"
 
 square-okhttp = "com.squareup.okhttp3:okhttp:4.11.0"
 square-okhttp-logging ="com.squareup.okhttp3:logging-interceptor:4.11.0"

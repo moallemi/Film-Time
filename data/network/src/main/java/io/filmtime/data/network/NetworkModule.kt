@@ -33,10 +33,9 @@ object NetworkModule {
   @Singleton
   fun providesTmdbInterceptor(): Interceptor = TmdbApiKeyInterceptor()
 
-
   @Provides
   @Singleton
-  fun providesTmdbOkHttpClient(@TmdbApi interceptor: Interceptor): OkHttpClient{
+  fun providesTmdbOkHttpClient(@TmdbApi interceptor: Interceptor): OkHttpClient {
     val builder = OkHttpClient.Builder()
     builder.addInterceptor(interceptor)
 
@@ -48,7 +47,7 @@ object NetworkModule {
   fun providesRetrofit(
     json: Json,
     networkCallAdapterFactory: CallAdapter.Factory,
-    okHttpClient: OkHttpClient
+    okHttpClient: OkHttpClient,
   ): Retrofit {
     return Retrofit.Builder()
       .baseUrl("https://api.themoviedb.org/3/")

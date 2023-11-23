@@ -6,7 +6,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.filmtime.data.network.adapter.NetworkCallAdapterFactory
-import io.filmtime.data.network.interceptor.ApiKeyInterceptor
+import io.filmtime.data.network.annotation.TmdbApi
+import io.filmtime.data.network.interceptor.TmdbApiKeyInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType
@@ -27,23 +28,18 @@ object NetworkModule {
     }
   }
 
+  @TmdbApi
   @Provides
   @Singleton
-  fun providesInterceptor(): Map<Int, @JvmSuppressWildcards Interceptor> {
-    return mapOf(
-      1 to ApiKeyInterceptor()
-    )
-  }
+  fun providesTmdbInterceptor(): Interceptor = TmdbApiKeyInterceptor()
+
 
   @Provides
   @Singleton
-  fun providesOkHttpClient(interceptor: Map<Int, @JvmSuppressWildcards Interceptor>): OkHttpClient{
+  fun providesTmdbOkHttpClient(@TmdbApi interceptor: Interceptor): OkHttpClient{
     val builder = OkHttpClient.Builder()
-    if (interceptor.isNotEmpty()){
-      for ((key,value) in interceptor){
-        builder.addInterceptor(value)
-      }
-    }
+    builder.addInterceptor(interceptor)
+
     return builder.build()
   }
 

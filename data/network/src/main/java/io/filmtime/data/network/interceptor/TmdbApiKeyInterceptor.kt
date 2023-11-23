@@ -4,7 +4,7 @@ import io.filmtime.data.network.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class ApiKeyInterceptor : Interceptor {
+class TmdbApiKeyInterceptor : Interceptor {
   override fun intercept(chain: Interceptor.Chain): Response {
     val originalRequest = chain.request()
     val originalHttpUrl = chain.request().url()

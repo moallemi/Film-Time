@@ -6,22 +6,21 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.filmtime.data.network.adapter.NetworkCallAdapterFactory
-import io.filmtime.data.network.interceptor.TraktHeadersInterceptor
-import io.filmtime.data.network.trakt.TraktAuthService
-import io.filmtime.data.network.trakt.TraktSearchService
-import io.filmtime.data.network.trakt.TraktSyncService
 import io.filmtime.data.network.annotation.TmdbApi
 import io.filmtime.data.network.annotation.TraktHeaderInterceptor
 import io.filmtime.data.network.annotation.TraktNetwork
 import io.filmtime.data.network.annotation.TraktOkHttp
 import io.filmtime.data.network.interceptor.TmdbApiKeyInterceptor
+import io.filmtime.data.network.interceptor.TraktHeadersInterceptor
+import io.filmtime.data.network.trakt.TraktAuthService
+import io.filmtime.data.network.trakt.TraktSearchService
+import io.filmtime.data.network.trakt.TraktSyncService
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -133,5 +132,3 @@ object NetworkModule {
     return NetworkCallAdapterFactory()
   }
 }
-
-

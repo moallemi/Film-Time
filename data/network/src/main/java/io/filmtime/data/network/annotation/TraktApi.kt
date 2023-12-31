@@ -13,7 +13,6 @@ import javax.inject.Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class TraktNetwork
 
-
 @Qualifier
 @Target(
   AnnotationTarget.FUNCTION,

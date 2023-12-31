@@ -11,7 +11,7 @@ class TraktSearchRemoteSourceImpl @Inject constructor(
 ) : TraktSearchRemoteSource {
   override suspend fun getByTmdbId(id: String, type: TmdbType?): Result<Long, GeneralError> {
     return when (val result = traktIDLookupService.movieIDLookup(idType = "tmdb", id = id)) {
-      is NetworkResponse.ApiError -> TODO()
+      is NetworkResponse.ApiError -> TODO() // Will be handled in #31
       is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
       is NetworkResponse.Success -> {
         val body = result.body ?: emptyList()
@@ -19,7 +19,7 @@ class TraktSearchRemoteSourceImpl @Inject constructor(
         return Result.Success(movieItemId)
       }
 
-      is NetworkResponse.UnknownError -> TODO()
+      is NetworkResponse.UnknownError -> TODO() // Will be handled in #31
     }
   }
 }

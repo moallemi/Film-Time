@@ -12,20 +12,12 @@ import retrofit2.http.Path
 interface TraktSyncService {
 
   @GET("sync/watched/{type}")
-  @Headers(
-    "trakt-api-key: ${BuildConfig.TRAKT_CLIENT_ID}",
-    "trakt-api-version: 2",
-  )
   suspend fun getWatchedHistory(
     @Path("type") type: String,
     @Header("Authorization") accessToken: String,
   ): NetworkResponse<List<TraktWatched>, TraktErrorResponse>
 
   @GET("sync/history/{type}/{id}")
-  @Headers(
-    "trakt-api-key: ${BuildConfig.TRAKT_CLIENT_ID}",
-    "trakt-api-version: 2",
-  )
   suspend fun getHistoryById(
     @Path("type") type: String,
     @Path("id") id: String,
@@ -33,10 +25,6 @@ interface TraktSyncService {
   ): NetworkResponse<List<HistoryMovie>, TraktErrorResponse>
 
   @POST("sync/history")
-  @Headers(
-    "trakt-api-key: ${BuildConfig.TRAKT_CLIENT_ID}",
-    "trakt-api-version: 2",
-  )
   suspend fun addMovieToHistory(
     @Header("Authorization") accessToken: String,
     @Body body: AddHistoryRequest,

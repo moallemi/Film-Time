@@ -6,10 +6,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.filmtime.data.network.adapter.NetworkCallAdapterFactory
+import io.filmtime.data.network.interceptor.TraktHeadersInterceptor
 import io.filmtime.data.network.trakt.TraktAuthService
 import io.filmtime.data.network.trakt.TraktSearchService
 import io.filmtime.data.network.trakt.TraktSyncService
 import io.filmtime.data.network.annotation.TmdbApi
+import io.filmtime.data.network.annotation.TraktHeaderInterceptor
+import io.filmtime.data.network.annotation.TraktNetwork
+import io.filmtime.data.network.annotation.TraktOkHttp
 import io.filmtime.data.network.interceptor.TmdbApiKeyInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
@@ -36,6 +40,11 @@ object NetworkModule {
   @Provides
   @Singleton
   fun providesTmdbInterceptor(): Interceptor = TmdbApiKeyInterceptor()
+
+  @Provides
+  @Singleton
+  @TraktHeaderInterceptor
+  fun providesTraktHeadersInterceptor(): Interceptor = TraktHeadersInterceptor()
 
   @Provides
   @Singleton
@@ -67,11 +76,24 @@ object NetworkModule {
   fun providesTraktRetrofit(
     json: Json,
     networkCallAdapterFactory: CallAdapter.Factory,
+    @TraktOkHttp client: OkHttpClient,
   ): Retrofit {
     return Retrofit.Builder()
       .baseUrl("https://api.trakt.tv/")
       .addConverterFactory(json.asConverterFactory(MediaType.get("application/json")))
       .addCallAdapterFactory(networkCallAdapterFactory)
+      .client(client)
+      .build()
+  }
+
+  @Provides
+  @Singleton
+  @TraktOkHttp
+  fun providesTraktOkHttp(
+    @TraktHeaderInterceptor headerInterceptor: Interceptor,
+  ): OkHttpClient {
+    return OkHttpClient.Builder()
+      .addInterceptor(headerInterceptor)
       .build()
   }
 
@@ -112,13 +134,4 @@ object NetworkModule {
   }
 }
 
-@Qualifier
-@Target(
-  AnnotationTarget.FUNCTION,
-  AnnotationTarget.PROPERTY_GETTER,
-  AnnotationTarget.PROPERTY_SETTER,
-  AnnotationTarget.FIELD,
-  AnnotationTarget.VALUE_PARAMETER,
-)
-@Retention(AnnotationRetention.BINARY)
-annotation class TraktNetwork
+

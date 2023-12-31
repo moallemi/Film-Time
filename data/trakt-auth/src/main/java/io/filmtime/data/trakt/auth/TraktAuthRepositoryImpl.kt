@@ -27,6 +27,6 @@ class TraktAuthRepositoryImpl @Inject constructor(
   }
 
   override suspend fun refreshTokenByAccessToken(accessToken: String) {
-    TODO("Not yet implemented")
+    TODO("Not yet implemented") // #32
   }
 }

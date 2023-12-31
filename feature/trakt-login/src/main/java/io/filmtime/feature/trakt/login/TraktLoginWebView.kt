@@ -72,7 +72,6 @@ fun TraktLoginWebView(
                 webViewClient = object : WebViewClient() {
                   override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                     request?.url?.let { uri ->
-                      println(uri.host)
                       if (uri.scheme == "filmtime") {
                         viewModel.getAccessToken(uri.getQueryParameter("code")!!)
                       }

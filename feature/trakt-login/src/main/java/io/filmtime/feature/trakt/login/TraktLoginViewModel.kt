@@ -43,11 +43,9 @@ class TraktLoginViewModel @Inject constructor(
     when (val result = getTraktAccessTokenUseCase(code)) {
       is Result.Failure -> {
         _loginState.update { LoginState.Failed(result.error) }
-        println(result.error)
       }
       is Result.Success -> {
         _loginState.update { LoginState.Success }
-        println(result.data)
       }
     }
   }

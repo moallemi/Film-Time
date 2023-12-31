@@ -100,7 +100,6 @@ class MainActivity : ComponentActivity() {
                 },
                 onSuccess = {
                   navController.popBackStack()
-                  println("access token is $it")
                 },
               )
             }

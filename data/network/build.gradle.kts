@@ -16,6 +16,8 @@ android {
     minSdk = 27
 
     buildConfigField("String", "TMDB_API_KEY", "\"${System.getenv("FILM_TIME_TMDB_API_KEY")}\"")
+    buildConfigField("String", "TRAKT_CLIENT_ID", "\"${System.getenv("FILM_TIME_TRAKT_CLIENT_ID")}\"")
+    buildConfigField("String", "TRAKT_CLIENT_SECRET", "\"${System.getenv("FILM_TIME_TRAKT_CLIENT_SECRET")}\"")
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     consumerProguardFiles("consumer-rules.pro")

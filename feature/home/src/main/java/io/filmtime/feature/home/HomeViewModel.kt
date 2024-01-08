@@ -1,5 +1,6 @@
 package io.filmtime.feature.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -7,6 +8,8 @@ import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
 import io.filmtime.domain.tmdb.movies.GetTrendingMoviesUseCase
 import io.filmtime.domain.tmdb.shows.GetTrendingShowsUseCase
+import io.filmtime.domain.trakt.auth.GetTraktAuthStateUseCase
+import io.filmtime.domain.trakt.auth.TraktAuthState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -21,15 +24,26 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
   private val getTrendingMovies: GetTrendingMoviesUseCase,
   private val getTrendingShows: GetTrendingShowsUseCase,
+  private val getTraktAuthStateUseCase: GetTraktAuthStateUseCase,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(HomeUiState(isLoading = false))
   val state = _state.asStateFlow()
 
+  private val _traktAuthState: MutableStateFlow<TraktAuthState> = MutableStateFlow(value = TraktAuthState.SignedOut)
+  val traktState = _traktAuthState.asStateFlow()
+
   init {
     viewModelScope.launch {
       loadTrendingMovies()
       loadTrendingShows()
+      traktState()
+    }
+  }
+
+  private suspend fun traktState() {
+    getTraktAuthStateUseCase().collect {
+      _traktAuthState.value = it
     }
   }
 
@@ -48,7 +62,9 @@ class HomeViewModel @Inject constructor(
           }
 
           is Failure -> {
+            Log.e("loadTrendingMovies", result.error.toString())
             // TODO: Handle error
+            result.error
           }
         }
       }

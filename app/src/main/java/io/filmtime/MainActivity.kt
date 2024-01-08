@@ -19,6 +19,7 @@ import io.filmtime.feature.home.HomeScreen
 import io.filmtime.feature.movie.detail.MovieDetailScreen
 import io.filmtime.feature.player.VideoPlayer
 import io.filmtime.feature.show.detail.ShowDetailScreen
+import io.filmtime.feature.trakt.login.TraktLoginWebView
 import io.filmtime.ui.theme.FilmTimeTheme
 
 @AndroidEntryPoint
@@ -39,6 +40,9 @@ class MainActivity : ComponentActivity() {
                 },
                 onShowClick = { tmdbId ->
                   navController.navigate("show/detail/$tmdbId")
+                },
+                onTraktClick = {
+                  navController.navigate("trakt/login")
                 },
               )
             }
@@ -84,6 +88,19 @@ class MainActivity : ComponentActivity() {
             ) {
               ShowDetailScreen(
                 viewModel = hiltViewModel(),
+              )
+            }
+            composable(
+              route = "trakt/login",
+            ) {
+              TraktLoginWebView(
+                viewModel = hiltViewModel(),
+                onBackPressed = {
+                  navController.popBackStack()
+                },
+                onSuccess = {
+                  navController.popBackStack()
+                },
               )
             }
           }

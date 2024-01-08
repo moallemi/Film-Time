@@ -7,7 +7,14 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.filmtime.data.network.adapter.NetworkCallAdapterFactory
 import io.filmtime.data.network.annotation.TmdbApi
+import io.filmtime.data.network.annotation.TraktHeaderInterceptor
+import io.filmtime.data.network.annotation.TraktNetwork
+import io.filmtime.data.network.annotation.TraktOkHttp
 import io.filmtime.data.network.interceptor.TmdbApiKeyInterceptor
+import io.filmtime.data.network.interceptor.TraktHeadersInterceptor
+import io.filmtime.data.network.trakt.TraktAuthService
+import io.filmtime.data.network.trakt.TraktSearchService
+import io.filmtime.data.network.trakt.TraktSyncService
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType
@@ -35,6 +42,11 @@ object NetworkModule {
 
   @Provides
   @Singleton
+  @TraktHeaderInterceptor
+  fun providesTraktHeadersInterceptor(): Interceptor = TraktHeadersInterceptor()
+
+  @Provides
+  @Singleton
   fun providesTmdbOkHttpClient(@TmdbApi interceptor: Interceptor): OkHttpClient {
     val builder = OkHttpClient.Builder()
     builder.addInterceptor(interceptor)
@@ -59,6 +71,33 @@ object NetworkModule {
 
   @Provides
   @Singleton
+  @TraktNetwork
+  fun providesTraktRetrofit(
+    json: Json,
+    networkCallAdapterFactory: CallAdapter.Factory,
+    @TraktOkHttp client: OkHttpClient,
+  ): Retrofit {
+    return Retrofit.Builder()
+      .baseUrl("https://api.trakt.tv/")
+      .addConverterFactory(json.asConverterFactory(MediaType.get("application/json")))
+      .addCallAdapterFactory(networkCallAdapterFactory)
+      .client(client)
+      .build()
+  }
+
+  @Provides
+  @Singleton
+  @TraktOkHttp
+  fun providesTraktOkHttp(
+    @TraktHeaderInterceptor headerInterceptor: Interceptor,
+  ): OkHttpClient {
+    return OkHttpClient.Builder()
+      .addInterceptor(headerInterceptor)
+      .build()
+  }
+
+  @Provides
+  @Singleton
   fun providesTmdbMovieService(retrofit: Retrofit): TmdbMoviesService {
     return retrofit.create(TmdbMoviesService::class.java)
   }
@@ -67,6 +106,24 @@ object NetworkModule {
   @Singleton
   fun providesTmdbShowsService(retrofit: Retrofit): TmdbShowsService {
     return retrofit.create(TmdbShowsService::class.java)
+  }
+
+  @Provides
+  @Singleton
+  fun providesTraktAuthService(@TraktNetwork retrofit: Retrofit): TraktAuthService {
+    return retrofit.create(TraktAuthService::class.java)
+  }
+
+  @Provides
+  @Singleton
+  fun providesTraktIDLookupService(@TraktNetwork retrofit: Retrofit): TraktSearchService {
+    return retrofit.create(TraktSearchService::class.java)
+  }
+
+  @Provides
+  @Singleton
+  fun provideTraktSync(@TraktNetwork retrofit: Retrofit): TraktSyncService {
+    return retrofit.create(TraktSyncService::class.java)
   }
 
   @Provides

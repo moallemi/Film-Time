@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
+import io.filmtime.data.trakt.TraktHistoryRepository
 import io.filmtime.domain.stream.GetStreamInfoUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,6 +23,7 @@ class MovieDetailViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   private val getMovieDetail: GetMovieDetailsUseCase,
   private val getStreamInfo: GetStreamInfoUseCase,
+  private val traktHistoryRepository: TraktHistoryRepository,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
@@ -78,5 +80,17 @@ class MovieDetailViewModel @Inject constructor(
         navigateToPlayer.emit(streamInfo.url)
       }
       .collect()
+  }
+
+  fun addItemToHistory() = viewModelScope.launch {
+    val traktId = _state.value.videoDetail?.ids?.traktId ?: return@launch
+    val result = traktHistoryRepository.addToHistory(traktId.toString())
+    when (result) {
+      is Failure -> TODO()
+      is Success -> {
+        val updated = _state.value.videoDetail?.copy(isWatched = true)
+        _state.value = _state.value.copy(videoDetail = updated)
+      }
+    }
   }
 }

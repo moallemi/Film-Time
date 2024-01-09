@@ -36,7 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -181,6 +180,8 @@ fun MovieDetailContent(
     )
 
     Button(
+      modifier = Modifier
+        .padding(horizontal = 16.dp),
       onClick = onPlayPressed,
     ) {
       if (state.isStreamLoading) {
@@ -195,20 +196,26 @@ fun MovieDetailContent(
     }
     videoDetail.isWatched?.let {
       when (it) {
-        true -> OutlinedButton(onClick = {}) {
-          Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-          ) {
-            Icon(
-              Icons.Filled.Check,
-              contentDescription = "",
-              modifier = Modifier.size(20.dp),
-            )
-            Text("Added to history")
-          }
+        true -> OutlinedButton(
+          modifier = Modifier
+            .padding(horizontal = 16.dp),
+          onClick = {},
+        ) {
+          Icon(
+            Icons.Filled.Check,
+            contentDescription = "",
+            modifier = Modifier.size(20.dp),
+          )
+          Spacer(modifier = Modifier.size(8.dp))
+          Text("Added to history")
         }
+
         false -> {
-          Button(onClick = onAddToHistoryPressed) {
+          Button(
+            modifier = Modifier
+              .padding(horizontal = 16.dp),
+            onClick = onAddToHistoryPressed,
+          ) {
             Text("Add to history")
           }
         }

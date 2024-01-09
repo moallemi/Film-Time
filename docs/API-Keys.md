@@ -20,4 +20,14 @@ To build and run the project, you'll need to obtain an API key from TMDB. Follow
     - Once your email address is verified, go back to the [API section](https://www.themoviedb.org/settings/api) of your TMDB account settings.
     - Your API key will be listed on this page.
 
+## Trakt API Key Setup
+
+1. **Create a Trakt Account:**
+   - If you don't already have a Trakt account, create one [here](https://trakt.tv/auth/signin).
+
+2. **Create New Application:**
+   - Once logged in, navigate to the [Apps](https://trakt.tv/oauth/applications) page.
+   - Create new application with this redirect uri ```filmtime://```
+
+
 Once you have obtained your API key, follow the existing instructions in the README to set up the project.

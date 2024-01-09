@@ -50,6 +50,7 @@ You need to supply API / client keys for the various services the
 app uses:
 
 - [TMDb](https://developers.themoviedb.org)
+- [Trakt](https://trakt.tv/oauth/applications)
 
 You can find information about how to gain access [here](docs/API-Keys.md).
 
@@ -58,6 +59,9 @@ Add this to your system environment variables:
 ```shell
 # Get this from TMDb
 FILM_TIME_TMDB_API_KEY=<insert>
+# Get these from Trakt
+FILM_TIME_TRAKT_CLIENT_ID=<insert>
+FILM_TIME_TRAKT_CLIENT_SECRET=<insert>
 ```
 
 Do not forget to restart Android Studio to apply changes to your environment.

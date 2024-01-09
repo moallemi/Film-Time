@@ -46,6 +46,7 @@ dependencies {
   implementation(project(":data:model"))
   implementation(project(":domain:tmdb-movies"))
   implementation(project(":domain:stream"))
+  implementation(project(":data:trakt"))
 
   implementation(libs.core.ktx)
   implementation(libs.appcompat)

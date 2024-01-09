@@ -10,4 +10,5 @@ data class VideoDetail(
   val originalLanguage: String?,
   val spokenLanguages: List<String>,
   val description: String,
+  val isWatched: Boolean? = null,
 )

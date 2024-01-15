@@ -4,9 +4,13 @@ import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -20,9 +24,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.filmtime.feature.trakt.login.LoginState.Failed
 
 private const val TRAKT_LOGIN_URL =
   "https://api.trakt.tv/oauth/authorize?response_type=code&client_id=" +
@@ -36,10 +44,14 @@ fun TraktLoginWebView(
   onSuccess: () -> Unit,
 ) {
   val state by viewModel.loginState.collectAsStateWithLifecycle()
+  val context = LocalContext.current
 
   LaunchedEffect(key1 = state) {
     when (state) {
-      is LoginState.Failed -> TODO() // #33
+      is Failed -> {
+        Toast.makeText(context, (state as Failed).error.toString(), Toast.LENGTH_LONG).show()
+      }
+
       LoginState.Success -> onSuccess()
       else -> {}
     }
@@ -61,7 +73,7 @@ fun TraktLoginWebView(
       modifier = Modifier.padding(it),
     ) {
       when (state) {
-        LoginState.Initial -> {
+        LoginState.Initial, is Failed -> {
           AndroidView(
             factory = {
               WebView(it).apply {
@@ -89,10 +101,15 @@ fun TraktLoginWebView(
         }
 
         LoginState.Loading ->
-          Column {
+          Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize()
+          ) {
             CircularProgressIndicator(
               modifier = Modifier.wrapContentSize(),
             )
+            Box(modifier = Modifier.size(8.dp))
             Text("Getting tokens")
           }
 

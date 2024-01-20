@@ -60,6 +60,9 @@ dependencies {
 
   implementation(libs.coil.compose)
 
+  implementation(libs.androidx.navigation.compose)
+  implementation(libs.androidx.hilt.navigation.compose)
+
   implementation(libs.hilt.android)
   kapt(libs.dagger.hilt.android.compiler)
 

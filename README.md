@@ -68,11 +68,7 @@ Do not forget to restart Android Studio to apply changes to your environment.
 
 ## Contributions 🙌
 
-This project is open for contributions. We encourage all developers to contribute and help improve the app. If you're looking to contribute, please follow the standard GitHub pull request process.
-
-1. Fork the repo.
-2. Create a new branch.
-3. Make your changes and submit a pull request!
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## License 📝
 

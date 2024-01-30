@@ -11,9 +11,19 @@ interface TmdbMoviesRemoteSource {
 
   suspend fun getTrendingMovies(): Result<List<VideoThumbnail>, GeneralError>
 
-  suspend fun getPopularMovies(): Result<List<VideoThumbnail>, GeneralError>
+  suspend fun getPopularMovies(
+    page: Int,
+  ): Result<List<VideoThumbnail>, GeneralError>
 
-  suspend fun getTopRatedMovies(): Result<List<VideoThumbnail>, GeneralError>
+  suspend fun getTopRatedMovies(
+    page: Int,
+  ): Result<List<VideoThumbnail>, GeneralError>
 
-  suspend fun getNowPlayingMovies(): Result<List<VideoThumbnail>, GeneralError>
+  suspend fun getNowPlayingMovies(
+    page: Int,
+  ): Result<List<VideoThumbnail>, GeneralError>
+
+  companion object {
+    const val PAGE_SIZE = 20 // TMDB API default page size
+  }
 }

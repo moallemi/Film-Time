@@ -1,5 +1,8 @@
 package io.fimltime.data.tmdb.movies
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import io.filmtime.data.api.tmdb.TmdbMoviesRemoteSource
 import io.filmtime.data.api.trakt.TraktSearchRemoteSource
 import io.filmtime.data.api.trakt.TraktSyncRemoteSource
@@ -7,6 +10,7 @@ import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 internal class TmdbMovieRepositoryImpl @Inject constructor(
@@ -55,11 +59,24 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
     tmdbMoviesRemoteSource.getTrendingMovies()
 
   override suspend fun getPopularMovies(): Result<List<VideoThumbnail>, GeneralError> =
-    tmdbMoviesRemoteSource.getPopularMovies()
+    tmdbMoviesRemoteSource.getPopularMovies(page = 1)
 
   override suspend fun getTopRatedMovies(): Result<List<VideoThumbnail>, GeneralError> =
-    tmdbMoviesRemoteSource.getTopRatedMovies()
+    tmdbMoviesRemoteSource.getTopRatedMovies(page = 1)
 
   override suspend fun getNowPlayingMovies(): Result<List<VideoThumbnail>, GeneralError> =
-    tmdbMoviesRemoteSource.getNowPlayingMovies()
+    tmdbMoviesRemoteSource.getNowPlayingMovies(page = 1)
+
+  override fun getTrendingMoviesStream(): Flow<PagingData<VideoThumbnail>> =
+    Pager(
+      config = PagingConfig(
+        pageSize = TmdbMoviesRemoteSource.PAGE_SIZE,
+        enablePlaceholders = false,
+      ),
+      pagingSourceFactory = {
+        MoviesPagingSource(
+          tmdbMoviesRemoteSource = tmdbMoviesRemoteSource,
+        )
+      },
+    ).flow
 }

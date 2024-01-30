@@ -10,12 +10,11 @@ import dagger.hilt.components.SingletonComponent
 internal abstract class TmdbMoviesUseCaseModule {
 
   @Binds
-  abstract fun bindGetMovieDetailsUseCase(
-    impl: GetMovieDetailsUseCaseImpl,
-  ): GetMovieDetailsUseCase
+  abstract fun bindGetMovieDetailsUseCase(impl: GetMovieDetailsUseCaseImpl): GetMovieDetailsUseCase
 
   @Binds
-  abstract fun bindGetTrendingMoviesUseCase(
-    impl: GetTrendingMoviesUseCaseImpl,
-  ): GetTrendingMoviesUseCase
+  abstract fun bindGetTrendingMoviesUseCase(impl: GetTrendingMoviesUseCaseImpl): GetTrendingMoviesUseCase
+
+  @Binds
+  abstract fun bindGetTrendingMoviesStream(impl: GetTrendingMoviesStreamUseCaseImpl): GetTrendingMoviesStreamUseCase
 }

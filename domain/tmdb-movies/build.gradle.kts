@@ -41,6 +41,7 @@ dependencies {
   implementation(libs.hilt.android)
   kapt(libs.dagger.hilt.android.compiler)
 
+  implementation(libs.paging.runtime)
   implementation(libs.core.ktx)
   implementation(libs.appcompat)
   implementation(libs.material)

@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.model.VideoType
 import io.filmtime.domain.trakt.auth.TraktAuthState

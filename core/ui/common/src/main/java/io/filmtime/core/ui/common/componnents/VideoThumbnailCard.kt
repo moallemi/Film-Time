@@ -1,4 +1,4 @@
-package io.filmtime.feature.home
+package io.filmtime.core.ui.common.componnents
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Card

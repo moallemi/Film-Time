@@ -2,14 +2,11 @@
 plugins {
   alias(libs.plugins.com.android.library)
   alias(libs.plugins.org.jetbrains.kotlin.android)
-
-  kotlin("kapt")
-  alias(libs.plugins.hilt.android)
 }
 
 android {
-  namespace = "io.filmtime.feature.home"
-  compileSdk = 33
+  namespace = "io.filmtime.core.ui.common"
+  compileSdk = 34
 
   defaultConfig {
     minSdk = 27
@@ -43,11 +40,7 @@ android {
 
 dependencies {
 
-  implementation(project(":domain:tmdb-movies"))
-  implementation(project(":domain:tmdb-shows"))
-  implementation(project(":domain:trakt:auth"))
   implementation(project(":data:model"))
-  implementation(project(":core:ui:common"))
 
   implementation(libs.core.ktx)
   implementation(libs.appcompat)
@@ -60,15 +53,6 @@ dependencies {
   implementation(libs.material3)
 
   implementation(libs.coil.compose)
-
-  implementation(libs.androidx.navigation.compose)
-  implementation(libs.androidx.hilt.navigation.compose)
-
-  implementation(libs.hilt.android)
-  kapt(libs.dagger.hilt.android.compiler)
-
-  implementation(libs.lifecycle.viewmodel.compose)
-  implementation(libs.lifecycle.viewmodel.compose.runtime)
 
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.test.ext.junit)

@@ -62,6 +62,7 @@ dependencies {
   implementation(project(":feature:home"))
   implementation(project(":feature:player"))
   implementation(project(":feature:trakt-login"))
+  implementation(project(":feature:movie-list"))
 
   implementation(libs.core.ktx)
   implementation(libs.lifecycle.runtime.ktx)

@@ -14,6 +14,7 @@ import io.filmtime.feature.home.homeScreen
 import io.filmtime.feature.movie.detail.movieDetailScreen
 import io.filmtime.feature.movie.detail.navigateToMovieDetail
 import io.filmtime.feature.movie.list.movieListScreen
+import io.filmtime.feature.movie.list.navigateToMovieList
 import io.filmtime.feature.player.navigateToPlayer
 import io.filmtime.feature.player.playerScreen
 import io.filmtime.feature.show.detail.navigateToShowDetail
@@ -31,11 +32,13 @@ class MainActivity : ComponentActivity() {
       FilmTimeTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
           val navController = rememberNavController()
-          NavHost(navController = navController, startDestination = "movie-list") {
+          NavHost(navController = navController, startDestination = "home") {
             homeScreen(
               onMovieClick = navController::navigateToMovieDetail,
               onShowClick = navController::navigateToShowDetail,
               onTraktClick = navController::navigateToTraktLogin,
+              onTrendingMoviesClick = navController::navigateToMovieList,
+              onTrendingShowsClick = { TODO() },
             )
 
             movieListScreen(

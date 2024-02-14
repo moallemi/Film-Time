@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+internal class HomeViewModel @Inject constructor(
   private val getTrendingMovies: GetTrendingMoviesUseCase,
   private val getTrendingShows: GetTrendingShowsUseCase,
   private val getTraktAuthStateUseCase: GetTraktAuthStateUseCase,
@@ -57,7 +57,15 @@ class HomeViewModel @Inject constructor(
         when (result) {
           is Success -> {
             _state.update { state ->
-              state.copy(videoSections = state.videoSections + listOf(VideoSection("Trending Movies", result.data)))
+              state.copy(
+                videoSections = state.videoSections + listOf(
+                  VideoSection(
+                    title = "Trending Movies",
+                    items = result.data,
+                    type = SectionType.TrendingMovies,
+                  ),
+                ),
+              )
             }
           }
 
@@ -81,7 +89,15 @@ class HomeViewModel @Inject constructor(
         when (result) {
           is Success -> {
             _state.update { state ->
-              state.copy(videoSections = state.videoSections + listOf(VideoSection("Trending Shows", result.data)))
+              state.copy(
+                videoSections = state.videoSections + listOf(
+                  VideoSection(
+                    title = "Trending Shows",
+                    items = result.data,
+                    type = SectionType.TrendingShows,
+                  ),
+                ),
+              )
             }
           }
 

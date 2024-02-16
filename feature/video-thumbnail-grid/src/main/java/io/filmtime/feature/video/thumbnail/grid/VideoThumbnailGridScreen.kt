@@ -1,4 +1,4 @@
-package io.filmtime.feature.movie.list
+package io.filmtime.feature.video.thumbnail.grid
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -22,14 +22,14 @@ import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
 import io.filmtime.data.model.VideoThumbnail
 
 @Composable
-fun MovieListScreen(
+fun VideoThumbnailGridScreen(
   onMovieClick: (tmdbId: Int) -> Unit,
   onBack: () -> Unit,
 ) {
-  val viewModel = hiltViewModel<MovieListViewModel>()
+  val viewModel = hiltViewModel<VideoThumbnailGridViewModel>()
   val pagedList = viewModel.pagedList.collectAsLazyPagingItems()
 
-  MovieListScreen(
+  VideoThumbnailGridScreen(
     pagedList = pagedList,
     onMovieClick = onMovieClick,
     onBack = onBack,
@@ -38,7 +38,7 @@ fun MovieListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MovieListScreen(
+private fun VideoThumbnailGridScreen(
   pagedList: LazyPagingItems<VideoThumbnail>,
   onMovieClick: (tmdbId: Int) -> Unit,
   onBack: () -> Unit,

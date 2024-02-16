@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-  namespace = "io.filmtime.feature.movie.list"
+  namespace = "io.filmtime.feature.video.thumbnail.grid"
   compileSdk = 34
 
   defaultConfig {

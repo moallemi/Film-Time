@@ -1,21 +1,21 @@
-package io.filmtime.feature.movie.list
+package io.filmtime.feature.video.thumbnail.grid
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 
-fun NavGraphBuilder.movieListScreen(
+fun NavGraphBuilder.videoThumbnailGridScreen(
   onMovieClick: (tmdbId: Int) -> Unit,
   onBack: () -> Unit,
 ) {
-  composable("movie-list") {
-    MovieListScreen(
+  composable("video-thumbnail-grid") {
+    VideoThumbnailGridScreen(
       onMovieClick = onMovieClick,
       onBack = onBack,
     )
   }
 }
 
-fun NavController.navigateToMovieList() {
-  navigate("movie-list")
+fun NavController.navigateToVideoThumbnailGridScreen() {
+  navigate("video-thumbnail-grid")
 }

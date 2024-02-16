@@ -1,4 +1,4 @@
-package io.filmtime.feature.movie.list
+package io.filmtime.feature.video.thumbnail.grid
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieListViewModel @Inject constructor(
+class VideoThumbnailGridViewModel @Inject constructor(
   private val trendingMovies: GetTrendingMoviesStreamUseCase,
 ) : ViewModel() {
 

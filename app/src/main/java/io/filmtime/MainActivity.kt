@@ -13,14 +13,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.filmtime.feature.home.homeScreen
 import io.filmtime.feature.movie.detail.movieDetailScreen
 import io.filmtime.feature.movie.detail.navigateToMovieDetail
-import io.filmtime.feature.movie.list.movieListScreen
-import io.filmtime.feature.movie.list.navigateToMovieList
 import io.filmtime.feature.player.navigateToPlayer
 import io.filmtime.feature.player.playerScreen
 import io.filmtime.feature.show.detail.navigateToShowDetail
 import io.filmtime.feature.show.detail.showDetailScreen
 import io.filmtime.feature.trakt.login.navigateToTraktLogin
 import io.filmtime.feature.trakt.login.traktLoginScreen
+import io.filmtime.feature.video.thumbnail.grid.navigateToVideoThumbnailGridScreen
+import io.filmtime.feature.video.thumbnail.grid.videoThumbnailGridScreen
 import io.filmtime.ui.theme.FilmTimeTheme
 
 @AndroidEntryPoint
@@ -37,11 +37,11 @@ class MainActivity : ComponentActivity() {
               onMovieClick = navController::navigateToMovieDetail,
               onShowClick = navController::navigateToShowDetail,
               onTraktClick = navController::navigateToTraktLogin,
-              onTrendingMoviesClick = navController::navigateToMovieList,
+              onTrendingMoviesClick = navController::navigateToVideoThumbnailGridScreen,
               onTrendingShowsClick = { TODO() },
             )
 
-            movieListScreen(
+            videoThumbnailGridScreen(
               onMovieClick = navController::navigateToMovieDetail,
               onBack = navController::popBackStack,
             )

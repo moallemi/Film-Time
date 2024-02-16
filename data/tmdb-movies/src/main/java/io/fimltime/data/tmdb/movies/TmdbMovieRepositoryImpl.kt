@@ -67,6 +67,9 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
   override suspend fun getNowPlayingMovies(): Result<List<VideoThumbnail>, GeneralError> =
     tmdbMoviesRemoteSource.getNowPlayingMovies(page = 1)
 
+  override suspend fun upcomingMovies(): Result<List<VideoThumbnail>, GeneralError> =
+    tmdbMoviesRemoteSource.getUpcomingMovies(page = 1)
+
   override fun getTrendingMoviesStream(): Flow<PagingData<VideoThumbnail>> =
     Pager(
       config = PagingConfig(

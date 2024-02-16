@@ -46,6 +46,15 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
       )
     }
 
+  override suspend fun getUpcomingMovies(
+    page: Int,
+  ): Result<List<VideoThumbnail>, GeneralError> =
+    getMovieList {
+      tmdbMoviesService.upcoming(
+        page = page,
+      )
+    }
+
   override suspend fun getMovieDetails(movieId: Int): Result<VideoDetail, GeneralError> =
     when (val result = tmdbMoviesService.getMovieDetails(movieId = movieId)) {
       is NetworkResponse.Success -> {

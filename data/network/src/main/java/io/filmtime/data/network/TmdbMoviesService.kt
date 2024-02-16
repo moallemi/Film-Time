@@ -24,11 +24,16 @@ interface TmdbMoviesService {
 
   @GET("movie/top_rated")
   suspend fun topRated(
-    page: Int,
+    @Query("page") page: Int,
   ): NetworkResponse<TmdbVideoListResponse, TmdbErrorResponse>
 
   @GET("movie/now_playing")
   suspend fun nowPlaying(
-    page: Int,
+    @Query("page") page: Int,
+  ): NetworkResponse<TmdbVideoListResponse, TmdbErrorResponse>
+
+  @GET("movie/upcoming")
+  suspend fun upcoming(
+    @Query("page") page: Int,
   ): NetworkResponse<TmdbVideoListResponse, TmdbErrorResponse>
 }

@@ -13,6 +13,6 @@ internal class GetTrendingShowsUseCaseImpl @Inject constructor(
 ) : GetTrendingShowsUseCase {
 
   override suspend fun invoke(): Flow<Result<List<VideoThumbnail>, GeneralError>> = flow {
-    emit(tmdbShowsRepository.getTrendingShows())
+    emit(tmdbShowsRepository.trendingShows())
   }
 }

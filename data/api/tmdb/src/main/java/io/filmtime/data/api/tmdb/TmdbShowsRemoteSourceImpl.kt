@@ -14,7 +14,7 @@ class TmdbShowsRemoteSourceImpl @Inject constructor(
   private val tmdbShowsService: TmdbShowsService,
 ) : TmdbShowsRemoteSource {
 
-  override suspend fun getShowDetails(showId: Int): Result<VideoDetail, GeneralError> =
+  override suspend fun showDetails(showId: Int): Result<VideoDetail, GeneralError> =
     when (val result = tmdbShowsService.getShowDetails(seriesId = showId)) {
       is NetworkResponse.Success -> {
         val videoDetailResponse = result.body
@@ -34,9 +34,43 @@ class TmdbShowsRemoteSourceImpl @Inject constructor(
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
     }
 
-  override suspend fun getTrendingShows(): Result<List<VideoThumbnail>, GeneralError> =
+  override suspend fun trendingShows(): Result<List<VideoThumbnail>, GeneralError> =
     getShowsList {
       tmdbShowsService.getTrendingShows(timeWindow = TimeWindow.DAY.value)
+    }
+
+  override suspend fun popularShows(
+    page: Int,
+  ): Result<List<VideoThumbnail>, GeneralError> =
+    getShowsList {
+      tmdbShowsService.popular(page = page)
+    }
+
+  override suspend fun topRatedShows(
+    page: Int,
+  ): Result<List<VideoThumbnail>, GeneralError> =
+    getShowsList {
+      tmdbShowsService.topRated(page = page)
+    }
+
+  override suspend fun onTheAirShows(
+    page: Int,
+  ): Result<List<VideoThumbnail>, GeneralError> =
+    getShowsList {
+      tmdbShowsService.onTheAir(
+        page = page,
+        timezone = "America/New_York",
+      )
+    }
+
+  override suspend fun airingTodayShows(
+    page: Int,
+  ): Result<List<VideoThumbnail>, GeneralError> =
+    getShowsList {
+      tmdbShowsService.airingToday(
+        page = page,
+        timezone = "America/New_York",
+      )
     }
 
   private suspend fun getShowsList(

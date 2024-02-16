@@ -10,5 +10,5 @@ internal class GetShowDetailsUseCaseImpl @Inject constructor(
   private val tmdbShowsRepository: TmdbShowsRepository,
 ) : GetShowDetailsUseCase {
   override suspend fun invoke(showId: Int): Result<VideoDetail, GeneralError> =
-    tmdbShowsRepository.getShowDetails(showId)
+    tmdbShowsRepository.showDetails(showId)
 }

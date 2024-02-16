@@ -1,10 +1,14 @@
 package io.filmtime.data.tmdb.shows
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import io.filmtime.data.api.tmdb.TmdbShowsRemoteSource
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 internal class TmdbShowsRepositoryImpl @Inject constructor(
@@ -28,4 +32,20 @@ internal class TmdbShowsRepositoryImpl @Inject constructor(
 
   override suspend fun airingTodayShows(): Result<List<VideoThumbnail>, GeneralError> =
     tmdbShowsRemoteSource.airingTodayShows(page = 1)
+
+  override fun showsStream(
+    type: ShowListType,
+  ): Flow<PagingData<VideoThumbnail>> =
+    Pager(
+      config = PagingConfig(
+        pageSize = TmdbShowsRemoteSource.PAGE_SIZE,
+        enablePlaceholders = false,
+      ),
+      pagingSourceFactory = {
+        ShowsPagingSource(
+          tmdbShowsRemoteSource = tmdbShowsRemoteSource,
+          showListType = type,
+        )
+      },
+    ).flow
 }

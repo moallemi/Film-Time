@@ -26,4 +26,8 @@ interface TmdbShowsRemoteSource {
   suspend fun airingTodayShows(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError>
+
+  companion object {
+    const val PAGE_SIZE = 20 // TMDB API default page size
+  }
 }

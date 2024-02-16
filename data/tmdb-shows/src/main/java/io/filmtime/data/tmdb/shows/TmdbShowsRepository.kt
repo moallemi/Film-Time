@@ -1,9 +1,11 @@
 package io.filmtime.data.tmdb.shows
 
+import androidx.paging.PagingData
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
+import kotlinx.coroutines.flow.Flow
 
 interface TmdbShowsRepository {
 
@@ -18,4 +20,13 @@ interface TmdbShowsRepository {
   suspend fun onTheAirShows(): Result<List<VideoThumbnail>, GeneralError>
 
   suspend fun airingTodayShows(): Result<List<VideoThumbnail>, GeneralError>
+
+  fun showsStream(type: ShowListType): Flow<PagingData<VideoThumbnail>>
+}
+
+enum class ShowListType {
+  Popular,
+  TopRated,
+  OnTheAir,
+  AiringToday,
 }

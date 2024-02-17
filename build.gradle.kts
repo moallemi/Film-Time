@@ -27,6 +27,8 @@ val installGitHook by tasks.registering(Copy::class) {
   fileMode = 0b111101101
 }
 
-tasks.named("build") {
-  dependsOn(installGitHook)
+project(":app").afterEvaluate {
+  tasks.named("preBuild").configure {
+    dependsOn(":installGitHook")
+  }
 }

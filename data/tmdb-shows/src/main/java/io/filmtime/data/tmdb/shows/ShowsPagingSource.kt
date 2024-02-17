@@ -14,6 +14,7 @@ import io.filmtime.data.tmdb.shows.ShowListType.AiringToday
 import io.filmtime.data.tmdb.shows.ShowListType.OnTheAir
 import io.filmtime.data.tmdb.shows.ShowListType.Popular
 import io.filmtime.data.tmdb.shows.ShowListType.TopRated
+import io.filmtime.data.tmdb.shows.ShowListType.Trending
 
 internal class ShowsPagingSource(
   private val tmdbShowsRemoteSource: TmdbShowsRemoteSource,
@@ -43,6 +44,7 @@ internal class ShowsPagingSource(
 
   private suspend fun showsList(page: Int): Result<List<VideoThumbnail>, GeneralError> =
     when (showListType) {
+      Trending -> tmdbShowsRemoteSource.trendingShows(page)
       Popular -> tmdbShowsRemoteSource.popularShows(page)
       TopRated -> tmdbShowsRemoteSource.topRatedShows(page)
       OnTheAir -> tmdbShowsRemoteSource.onTheAirShows(page)

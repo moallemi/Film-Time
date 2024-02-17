@@ -19,7 +19,7 @@ internal class TmdbShowsRepositoryImpl @Inject constructor(
     tmdbShowsRemoteSource.showDetails(showId)
 
   override suspend fun trendingShows(): Result<List<VideoThumbnail>, GeneralError> =
-    tmdbShowsRemoteSource.trendingShows()
+    tmdbShowsRemoteSource.trendingShows(page = 1)
 
   override suspend fun popularShows(): Result<List<VideoThumbnail>, GeneralError> =
     tmdbShowsRemoteSource.popularShows(page = 1)

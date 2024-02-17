@@ -15,7 +15,7 @@ class TmdbShowsRemoteSourceImpl @Inject constructor(
 ) : TmdbShowsRemoteSource {
 
   override suspend fun showDetails(showId: Int): Result<VideoDetail, GeneralError> =
-    when (val result = tmdbShowsService.getShowDetails(seriesId = showId)) {
+    when (val result = tmdbShowsService.showDetails(seriesId = showId)) {
       is NetworkResponse.Success -> {
         val videoDetailResponse = result.body
         if (videoDetailResponse == null) {
@@ -34,9 +34,11 @@ class TmdbShowsRemoteSourceImpl @Inject constructor(
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
     }
 
-  override suspend fun trendingShows(): Result<List<VideoThumbnail>, GeneralError> =
+  override suspend fun trendingShows(
+    page: Int,
+  ): Result<List<VideoThumbnail>, GeneralError> =
     getShowsList {
-      tmdbShowsService.getTrendingShows(timeWindow = TimeWindow.DAY.value)
+      tmdbShowsService.trendingShows(timeWindow = TimeWindow.WEEK.value, page = page)
     }
 
   override suspend fun popularShows(

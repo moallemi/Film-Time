@@ -9,7 +9,9 @@ interface TmdbShowsRemoteSource {
 
   suspend fun showDetails(showId: Int): Result<VideoDetail, GeneralError>
 
-  suspend fun trendingShows(): Result<List<VideoThumbnail>, GeneralError>
+  suspend fun trendingShows(
+    page: Int,
+  ): Result<List<VideoThumbnail>, GeneralError>
 
   suspend fun popularShows(
     page: Int,

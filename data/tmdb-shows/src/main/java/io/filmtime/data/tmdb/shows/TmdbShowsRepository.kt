@@ -25,6 +25,7 @@ interface TmdbShowsRepository {
 }
 
 enum class ShowListType {
+  Trending,
   Popular,
   TopRated,
   OnTheAir,

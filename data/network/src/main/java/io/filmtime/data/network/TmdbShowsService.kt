@@ -8,13 +8,14 @@ import retrofit2.http.Query
 interface TmdbShowsService {
 
   @GET("tv/{series_id})")
-  suspend fun getShowDetails(
+  suspend fun showDetails(
     @Path("series_id") seriesId: Int,
   ): NetworkResponse<TmdbShowDetailsResponse, TmdbErrorResponse>
 
   @GET("trending/tv/{time_window}")
-  suspend fun getTrendingShows(
+  suspend fun trendingShows(
     @Path("time_window") timeWindow: String,
+    @Query("page") page: Int,
   ): NetworkResponse<TmdbShowListResponse, TmdbErrorResponse>
 
   @GET("tv/popular")

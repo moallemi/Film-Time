@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import io.filmtime.data.model.VideoListType
+import io.filmtime.data.model.VideoType
 import io.filmtime.feature.home.homeScreen
 import io.filmtime.feature.movie.detail.movieDetailScreen
 import io.filmtime.feature.movie.detail.navigateToMovieDetail
@@ -37,8 +39,18 @@ class MainActivity : ComponentActivity() {
               onMovieClick = navController::navigateToMovieDetail,
               onShowClick = navController::navigateToShowDetail,
               onTraktClick = navController::navigateToTraktLogin,
-              onTrendingMoviesClick = navController::navigateToVideoThumbnailGridScreen,
-              onTrendingShowsClick = { TODO() },
+              onTrendingMoviesClick = {
+                navController.navigateToVideoThumbnailGridScreen(
+                  videoType = VideoType.Movie,
+                  listType = VideoListType.Trending,
+                )
+              },
+              onTrendingShowsClick = {
+                navController.navigateToVideoThumbnailGridScreen(
+                  videoType = VideoType.Show,
+                  listType = VideoListType.Trending,
+                )
+              },
             )
 
             videoThumbnailGridScreen(

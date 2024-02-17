@@ -23,3 +23,11 @@ enum class VideoType {
   Movie,
   Show,
 }
+
+enum class VideoListType {
+  Trending,
+  Popular,
+  TopRated,
+  OnTheAir,
+  AiringToday,
+}

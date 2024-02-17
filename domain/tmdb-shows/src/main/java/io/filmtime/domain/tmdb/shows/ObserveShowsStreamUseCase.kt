@@ -2,7 +2,7 @@ package io.filmtime.domain.tmdb.shows
 
 import androidx.paging.PagingData
 import io.filmtime.data.model.VideoThumbnail
-import io.filmtime.data.tmdb.shows.ShowListType
+import io.filmtime.domain.tmdb.shows.model.ShowListType
 import kotlinx.coroutines.flow.Flow
 
 /**

@@ -57,6 +57,7 @@ android {
 
 dependencies {
 
+  implementation(project(":data:model"))
   implementation(project(":feature:movie-detail"))
   implementation(project(":feature:show-detail"))
   implementation(project(":feature:home"))

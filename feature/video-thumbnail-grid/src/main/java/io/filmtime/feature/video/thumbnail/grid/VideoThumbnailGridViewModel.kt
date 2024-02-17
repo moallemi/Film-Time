@@ -14,6 +14,7 @@ import io.filmtime.domain.tmdb.movies.GetTrendingMoviesStreamUseCase
 import io.filmtime.domain.tmdb.shows.ObserveShowsStreamUseCase
 import io.filmtime.domain.tmdb.shows.model.ShowListType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -27,6 +28,12 @@ class VideoThumbnailGridViewModel @Inject constructor(
   private var args = VideoThumbnailGridArgs(savedStateHandle)
   private val videoType = args.videoType
   private val listType = args.listType
+
+  val state = MutableStateFlow(
+    VideoThumbnailGridUiState(
+      title = generateTitle(),
+    ),
+  )
 
   val pagedList: Flow<PagingData<VideoThumbnail>> =
     loadVideoThumbnails()
@@ -56,5 +63,19 @@ class VideoThumbnailGridViewModel @Inject constructor(
     VideoListType.TopRated -> ShowListType.TopRated
     VideoListType.OnTheAir -> ShowListType.OnTheAir
     VideoListType.AiringToday -> ShowListType.AiringToday
+  }
+
+  private fun generateTitle(): String {
+    val listType = when (listType) {
+      VideoListType.Trending -> "Trending"
+      VideoListType.Popular -> "Popular"
+      VideoListType.TopRated -> "Top Rated"
+      VideoListType.OnTheAir -> "On The Air"
+      VideoListType.AiringToday -> "Airing Today"
+    }
+    return when (videoType) {
+      VideoType.Movie -> "$listType Movies"
+      VideoType.Show -> "$listType Shows"
+    }
   }
 }

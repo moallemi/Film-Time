@@ -12,9 +12,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import io.filmtime.core.designsystem.plus
@@ -27,9 +29,11 @@ fun VideoThumbnailGridScreen(
   onBack: () -> Unit,
 ) {
   val viewModel = hiltViewModel<VideoThumbnailGridViewModel>()
+  val state by viewModel.state.collectAsStateWithLifecycle()
   val pagedList = viewModel.pagedList.collectAsLazyPagingItems()
 
   VideoThumbnailGridScreen(
+    state = state,
     pagedList = pagedList,
     onMovieClick = onMovieClick,
     onBack = onBack,
@@ -39,13 +43,16 @@ fun VideoThumbnailGridScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun VideoThumbnailGridScreen(
+  state: VideoThumbnailGridUiState,
   pagedList: LazyPagingItems<VideoThumbnail>,
   onMovieClick: (tmdbId: Int) -> Unit,
   onBack: () -> Unit,
 ) {
   Scaffold(
     topBar = {
-      TopAppBar(title = { Text(text = "Popular Movies") })
+      TopAppBar(
+        title = { Text(text = state.title) },
+      )
     },
     content = { padding ->
       MovieListContent(

@@ -15,6 +15,7 @@ interface TmdbMoviesService {
   @GET("trending/movie/{time_window}")
   suspend fun trending(
     @Path("time_window") timeWindow: String,
+    @Query("page") page: Int,
   ): NetworkResponse<TmdbVideoListResponse, TmdbErrorResponse>
 
   @GET("movie/popular")

@@ -21,5 +21,13 @@ interface TmdbMovieRepository {
 
   suspend fun upcomingMovies(): Result<List<VideoThumbnail>, GeneralError>
 
-  fun getTrendingMoviesStream(): Flow<PagingData<VideoThumbnail>>
+  fun moviesStream(movieListType: MovieListType): Flow<PagingData<VideoThumbnail>>
+}
+
+enum class MovieListType {
+  Trending,
+  Popular,
+  TopRated,
+  NowPlaying,
+  Upcoming,
 }

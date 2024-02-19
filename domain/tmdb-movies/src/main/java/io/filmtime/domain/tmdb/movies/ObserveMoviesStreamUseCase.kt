@@ -1,6 +1,7 @@
 package io.filmtime.domain.tmdb.movies
 
 import androidx.paging.PagingData
+import io.filmtime.data.model.VideoListType
 import io.filmtime.data.model.VideoThumbnail
 import kotlinx.coroutines.flow.Flow
 
@@ -10,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
  * paged data from the TMDB API. Each page contains a list of VideoThumbnail objects,
  * which represent the thumbnail data for a movie.
  */
-interface GetTrendingMoviesStreamUseCase {
+interface ObserveMoviesStreamUseCase {
 
   /**
    * This function is the entry point for the use case. It does not take any parameters.
@@ -19,5 +20,5 @@ interface GetTrendingMoviesStreamUseCase {
    *
    * @return Flow<PagingData<VideoThumbnail>>: a Flow that emits pages of trending movies.
    */
-  operator fun invoke(): Flow<PagingData<VideoThumbnail>>
+  operator fun invoke(videoListType: VideoListType): Flow<PagingData<VideoThumbnail>>
 }

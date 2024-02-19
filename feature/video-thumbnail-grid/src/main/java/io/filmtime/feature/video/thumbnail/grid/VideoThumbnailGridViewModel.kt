@@ -10,9 +10,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.data.model.VideoListType
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.model.VideoType
-import io.filmtime.domain.tmdb.movies.GetTrendingMoviesStreamUseCase
+import io.filmtime.domain.tmdb.movies.ObserveMoviesStreamUseCase
 import io.filmtime.domain.tmdb.shows.ObserveShowsStreamUseCase
-import io.filmtime.domain.tmdb.shows.model.ShowListType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -21,11 +20,11 @@ import javax.inject.Inject
 @HiltViewModel
 class VideoThumbnailGridViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
-  private val trendingMovies: GetTrendingMoviesStreamUseCase,
-  private val trendingShows: ObserveShowsStreamUseCase,
+  private val observeMoviesStream: ObserveMoviesStreamUseCase,
+  private val observeShowsStream: ObserveShowsStreamUseCase,
 ) : ViewModel() {
 
-  private var args = VideoThumbnailGridArgs(savedStateHandle)
+  private val args = VideoThumbnailGridArgs(savedStateHandle)
   private val videoType = args.videoType
   private val listType = args.listType
 
@@ -53,23 +52,17 @@ class VideoThumbnailGridViewModel @Inject constructor(
 
   private fun loadVideoThumbnails(): Flow<PagingData<VideoThumbnail>> =
     when (videoType) {
-      VideoType.Movie -> trendingMovies()
-      VideoType.Show -> trendingShows(listType.toShowListType())
+      VideoType.Movie -> observeMoviesStream(listType)
+      VideoType.Show -> observeShowsStream(listType)
     }
-
-  private fun VideoListType.toShowListType() = when (this) {
-    VideoListType.Trending -> ShowListType.Trending
-    VideoListType.Popular -> ShowListType.Popular
-    VideoListType.TopRated -> ShowListType.TopRated
-    VideoListType.OnTheAir -> ShowListType.OnTheAir
-    VideoListType.AiringToday -> ShowListType.AiringToday
-  }
 
   private fun generateTitle(): String {
     val listType = when (listType) {
       VideoListType.Trending -> "Trending"
       VideoListType.Popular -> "Popular"
       VideoListType.TopRated -> "Top Rated"
+      VideoListType.NowPlaying -> "Now Playing"
+      VideoListType.Upcoming -> "Upcoming"
       VideoListType.OnTheAir -> "On The Air"
       VideoListType.AiringToday -> "Airing Today"
     }

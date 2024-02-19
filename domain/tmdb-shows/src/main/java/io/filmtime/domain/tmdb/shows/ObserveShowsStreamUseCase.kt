@@ -1,8 +1,8 @@
 package io.filmtime.domain.tmdb.shows
 
 import androidx.paging.PagingData
+import io.filmtime.data.model.VideoListType
 import io.filmtime.data.model.VideoThumbnail
-import io.filmtime.domain.tmdb.shows.model.ShowListType
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -20,5 +20,5 @@ interface ObserveShowsStreamUseCase {
    *
    * @return Flow<PagingData<VideoThumbnail>>: a Flow that emits pages of trending movies.
    */
-  operator fun invoke(showListType: ShowListType): Flow<PagingData<VideoThumbnail>>
+  operator fun invoke(videoListType: VideoListType): Flow<PagingData<VideoThumbnail>>
 }

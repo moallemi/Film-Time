@@ -14,12 +14,15 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
   private val tmdbMoviesService: TmdbMoviesService,
 ) : TmdbMoviesRemoteSource {
 
-  override suspend fun getTrendingMovies(): Result<List<VideoThumbnail>, GeneralError> =
+  override suspend fun trendingMovies(page: Int): Result<List<VideoThumbnail>, GeneralError> =
     getMovieList {
-      tmdbMoviesService.trending(ListType.DAY.value)
+      tmdbMoviesService.trending(
+        timeWindow = ListType.WEEK.value,
+        page = page,
+      )
     }
 
-  override suspend fun getPopularMovies(
+  override suspend fun popularMovies(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError> =
     getMovieList {
@@ -28,7 +31,7 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
       )
     }
 
-  override suspend fun getTopRatedMovies(
+  override suspend fun topRatedMovies(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError> =
     getMovieList {
@@ -37,7 +40,7 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
       )
     }
 
-  override suspend fun getNowPlayingMovies(
+  override suspend fun nowPlayingMovies(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError> =
     getMovieList {
@@ -46,7 +49,7 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
       )
     }
 
-  override suspend fun getUpcomingMovies(
+  override suspend fun upcomingMovies(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError> =
     getMovieList {
@@ -55,7 +58,7 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
       )
     }
 
-  override suspend fun getMovieDetails(movieId: Int): Result<VideoDetail, GeneralError> =
+  override suspend fun movieDetails(movieId: Int): Result<VideoDetail, GeneralError> =
     when (val result = tmdbMoviesService.getMovieDetails(movieId = movieId)) {
       is NetworkResponse.Success -> {
         val videoDetailResponse = result.body

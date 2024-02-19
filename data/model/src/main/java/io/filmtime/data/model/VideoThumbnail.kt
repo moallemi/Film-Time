@@ -28,6 +28,8 @@ enum class VideoListType {
   Trending,
   Popular,
   TopRated,
-  OnTheAir,
-  AiringToday,
+  NowPlaying, // Movie Only
+  Upcoming, // Movie Only
+  OnTheAir, // Show Only
+  AiringToday, // Show Only
 }

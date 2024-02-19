@@ -20,7 +20,7 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
 ) : TmdbMovieRepository {
 
   override suspend fun getMovieDetails(movieId: Int): Result<VideoDetail, GeneralError> {
-    return when (val result = tmdbMoviesRemoteSource.getMovieDetails(movieId)) {
+    return when (val result = tmdbMoviesRemoteSource.movieDetails(movieId)) {
       is Result.Failure -> result
       is Result.Success -> {
         return when (val traktIdResult = traktMovieSearchRemoteSource.getByTmdbId(result.data.ids.tmdbId.toString())) {
@@ -56,21 +56,21 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
   }
 
   override suspend fun getTrendingMovies(): Result<List<VideoThumbnail>, GeneralError> =
-    tmdbMoviesRemoteSource.getTrendingMovies()
+    tmdbMoviesRemoteSource.trendingMovies(1)
 
   override suspend fun getPopularMovies(): Result<List<VideoThumbnail>, GeneralError> =
-    tmdbMoviesRemoteSource.getPopularMovies(page = 1)
+    tmdbMoviesRemoteSource.popularMovies(page = 1)
 
   override suspend fun getTopRatedMovies(): Result<List<VideoThumbnail>, GeneralError> =
-    tmdbMoviesRemoteSource.getTopRatedMovies(page = 1)
+    tmdbMoviesRemoteSource.topRatedMovies(page = 1)
 
   override suspend fun getNowPlayingMovies(): Result<List<VideoThumbnail>, GeneralError> =
-    tmdbMoviesRemoteSource.getNowPlayingMovies(page = 1)
+    tmdbMoviesRemoteSource.nowPlayingMovies(page = 1)
 
   override suspend fun upcomingMovies(): Result<List<VideoThumbnail>, GeneralError> =
-    tmdbMoviesRemoteSource.getUpcomingMovies(page = 1)
+    tmdbMoviesRemoteSource.upcomingMovies(page = 1)
 
-  override fun getTrendingMoviesStream(): Flow<PagingData<VideoThumbnail>> =
+  override fun moviesStream(movieListType: MovieListType): Flow<PagingData<VideoThumbnail>> =
     Pager(
       config = PagingConfig(
         pageSize = TmdbMoviesRemoteSource.PAGE_SIZE,
@@ -79,6 +79,7 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
       pagingSourceFactory = {
         MoviesPagingSource(
           tmdbMoviesRemoteSource = tmdbMoviesRemoteSource,
+          movieListType = movieListType,
         )
       },
     ).flow

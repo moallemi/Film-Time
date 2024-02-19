@@ -7,23 +7,25 @@ import io.filmtime.data.model.VideoThumbnail
 
 interface TmdbMoviesRemoteSource {
 
-  suspend fun getMovieDetails(movieId: Int): Result<VideoDetail, GeneralError>
+  suspend fun movieDetails(movieId: Int): Result<VideoDetail, GeneralError>
 
-  suspend fun getTrendingMovies(): Result<List<VideoThumbnail>, GeneralError>
-
-  suspend fun getPopularMovies(
+  suspend fun trendingMovies(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError>
 
-  suspend fun getTopRatedMovies(
+  suspend fun popularMovies(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError>
 
-  suspend fun getNowPlayingMovies(
+  suspend fun topRatedMovies(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError>
 
-  suspend fun getUpcomingMovies(
+  suspend fun nowPlayingMovies(
+    page: Int,
+  ): Result<List<VideoThumbnail>, GeneralError>
+
+  suspend fun upcomingMovies(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError>
 

@@ -6,7 +6,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
-import io.filmtime.domain.tmdb.movies.GetTrendingMoviesUseCase
+import io.filmtime.data.model.VideoListType
+import io.filmtime.domain.tmdb.movies.GetMoviesListUseCase
 import io.filmtime.domain.tmdb.shows.GetTrendingShowsUseCase
 import io.filmtime.domain.trakt.auth.GetTraktAuthStateUseCase
 import io.filmtime.domain.trakt.auth.TraktAuthState
@@ -22,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class HomeViewModel @Inject constructor(
-  private val getTrendingMovies: GetTrendingMoviesUseCase,
+  private val getMoviesList: GetMoviesListUseCase,
   private val getTrendingShows: GetTrendingShowsUseCase,
   private val getTraktAuthStateUseCase: GetTraktAuthStateUseCase,
 ) : ViewModel() {
@@ -48,7 +49,9 @@ internal class HomeViewModel @Inject constructor(
   }
 
   private suspend fun loadTrendingMovies() {
-    getTrendingMovies()
+    getMoviesList(
+      videoListType = VideoListType.Trending,
+    )
       .onStart {
         _state.update { state -> state.copy(isLoading = true) }
       }

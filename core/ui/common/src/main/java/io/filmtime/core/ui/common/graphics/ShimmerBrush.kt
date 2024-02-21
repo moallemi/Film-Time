@@ -1,4 +1,4 @@
-package io.filmtime.feature.home
+package io.filmtime.core.ui.common.graphics
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat

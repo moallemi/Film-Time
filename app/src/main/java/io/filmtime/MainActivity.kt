@@ -15,6 +15,7 @@ import io.filmtime.data.model.VideoType
 import io.filmtime.feature.home.homeScreen
 import io.filmtime.feature.movie.detail.movieDetailScreen
 import io.filmtime.feature.movie.detail.navigateToMovieDetail
+import io.filmtime.feature.movies.moviesScreen
 import io.filmtime.feature.player.navigateToPlayer
 import io.filmtime.feature.player.playerScreen
 import io.filmtime.feature.show.detail.navigateToShowDetail
@@ -66,6 +67,16 @@ class MainActivity : ComponentActivity() {
             showDetailScreen()
 
             playerScreen()
+
+            moviesScreen(
+              onMovieClick = navController::navigateToMovieDetail,
+              onSectionClick = { listType ->
+                navController.navigateToVideoThumbnailGridScreen(
+                  videoType = VideoType.Movie,
+                  listType = listType,
+                )
+              },
+            )
 
             traktLoginScreen(
               onBack = navController::popBackStack,

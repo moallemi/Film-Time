@@ -59,7 +59,7 @@ fun HomeScreen(
         LoadingVideoSectionRow(numberOfSections = 2)
       } else {
         LazyColumn(
-          contentPadding = PaddingValues(top = 16.dp),
+          contentPadding = PaddingValues(vertical = 16.dp),
           verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
           items(state.videoSections) { videoSection ->

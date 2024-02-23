@@ -20,6 +20,7 @@ import io.filmtime.feature.player.navigateToPlayer
 import io.filmtime.feature.player.playerScreen
 import io.filmtime.feature.show.detail.navigateToShowDetail
 import io.filmtime.feature.show.detail.showDetailScreen
+import io.filmtime.feature.shows.showsScreen
 import io.filmtime.feature.trakt.login.navigateToTraktLogin
 import io.filmtime.feature.trakt.login.traktLoginScreen
 import io.filmtime.feature.video.thumbnail.grid.navigateToVideoThumbnailGridScreen
@@ -76,6 +77,17 @@ class MainActivity : ComponentActivity() {
                   listType = listType,
                 )
               },
+            )
+
+            showsScreen(
+              onShowClick = navController::navigateToShowDetail,
+              onSectionClick = { listType ->
+                navController.navigateToVideoThumbnailGridScreen(
+                  videoType = VideoType.Show,
+                  listType = listType,
+                )
+              },
+
             )
 
             traktLoginScreen(

@@ -62,6 +62,7 @@ dependencies {
   implementation(project(":feature:show-detail"))
   implementation(project(":feature:home"))
   implementation(project(":feature:movies"))
+  implementation(project(":feature:shows"))
   implementation(project(":feature:player"))
   implementation(project(":feature:trakt-login"))
   implementation(project(":feature:video-thumbnail-grid"))

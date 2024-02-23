@@ -17,4 +17,7 @@ internal abstract class TmdbShowsDomainModule {
 
   @Binds
   abstract fun bindObserveShowsStreamUseCase(impl: ObserveShowsStreamUseCaseImpl): ObserveShowsStreamUseCase
+
+  @Binds
+  abstract fun bindGetShowsListUseCase(impl: GetShowsListUseCaseImpl): GetShowsListUseCase
 }

@@ -36,7 +36,7 @@ fun HomeScreen(
 ) {
   val viewModel = hiltViewModel<HomeViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
-  val traktState by viewModel.traktState.collectAsStateWithLifecycle()
+  val traktState by viewModel.traktAuthState.collectAsStateWithLifecycle()
 
   Scaffold(
     topBar = {

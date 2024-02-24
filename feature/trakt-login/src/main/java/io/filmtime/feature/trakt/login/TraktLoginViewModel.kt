@@ -24,7 +24,7 @@ class TraktLoginViewModel @Inject constructor(
   val loginState = _loginState.asStateFlow()
 
   private val _traktState: MutableStateFlow<TraktAuthState> = MutableStateFlow(value = TraktAuthState.Initial)
-  val traktAuthState = _traktState.asStateFlow()
+  val traktState = _traktState.asStateFlow()
 
   init {
     viewModelScope.launch {

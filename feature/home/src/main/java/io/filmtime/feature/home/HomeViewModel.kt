@@ -32,7 +32,7 @@ internal class HomeViewModel @Inject constructor(
   val state = _state.asStateFlow()
 
   private val _traktAuthState: MutableStateFlow<TraktAuthState> = MutableStateFlow(value = TraktAuthState.SignedOut)
-  val traktState = _traktAuthState.asStateFlow()
+  val traktAuthState = _traktAuthState.asStateFlow()
 
   init {
     viewModelScope.launch {

@@ -29,11 +29,18 @@ class MovieDetailViewModel @Inject constructor(
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
   private val _state: MutableStateFlow<MovieDetailState> = MutableStateFlow(MovieDetailState())
   val state = _state.asStateFlow()
+ private val _similarState: MutableStateFlow<MovieDetailState> = MutableStateFlow(MovieDetailState())
+  val similarState = _similarState.asStateFlow()
 
   val navigateToPlayer = MutableSharedFlow<String?>()
 
   init {
     load()
+    loadSimilar()
+  }
+
+  private fun loadSimilar() =viewModelScope.launch {
+
   }
 
   fun load() = viewModelScope.launch {

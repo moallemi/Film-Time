@@ -12,11 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -97,7 +100,7 @@ fun ShowError(error: GeneralError, message: String, onRefresh: () -> Unit) {
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
 
-  ) {
+    ) {
     LottieAnimation(
       modifier = Modifier.scale(0.8f),
       composition = composition,
@@ -135,44 +138,57 @@ fun MovieDetailContent(
   ) {
     Box(
       modifier = Modifier
-        .height(300.dp),
+        .height(500.dp),
     ) {
       AsyncImage(
         modifier = Modifier
-          .fillMaxWidth()
-          .aspectRatio(16f / 9f),
-        contentScale = ContentScale.FillWidth,
+          .fillMaxWidth(),
+        contentScale = ContentScale.FillHeight,
         model = videoDetail.coverUrl,
         contentDescription = null,
         alignment = Alignment.BottomCenter,
       )
-      Card(
-        modifier = Modifier
-          .align(Alignment.BottomStart)
-          .padding(start = 16.dp),
-      ) {
-        AsyncImage(
-          modifier = Modifier
-            .size(120.dp, 200.dp),
-          contentScale = ContentScale.Crop,
-          model = videoDetail.posterUrl,
-          contentDescription = null,
+      Column(modifier = Modifier.align(Alignment.BottomStart)) {
+        Text(
+          modifier = Modifier.padding(horizontal = 16.dp),
+          style = TextStyle(
+            fontWeight = FontWeight.Bold,
+            fontSize = 30.sp,
+            color = Color.White,
+          ),
+          text = videoDetail.title,
         )
+        Row(horizontalArrangement = Arrangement.SpaceAround) {
+          Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            style = TextStyle(
+              fontWeight = FontWeight.Light,
+              fontSize = 15.sp,
+              color = Color.White,
+            ),
+            text = videoDetail.runtime.toString(),
+          )
+          Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            style = TextStyle(
+              fontWeight = FontWeight.Light,
+              fontSize = 15.sp,
+              color = Color.White,
+            ),
+            text = videoDetail.releaseDate,
+          )
+        }
+        IconButton(onClick = onPlayPressed) {
+          Icon(Icons.Outlined.PlayArrow, contentDescription = "play")
+        }
       }
+
 
       IconButton(onClick = onBackPressed) {
         Icon(Icons.Filled.ArrowBack, contentDescription = "back")
       }
     }
 
-    Text(
-      modifier = Modifier.padding(horizontal = 16.dp),
-      style = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 12.sp,
-      ),
-      text = videoDetail.title,
-    )
     Text(
       modifier = Modifier.padding(horizontal = 16.dp),
 
@@ -221,21 +237,33 @@ fun MovieDetailContent(
         }
       }
     }
-    Row(
+    Text(
       modifier = Modifier.padding(horizontal = 16.dp),
-      horizontalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-      Text(text = "Year: ${videoDetail.year}")
-      Text(text = "Original language: ${videoDetail.originalLanguage}")
-      Text(text = videoDetail.spokenLanguages.joinToString(", "))
+      style = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 30.sp,
+        color = Color.White,
+      ),
+      text = "Cast",
+    )
+    LazyRow() {
+
     }
-    Text(
-      modifier = Modifier.padding(start = 16.dp),
-      text = "Genres",
-    )
-    Text(
-      modifier = Modifier.padding(horizontal = 16.dp),
-      text = videoDetail.genres.joinToString(", "),
-    )
+//    Row(
+//      modifier = Modifier.padding(horizontal = 16.dp),
+//      horizontalArrangement = Arrangement.spacedBy(16.dp),
+//    ) {
+//      Text(text = "Year: ${videoDetail.year}")
+//      Text(text = "Original language: ${videoDetail.originalLanguage}")
+//      Text(text = videoDetail.spokenLanguages.joinToString(", "))
+//    }
+//    Text(
+//      modifier = Modifier.padding(start = 16.dp),
+//      text = "Genres",
+//    )
+//    Text(
+//      modifier = Modifier.padding(horizontal = 16.dp),
+//      text = videoDetail.genres.joinToString(", "),
+//    )
   }
 }

@@ -8,6 +8,7 @@ import io.filmtime.data.network.TmdbMovieDetailsResponse
 import io.filmtime.data.network.TmdbShowDetailsResponse
 import io.filmtime.data.network.TmdbShowResultResponse
 import io.filmtime.data.network.TmdbVideoResultResponse
+import java.util.concurrent.TimeUnit
 
 private val TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original/"
 
@@ -26,6 +27,8 @@ fun TmdbMovieDetailsResponse.toVideoDetail() =
     spokenLanguages = spokenLanguages?.map { it.englishName ?: "" }?.filter { it.isNotEmpty() }
       ?: listOf(),
     description = overview ?: "",
+    runtime = fromMinutesToHHmm(runtime ?: 0),
+    releaseDate = releaseDate?.split("-")?.get(0) ?: "N/A",
   )
 
 fun TmdbShowDetailsResponse.toVideoDetail() =
@@ -43,6 +46,8 @@ fun TmdbShowDetailsResponse.toVideoDetail() =
     spokenLanguages = spokenLanguages?.map { it.englishName ?: "" }?.filter { it.isNotEmpty() }
       ?: listOf(),
     description = overview ?: "",
+    runtime = "",
+    releaseDate = "",
   )
 
 fun TmdbVideoResultResponse.toVideoThumbnail() = VideoThumbnail(
@@ -60,3 +65,9 @@ fun TmdbShowResultResponse.toVideoThumbnail() = VideoThumbnail(
   year = releaseDate?.take(4)?.toInt() ?: 0,
   type = VideoType.Show,
 )
+
+fun fromMinutesToHHmm(minutes: Long): String {
+  val hours = TimeUnit.MINUTES.toHours(minutes)
+  val remainMinutes = minutes - TimeUnit.HOURS.toMinutes(hours)
+  return String.format("%02dh %02dm", hours, remainMinutes)
+}

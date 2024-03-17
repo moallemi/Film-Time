@@ -1,12 +1,12 @@
 package io.filmtime.feature.movie.detail
 
+import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
-import io.filmtime.data.model.StreamInfo
 import io.filmtime.data.model.VideoDetail
 
-data class MovieDetailCastState(
+data class MovieDetailCreditState(
   val isLoading: Boolean = false,
-  val videoDetail: VideoDetail? = null,
+  val credit: List<CreditItem> = emptyList(),
   val message: String? = null,
   val error: GeneralError? = null,
 )

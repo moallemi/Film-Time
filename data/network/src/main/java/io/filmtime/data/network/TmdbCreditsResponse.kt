@@ -41,4 +41,3 @@ data class Cast(
   val department: String? = null,
   val job: String? = null,
 )
-

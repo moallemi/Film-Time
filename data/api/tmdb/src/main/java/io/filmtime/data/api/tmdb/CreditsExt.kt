@@ -7,6 +7,7 @@ private val TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original//7UIm9RoB
 
 fun Cast.toCreditItem() =
   CreditItem(
+    id=id,
     name = name.orEmpty(),
     profile = TMDB_BASE_IMAGE_URL.plus(profilePath),
   )

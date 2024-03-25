@@ -1,10 +1,7 @@
 package io.filmtime.feature.movie.detail
 
 import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,15 +16,12 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.AutoMirrored.Filled
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Button
@@ -44,9 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -116,7 +108,7 @@ fun ShowError(error: GeneralError, message: String, onRefresh: () -> Unit) {
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+  ) {
     LottieAnimation(
       modifier = Modifier.scale(0.8f),
       composition = composition,
@@ -317,9 +309,7 @@ fun CreditRowItem(item: CreditItem) {
         fontSize = 10.sp,
         color = Color.Black,
       ),
-      modifier = Modifier.padding(vertical = 4.dp)
+      modifier = Modifier.padding(vertical = 4.dp),
     )
   }
 }
-
-

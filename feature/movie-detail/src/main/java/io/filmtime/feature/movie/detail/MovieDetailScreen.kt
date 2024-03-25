@@ -53,7 +53,6 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import io.filmtime.core.ui.common.componnents.LoadingCastSectionRow
 import io.filmtime.core.ui.common.componnents.LoadingVideoSectionRow
-import io.filmtime.core.ui.common.componnents.VideoSectionRow
 import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
 import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
@@ -114,7 +113,7 @@ fun ShowError(error: GeneralError, message: String, onRefresh: () -> Unit) {
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+  ) {
     LottieAnimation(
       modifier = Modifier.scale(0.8f),
       composition = composition,
@@ -282,11 +281,13 @@ fun MovieDetailContent(
     if (similarState.isLoading) {
       LoadingVideoSectionRow(numberOfSections = 10)
     } else if (similarState.videoItems.isNotEmpty()) {
-      LazyRow( modifier = Modifier
-        .height(200.dp)
-        .fillMaxWidth(),
+      LazyRow(
+        modifier = Modifier
+          .height(200.dp)
+          .fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),) {
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+      ) {
         items(similarState.videoItems) { item ->
           VideoThumbnailCard(modifier = Modifier, videoThumbnail = item, onClick = {})
         }

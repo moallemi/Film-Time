@@ -30,6 +30,7 @@ internal abstract class TmdbMoviesUseCaseModule {
 
   @Binds
   abstract fun bindGetMoviesCreditUseCase(impl: GetMovieCreditUseCaseImpl): GetMovieCreditUseCase
+
   @Binds
   abstract fun bindGetSimilarUseCase(impl: GetSimilarUseCaseImpl): GetSimilarUseCase
 }

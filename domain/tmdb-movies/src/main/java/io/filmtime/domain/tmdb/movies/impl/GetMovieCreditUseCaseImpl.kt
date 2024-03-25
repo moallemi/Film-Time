@@ -9,6 +9,8 @@ import javax.inject.Inject
 
 class GetMovieCreditUseCaseImpl @Inject constructor(
   private val tmdbMovieRepository: TmdbMovieRepository,
-): GetMovieCreditUseCase {
-  override suspend fun invoke(movieId: Int): Result<List<CreditItem>, GeneralError> =tmdbMovieRepository.getCredit(movieId)
+) : GetMovieCreditUseCase {
+  override suspend fun invoke(
+    movieId: Int,
+  ): Result<List<CreditItem>, GeneralError> = tmdbMovieRepository.getCredit(movieId)
 }

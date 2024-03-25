@@ -2,7 +2,9 @@ package io.filmtime.feature.movie.detail
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,14 +15,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Icons.AutoMirrored.Filled
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Button
@@ -37,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,6 +58,7 @@ import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import io.filmtime.core.ui.common.componnents.LoadingCastSectionRow
 import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.VideoDetail
@@ -151,7 +160,7 @@ fun MovieDetailContent(
       AsyncImage(
         modifier = Modifier
           .fillMaxWidth(),
-        contentScale = ContentScale.FillHeight,
+        contentScale = ContentScale.Crop,
         model = videoDetail.coverUrl,
         contentDescription = null,
         alignment = Alignment.BottomCenter,
@@ -248,20 +257,17 @@ fun MovieDetailContent(
       modifier = Modifier.padding(horizontal = 16.dp),
       style = TextStyle(
         fontWeight = FontWeight.Bold,
-        fontSize = 3.sp,
+        fontSize = 16.sp,
         color = Color.Black,
       ),
       text = "Cast",
     )
     if (creditState.isLoading) {
-      CircularProgressIndicator(
-        modifier = Modifier.wrapContentSize(),
-      )
+      LoadingCastSectionRow(numberOfSections = 10)
     } else if (creditState.credit.isNotEmpty()) {
       LazyRow() {
         items(creditState.credit) { item ->
           CreditRowItem(item = item)
-
         }
       }
     }
@@ -286,23 +292,34 @@ fun MovieDetailContent(
 
 @Composable
 fun CreditRowItem(item: CreditItem) {
-  Log.d("tag",item.name)
+  Log.d("tag", item.name)
   Column(
-    modifier = Modifier.fillMaxWidth(),
+    modifier = Modifier
+      .fillMaxWidth().wrapContentHeight()
+      .padding(horizontal = 6.dp),
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     AsyncImage(
       modifier = Modifier
-        .size(64.dp)
-        .clip(CircleShape)                       // clip to the circle shape
-        .border(2.dp, Color.Gray, CircleShape),
-      contentScale = ContentScale.FillHeight,
+        .size(60.dp)
+        .clip(CircleShape) // clip to the circle shape
+        .border(1.dp, Color.Transparent, CircleShape),
+      contentScale = ContentScale.Crop,
       model = item.profile,
       contentDescription = "credit_profile",
       alignment = Alignment.Center,
     )
-    Text(text = item.name)
-
+    Text(
+      text = item.name,
+      style = TextStyle(
+        fontWeight = FontWeight.Light,
+        fontSize = 10.sp,
+        color = Color.Black,
+      ),
+      modifier = Modifier.padding(vertical = 4.dp)
+    )
   }
 }
+
+

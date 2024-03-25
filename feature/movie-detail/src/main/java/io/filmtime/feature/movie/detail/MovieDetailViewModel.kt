@@ -53,7 +53,6 @@ class MovieDetailViewModel @Inject constructor(
     when (val result = getCredit(videoId)) {
       is Failure -> {
         when (result.error) {
-
           is GeneralError.ApiError -> {
             _state.value = _state.value.copy(
               error = result.error,
@@ -82,7 +81,6 @@ class MovieDetailViewModel @Inject constructor(
         _creditState.value = _creditState.value.copy(credit = result.data, isLoading = false)
       }
     }
-
   }
 
   fun load() = viewModelScope.launch {

@@ -87,4 +87,7 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
 
   override suspend fun getCredit(movieId: Int): Result<List<CreditItem>, GeneralError> =
     tmdbMoviesRemoteSource.getCredit(movieId)
+
+  override suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError> =
+    tmdbMoviesRemoteSource.getSimilar(movieId)
 }

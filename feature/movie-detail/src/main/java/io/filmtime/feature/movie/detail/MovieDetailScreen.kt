@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,6 +52,9 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import io.filmtime.core.ui.common.componnents.LoadingCastSectionRow
+import io.filmtime.core.ui.common.componnents.LoadingVideoSectionRow
+import io.filmtime.core.ui.common.componnents.VideoSectionRow
+import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
 import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.VideoDetail
@@ -63,6 +67,7 @@ fun MovieDetailScreen(
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
   val creditState by viewModel.creditState.collectAsStateWithLifecycle()
+  val similarState by viewModel.similarState.collectAsStateWithLifecycle()
   val videoDetail = state.videoDetail
   val navigateToPlayer by viewModel.navigateToPlayer.collectAsStateWithLifecycle(null)
 
@@ -86,6 +91,7 @@ fun MovieDetailScreen(
       onBackPressed = onBackPressed,
       onPlayPressed = viewModel::loadStreamInfo,
       onAddToHistoryPressed = viewModel::addItemToHistory,
+      similarState = similarState,
     )
   }
 }
@@ -108,7 +114,7 @@ fun ShowError(error: GeneralError, message: String, onRefresh: () -> Unit) {
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
 
-  ) {
+    ) {
     LottieAnimation(
       modifier = Modifier.scale(0.8f),
       composition = composition,
@@ -140,6 +146,7 @@ fun MovieDetailContent(
   onPlayPressed: () -> Unit,
   onAddToHistoryPressed: () -> Unit,
   creditState: MovieDetailCreditState,
+  similarState: MovieDetailSimilarState,
 ) {
   Column(
     modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -263,6 +270,29 @@ fun MovieDetailContent(
         }
       }
     }
+    Text(
+      modifier = Modifier.padding(horizontal = 16.dp),
+      style = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        color = Color.Black,
+      ),
+      text = "Similar",
+    )
+    if (similarState.isLoading) {
+      LoadingVideoSectionRow(numberOfSections = 10)
+    } else if (similarState.videoItems.isNotEmpty()) {
+      LazyRow( modifier = Modifier
+        .height(200.dp)
+        .fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),) {
+        items(similarState.videoItems) { item ->
+          VideoThumbnailCard(modifier = Modifier, videoThumbnail = item, onClick = {})
+        }
+      }
+    }
+
 //    Row(
 //      modifier = Modifier.padding(horizontal = 16.dp),
 //      horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -287,7 +317,8 @@ fun CreditRowItem(item: CreditItem) {
   Log.d("tag", item.name)
   Column(
     modifier = Modifier
-      .fillMaxWidth().wrapContentHeight()
+      .fillMaxWidth()
+      .wrapContentHeight()
       .padding(horizontal = 6.dp),
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,

@@ -54,6 +54,13 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
   override suspend fun getCredit(movieId: Int): Result<List<CreditItem>, GeneralError> =
     getCredits { tmdbMoviesService.getCredit(movieId) }
 
+  override suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError> =
+    getMovieList {
+      tmdbMoviesService.getSimilar(
+        movieId = movieId,
+      )
+    }
+
   override suspend fun upcomingMovies(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError> =

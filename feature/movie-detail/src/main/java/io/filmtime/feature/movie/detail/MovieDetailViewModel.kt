@@ -11,6 +11,7 @@ import io.filmtime.data.trakt.TraktHistoryRepository
 import io.filmtime.domain.stream.GetStreamInfoUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieCreditUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
+import io.filmtime.domain.tmdb.movies.GetSimilarUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,13 +26,14 @@ class MovieDetailViewModel @Inject constructor(
   private val getMovieDetail: GetMovieDetailsUseCase,
   private val getStreamInfo: GetStreamInfoUseCase,
   private val getCredit: GetMovieCreditUseCase,
+  private val getSimilar: GetSimilarUseCase,
   private val traktHistoryRepository: TraktHistoryRepository,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
   private val _state: MutableStateFlow<MovieDetailState> = MutableStateFlow(MovieDetailState())
   val state = _state.asStateFlow()
-  private val _similarState: MutableStateFlow<MovieDetailState> = MutableStateFlow(MovieDetailState())
+  private val _similarState: MutableStateFlow<MovieDetailSimilarState> = MutableStateFlow(MovieDetailSimilarState())
   val similarState = _similarState.asStateFlow()
 
   private val _creditState: MutableStateFlow<MovieDetailCreditState> = MutableStateFlow(MovieDetailCreditState())
@@ -46,6 +48,38 @@ class MovieDetailViewModel @Inject constructor(
   }
 
   private fun loadSimilar() = viewModelScope.launch {
+    _similarState.value = _similarState.value.copy(isLoading = true)
+    when (val result = getSimilar(videoId)) {
+      is Failure -> {
+        when (result.error) {
+          is GeneralError.ApiError -> {
+            _state.value = _state.value.copy(
+              error = result.error,
+              message = (result.error as GeneralError.ApiError).message,
+              isLoading = false,
+            )
+          }
+
+          GeneralError.NetworkError -> {
+            _state.value = _state.value.copy(
+              error = result.error,
+              message = "No internet connection. Please check your network settings.",
+              isLoading = false,
+            )
+          }
+
+          is GeneralError.UnknownError -> _state.value = _state.value.copy(
+            error = result.error,
+            message = (result.error as GeneralError.UnknownError).error.message,
+            isLoading = false,
+          )
+        }
+      }
+
+      is Success -> {
+        _similarState.value = _similarState.value.copy(videoItems = result.data, isLoading = false)
+      }
+    }
   }
 
   private fun loadCredits() = viewModelScope.launch {

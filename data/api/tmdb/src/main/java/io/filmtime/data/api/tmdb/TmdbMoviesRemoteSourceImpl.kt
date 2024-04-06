@@ -1,5 +1,6 @@
 package io.filmtime.data.api.tmdb
 
+import android.util.Log
 import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
@@ -96,7 +97,12 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
     when (val result = apiFunction()) {
       is NetworkResponse.Success -> {
         val videoListResponse = result.body?.results ?: emptyList()
-        Result.Success(videoListResponse.map { it.toVideoThumbnail() })
+        Result.Success(
+          videoListResponse.map {
+            Log.d("date", "${ it.releaseDate } | ${it.title}" )
+            it.toVideoThumbnail()
+          },
+        )
       }
 
       is NetworkResponse.ApiError -> {

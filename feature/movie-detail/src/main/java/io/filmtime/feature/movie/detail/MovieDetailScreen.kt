@@ -1,6 +1,7 @@
 package io.filmtime.feature.movie.detail
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.AutoMirrored.Filled
@@ -34,16 +36,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.BlurEffect
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,6 +70,7 @@ import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
 import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.VideoDetail
+import java.lang.Float.min
 
 @Composable
 fun MovieDetailScreen(
@@ -113,7 +127,7 @@ fun ShowError(error: GeneralError, message: String, onRefresh: () -> Unit) {
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
 
-  ) {
+    ) {
     LottieAnimation(
       modifier = Modifier.scale(0.8f),
       composition = composition,
@@ -147,35 +161,64 @@ fun MovieDetailContent(
   creditState: MovieDetailCreditState,
   similarState: MovieDetailSimilarState,
 ) {
+  val scrollState = rememberScrollState()
+  var sizeImage by remember { mutableStateOf(IntSize.Zero) }
+  val gradient = Brush.verticalGradient(
+    colors = listOf(Color.Transparent, Color.Black),
+    startY = sizeImage.height.toFloat() / 3,  // 1/3
+    endY = sizeImage.height.toFloat(),
+  )
   Column(
-    modifier = Modifier.verticalScroll(rememberScrollState()),
+    modifier = Modifier.verticalScroll(scrollState),
     verticalArrangement = Arrangement.spacedBy(16.dp),
   ) {
     Box(
       modifier = Modifier
-        .height(500.dp),
+        .height(400.dp),
     ) {
       AsyncImage(
         modifier = Modifier
+          .onGloballyPositioned {
+            sizeImage = it.size
+          }
           .fillMaxWidth(),
         contentScale = ContentScale.Crop,
         model = videoDetail.coverUrl,
         contentDescription = null,
         alignment = Alignment.BottomCenter,
       )
-      Column(modifier = Modifier.align(Alignment.BottomStart)) {
-        Text(
-          modifier = Modifier.padding(horizontal = 16.dp),
-          style = TextStyle(
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp,
-            color = Color.White,
-          ),
-          text = videoDetail.title,
-        )
+      Box(modifier = Modifier
+        .matchParentSize()
+        .background(gradient))
+      Column(modifier = Modifier
+        .align(Alignment.BottomStart)
+        .padding(start = 16.dp, bottom = 16.dp),
+        ) {
+        Row (verticalAlignment = Alignment.CenterVertically){
+          Text(
+            style = TextStyle(
+              fontWeight = FontWeight.Bold,
+              fontSize = 30.sp,
+              color = Color.White,
+            ),
+            text = videoDetail.title,
+          )
+          IconButton(onClick = onPlayPressed) {
+            if (state.isStreamLoading) {
+              CircularProgressIndicator(
+                modifier = Modifier.size(16.dp),
+                color = Color.White,
+                strokeWidth = 2.dp,
+              )
+            }else{
+              Icon(painter = painterResource(R.drawable.play_circle), contentDescription = "play", tint = Color.White)
+            }
+          }
+
+        }
+
         Row(horizontalArrangement = Arrangement.SpaceAround) {
           Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
             style = TextStyle(
               fontWeight = FontWeight.Light,
               fontSize = 15.sp,
@@ -193,9 +236,7 @@ fun MovieDetailContent(
             text = videoDetail.releaseDate,
           )
         }
-        IconButton(onClick = onPlayPressed) {
-          Icon(Icons.Outlined.PlayArrow, contentDescription = "play")
-        }
+
       }
 
       IconButton(onClick = onBackPressed) {
@@ -209,21 +250,7 @@ fun MovieDetailContent(
       text = videoDetail.description,
     )
 
-    Button(
-      modifier = Modifier
-        .padding(horizontal = 16.dp),
-      onClick = onPlayPressed,
-    ) {
-      if (state.isStreamLoading) {
-        CircularProgressIndicator(
-          modifier = Modifier.size(16.dp),
-          color = Color.White,
-          strokeWidth = 2.dp,
-        )
-      } else {
-        Text(text = "Play")
-      }
-    }
+
     videoDetail.isWatched?.let {
       when (it) {
         true -> OutlinedButton(
@@ -284,6 +311,7 @@ fun MovieDetailContent(
       LazyRow(
         modifier = Modifier
           .height(200.dp)
+          .padding(bottom = 6.dp)
           .fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),

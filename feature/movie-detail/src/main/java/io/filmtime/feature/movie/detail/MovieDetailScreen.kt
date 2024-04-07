@@ -20,13 +20,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.AutoMirrored.Filled
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -43,12 +41,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
@@ -70,7 +64,6 @@ import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
 import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.VideoDetail
-import java.lang.Float.min
 
 @Composable
 fun MovieDetailScreen(
@@ -162,10 +155,11 @@ fun MovieDetailContent(
   similarState: MovieDetailSimilarState,
 ) {
   val scrollState = rememberScrollState()
+  Log.d("rank", "${videoDetail.voteAverage}")
   var sizeImage by remember { mutableStateOf(IntSize.Zero) }
   val gradient = Brush.verticalGradient(
     colors = listOf(Color.Transparent, Color.Black),
-    startY = sizeImage.height.toFloat() / 3,  // 1/3
+    startY = sizeImage.height.toFloat() / 3, // 1/3
     endY = sizeImage.height.toFloat(),
   )
   Column(
@@ -187,14 +181,17 @@ fun MovieDetailContent(
         contentDescription = null,
         alignment = Alignment.BottomCenter,
       )
-      Box(modifier = Modifier
-        .matchParentSize()
-        .background(gradient))
-      Column(modifier = Modifier
-        .align(Alignment.BottomStart)
-        .padding(start = 16.dp, bottom = 16.dp),
-        ) {
-        Row (verticalAlignment = Alignment.CenterVertically){
+      Box(
+        modifier = Modifier
+          .matchParentSize()
+          .background(gradient),
+      )
+      Column(
+        modifier = Modifier
+          .align(Alignment.BottomStart)
+          .padding(start = 16.dp, bottom = 16.dp),
+      ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
           Text(
             style = TextStyle(
               fontWeight = FontWeight.Bold,
@@ -210,14 +207,13 @@ fun MovieDetailContent(
                 color = Color.White,
                 strokeWidth = 2.dp,
               )
-            }else{
+            } else {
               Icon(painter = painterResource(R.drawable.play_circle), contentDescription = "play", tint = Color.White)
             }
           }
-
         }
 
-        Row(horizontalArrangement = Arrangement.SpaceAround) {
+        Row(horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.CenterVertically) {
           Text(
             style = TextStyle(
               fontWeight = FontWeight.Light,
@@ -235,8 +231,22 @@ fun MovieDetailContent(
             ),
             text = videoDetail.releaseDate,
           )
-        }
+          CircularProgressIndicator(
+            modifier = Modifier.size(20.dp),
+            progress = { videoDetail.voteAverage },
+            color = when (videoDetail.voteAverage) {
+              in 0.0..0.33 -> {
+                Color.Red
+              }
 
+              in 0.34..0.66 -> {
+                Color.Yellow
+              }
+
+              else -> Color.Green
+            },
+          )
+        }
       }
 
       IconButton(onClick = onBackPressed) {
@@ -249,7 +259,6 @@ fun MovieDetailContent(
 
       text = videoDetail.description,
     )
-
 
     videoDetail.isWatched?.let {
       when (it) {

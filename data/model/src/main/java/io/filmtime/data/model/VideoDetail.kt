@@ -13,4 +13,5 @@ data class VideoDetail(
   val isWatched: Boolean? = null,
   val runtime: String?,
   val releaseDate: String,
+  val voteAverage: Float = 0.0F,
 )

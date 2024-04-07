@@ -99,7 +99,7 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
         val videoListResponse = result.body?.results ?: emptyList()
         Result.Success(
           videoListResponse.map {
-            Log.d("date", "${ it.releaseDate } | ${it.title}" )
+            Log.d("date", "${ it.releaseDate } | ${it.title}")
             it.toVideoThumbnail()
           },
         )

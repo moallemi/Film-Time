@@ -9,6 +9,8 @@ import androidx.navigation.navArgument
 
 fun NavGraphBuilder.movieDetailScreen(
   onStreamReady: (streamUrl: String) -> Unit,
+  onCastItemClick: (castId: Long) -> Unit,
+  onMovieClick: (tmdbId: Int) -> Unit,
   onBack: () -> Unit,
 ) {
   composable(
@@ -22,6 +24,8 @@ fun NavGraphBuilder.movieDetailScreen(
     MovieDetailScreen(
       viewModel = hiltViewModel(),
       onStreamReady = onStreamReady,
+      onCastItemClick = onCastItemClick,
+      onMovieClick = onMovieClick,
       onBackPressed = onBack,
     )
   }

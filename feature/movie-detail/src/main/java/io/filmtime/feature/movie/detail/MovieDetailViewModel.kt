@@ -1,5 +1,6 @@
 package io.filmtime.feature.movie.detail
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -173,5 +174,17 @@ class MovieDetailViewModel @Inject constructor(
         _state.value = _state.value.copy(videoDetail = updated)
       }
     }
+  }
+
+  fun getRateColor() = when (_state.value.videoDetail?.voteAverage ?: 0.0F) {
+    in 0.0..0.33 -> {
+      Color.Red
+    }
+
+    in 0.34..0.66 -> {
+      Color.Yellow
+    }
+
+    else -> Color.Green
   }
 }

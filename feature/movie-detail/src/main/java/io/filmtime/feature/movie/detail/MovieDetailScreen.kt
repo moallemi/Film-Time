@@ -22,7 +22,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.Icons.AutoMirrored.Filled
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
@@ -69,6 +68,8 @@ import io.filmtime.data.model.VideoDetail
 fun MovieDetailScreen(
   viewModel: MovieDetailViewModel,
   onStreamReady: (String) -> Unit,
+  onCastItemClick: (Long) -> Unit,
+  onMovieClick: (Int) -> Unit,
   onBackPressed: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
@@ -98,6 +99,8 @@ fun MovieDetailScreen(
       onPlayPressed = viewModel::loadStreamInfo,
       onAddToHistoryPressed = viewModel::addItemToHistory,
       similarState = similarState,
+      rateColor = viewModel.getRateColor(),
+      onSimilarItemClick = onMovieClick
     )
   }
 }
@@ -153,6 +156,8 @@ fun MovieDetailContent(
   onAddToHistoryPressed: () -> Unit,
   creditState: MovieDetailCreditState,
   similarState: MovieDetailSimilarState,
+  onSimilarItemClick: (Int)->Unit,
+  rateColor: Color,
 ) {
   val scrollState = rememberScrollState()
   Log.d("rank", "${videoDetail.voteAverage}")
@@ -200,6 +205,10 @@ fun MovieDetailContent(
             ),
             text = videoDetail.title,
           )
+
+        }
+
+        Row(horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.CenterVertically) {
           IconButton(onClick = onPlayPressed) {
             if (state.isStreamLoading) {
               CircularProgressIndicator(
@@ -211,10 +220,8 @@ fun MovieDetailContent(
               Icon(painter = painterResource(R.drawable.play_circle), contentDescription = "play", tint = Color.White)
             }
           }
-        }
-
-        Row(horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.CenterVertically) {
           Text(
+            modifier = Modifier.padding(start = 16.dp),
             style = TextStyle(
               fontWeight = FontWeight.Light,
               fontSize = 15.sp,
@@ -231,21 +238,22 @@ fun MovieDetailContent(
             ),
             text = videoDetail.releaseDate,
           )
-          CircularProgressIndicator(
-            modifier = Modifier.size(20.dp),
-            progress = { videoDetail.voteAverage },
-            color = when (videoDetail.voteAverage) {
-              in 0.0..0.33 -> {
-                Color.Red
-              }
-
-              in 0.34..0.66 -> {
-                Color.Yellow
-              }
-
-              else -> Color.Green
-            },
-          )
+          Row(horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
+            CircularProgressIndicator(
+              modifier = Modifier.size(20.dp),
+              progress = { videoDetail.voteAverage },
+              color = rateColor,
+            )
+            Text(
+              modifier = Modifier.padding(horizontal = 2.dp),
+              style = TextStyle(
+                fontWeight = FontWeight.Light,
+                fontSize = 15.sp,
+                color = Color.White,
+              ),
+              text = String.format("%.1f", videoDetail.voteAverage.times(10)),
+            )
+          }
         }
       }
 
@@ -326,10 +334,18 @@ fun MovieDetailContent(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
       ) {
         items(similarState.videoItems) { item ->
-          VideoThumbnailCard(modifier = Modifier, videoThumbnail = item, onClick = {})
+          VideoThumbnailCard(
+            modifier = Modifier, videoThumbnail = item,
+            onClick = {
+              item.ids.tmdbId?.let {
+                onSimilarItemClick(it)
+              } ?: run {
+                Log.e("MovieListScreen", "tmdbId is null")
+              }
+            }
+          )
         }
       }
-    }
 
 //    Row(
 //      modifier = Modifier.padding(horizontal = 16.dp),
@@ -347,6 +363,7 @@ fun MovieDetailContent(
 //      modifier = Modifier.padding(horizontal = 16.dp),
 //      text = videoDetail.genres.joinToString(", "),
 //    )
+    }
   }
 }
 

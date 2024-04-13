@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
 
             movieDetailScreen(
               onStreamReady = navController::navigateToPlayer,
-              onCastItemClick ={},
+              onCastItemClick = {},
               onMovieClick = navController::navigateToMovieDetail,
               onBack = navController::popBackStack,
             )

@@ -1,6 +1,5 @@
 package io.filmtime.data.api.tmdb
 
-import android.util.Log
 import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result

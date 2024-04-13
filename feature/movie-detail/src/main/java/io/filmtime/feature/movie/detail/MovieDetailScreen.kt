@@ -100,7 +100,7 @@ fun MovieDetailScreen(
       onAddToHistoryPressed = viewModel::addItemToHistory,
       similarState = similarState,
       rateColor = viewModel.getRateColor(),
-      onSimilarItemClick = onMovieClick
+      onSimilarItemClick = onMovieClick,
     )
   }
 }
@@ -123,7 +123,7 @@ fun ShowError(error: GeneralError, message: String, onRefresh: () -> Unit) {
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+  ) {
     LottieAnimation(
       modifier = Modifier.scale(0.8f),
       composition = composition,
@@ -156,7 +156,7 @@ fun MovieDetailContent(
   onAddToHistoryPressed: () -> Unit,
   creditState: MovieDetailCreditState,
   similarState: MovieDetailSimilarState,
-  onSimilarItemClick: (Int)->Unit,
+  onSimilarItemClick: (Int) -> Unit,
   rateColor: Color,
 ) {
   val scrollState = rememberScrollState()
@@ -205,7 +205,6 @@ fun MovieDetailContent(
             ),
             text = videoDetail.title,
           )
-
         }
 
         Row(horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.CenterVertically) {
@@ -335,14 +334,15 @@ fun MovieDetailContent(
       ) {
         items(similarState.videoItems) { item ->
           VideoThumbnailCard(
-            modifier = Modifier, videoThumbnail = item,
+            modifier = Modifier,
+            videoThumbnail = item,
             onClick = {
               item.ids.tmdbId?.let {
                 onSimilarItemClick(it)
               } ?: run {
                 Log.e("MovieListScreen", "tmdbId is null")
               }
-            }
+            },
           )
         }
       }

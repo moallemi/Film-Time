@@ -29,7 +29,7 @@ fun TmdbMovieDetailsResponse.toVideoDetail() =
     description = overview ?: "",
     runtime = fromMinutesToHHmm(runtime ?: 0),
     releaseDate = releaseDate?.split("-")?.get(0) ?: "N/A",
-    voteAverage = voteAverage?.div(10)?.toFloat()?:0.0F  ,
+    voteAverage = voteAverage?.div(10)?.toFloat() ?: 0.0F,
   )
 
 fun TmdbShowDetailsResponse.toVideoDetail() =

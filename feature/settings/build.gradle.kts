@@ -1,3 +1,4 @@
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
   alias(libs.plugins.com.android.library)
   alias(libs.plugins.org.jetbrains.kotlin.android)
@@ -7,7 +8,7 @@ plugins {
 }
 
 android {
-  namespace = "io.filmtime.feature.shows"
+  namespace = "io.filmtime.feature.settings"
   compileSdk = 34
 
   defaultConfig {
@@ -17,12 +18,6 @@ android {
     consumerProguardFiles("consumer-rules.pro")
   }
 
-  buildTypes {
-    release {
-      isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-    }
-  }
   buildFeatures {
     compose = true
   }
@@ -47,10 +42,6 @@ android {
 }
 
 dependencies {
-
-  implementation(project(":data:model"))
-  implementation(project(":domain:tmdb-shows"))
-  implementation(project(":core:ui:common"))
 
   implementation(libs.core.ktx)
   implementation(libs.appcompat)

@@ -53,6 +53,7 @@ lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.
 lifecycle-viewmodel-compose-runtime = "androidx.lifecycle:lifecycle-runtime-compose:2.7.0"
 lottie = "com.airbnb.android:lottie-compose:6.3.0"
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+androidx-ui-graphics-android = { group = "androidx.compose.ui", name = "ui-graphics-android", version = "1.6.4" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }

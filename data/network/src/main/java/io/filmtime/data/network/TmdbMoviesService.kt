@@ -37,4 +37,14 @@ interface TmdbMoviesService {
   suspend fun upcoming(
     @Query("page") page: Int,
   ): NetworkResponse<TmdbVideoListResponse, TmdbErrorResponse>
+
+  @GET("movie/{movie_id}/credits")
+  suspend fun getCredit(
+    @Path("movie_id") movieId: Int,
+  ): NetworkResponse<TmdbCreditsResponse, TmdbErrorResponse>
+
+  @GET("movie/{movie_id}/similar")
+  suspend fun getSimilar(
+    @Path("movie_id") movieId: Int,
+  ): NetworkResponse<TmdbVideoListResponse, TmdbErrorResponse>
 }

@@ -11,4 +11,8 @@ data class VideoDetail(
   val spokenLanguages: List<String>,
   val description: String,
   val isWatched: Boolean? = null,
+  val runtime: String?,
+  val releaseDate: String,
+  val voteAverage: Float = 0.0F,
+  val voteColor: Long = 0,
 )

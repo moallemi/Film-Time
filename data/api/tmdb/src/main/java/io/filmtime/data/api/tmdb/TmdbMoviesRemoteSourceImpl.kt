@@ -1,9 +1,11 @@
 package io.filmtime.data.api.tmdb
 
+import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
+import io.filmtime.data.network.TmdbCreditsResponse
 import io.filmtime.data.network.TmdbErrorResponse
 import io.filmtime.data.network.TmdbMoviesService
 import io.filmtime.data.network.TmdbVideoListResponse
@@ -49,6 +51,16 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
       )
     }
 
+  override suspend fun getCredit(movieId: Int): Result<List<CreditItem>, GeneralError> =
+    getCredits { tmdbMoviesService.getCredit(movieId) }
+
+  override suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError> =
+    getMovieList {
+      tmdbMoviesService.getSimilar(
+        movieId = movieId,
+      )
+    }
+
   override suspend fun upcomingMovies(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError> =
@@ -84,7 +96,11 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
     when (val result = apiFunction()) {
       is NetworkResponse.Success -> {
         val videoListResponse = result.body?.results ?: emptyList()
-        Result.Success(videoListResponse.map { it.toVideoThumbnail() })
+        Result.Success(
+          videoListResponse.map {
+            it.toVideoThumbnail()
+          },
+        )
       }
 
       is NetworkResponse.ApiError -> {
@@ -100,4 +116,22 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
     DAY("day"),
     WEEK("week"),
   }
+
+  private suspend fun getCredits(
+    apiFunction: suspend () -> NetworkResponse<TmdbCreditsResponse, TmdbErrorResponse>,
+  ): Result<List<CreditItem>, GeneralError> =
+    when (val result = apiFunction()) {
+      is NetworkResponse.Success -> {
+        val creditResponse = result.body?.cast ?: emptyList()
+        Result.Success(creditResponse.map { it.toCreditItem() })
+      }
+
+      is NetworkResponse.ApiError -> {
+        val errorResponse = result.body
+        Result.Failure(GeneralError.ApiError(errorResponse.statusMessage, errorResponse.statusCode))
+      }
+
+      is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
+      is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
+    }
 }

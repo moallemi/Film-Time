@@ -14,4 +14,5 @@ data class VideoDetail(
   val runtime: String?,
   val releaseDate: String,
   val voteAverage: Float = 0.0F,
+  val voteColor: Long = 0,
 )

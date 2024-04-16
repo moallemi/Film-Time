@@ -99,7 +99,6 @@ fun MovieDetailScreen(
       onPlayPressed = viewModel::loadStreamInfo,
       onAddToHistoryPressed = viewModel::addItemToHistory,
       similarState = similarState,
-      rateColor = viewModel.getRateColor(),
       onSimilarItemClick = onMovieClick,
     )
   }
@@ -157,10 +156,8 @@ fun MovieDetailContent(
   creditState: MovieDetailCreditState,
   similarState: MovieDetailSimilarState,
   onSimilarItemClick: (Int) -> Unit,
-  rateColor: Color,
 ) {
   val scrollState = rememberScrollState()
-  Log.d("rank", "${videoDetail.voteAverage}")
   var sizeImage by remember { mutableStateOf(IntSize.Zero) }
   val gradient = Brush.verticalGradient(
     colors = listOf(Color.Transparent, Color.Black),
@@ -241,7 +238,7 @@ fun MovieDetailContent(
             CircularProgressIndicator(
               modifier = Modifier.size(20.dp),
               progress = { videoDetail.voteAverage },
-              color = rateColor,
+              color = Color(videoDetail.voteColor),
             )
             Text(
               modifier = Modifier.padding(horizontal = 2.dp),
@@ -369,7 +366,6 @@ fun MovieDetailContent(
 
 @Composable
 fun CreditRowItem(item: CreditItem) {
-  Log.d("tag", item.name)
   Column(
     modifier = Modifier
       .fillMaxWidth()

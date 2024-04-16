@@ -1,6 +1,5 @@
 package io.filmtime.feature.movie.detail
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -54,31 +54,36 @@ class MovieDetailViewModel @Inject constructor(
       is Failure -> {
         when (result.error) {
           is GeneralError.ApiError -> {
-            _state.value = _state.value.copy(
-              error = result.error,
-              message = (result.error as GeneralError.ApiError).message,
-              isLoading = false,
-            )
+            _similarState.update { state ->
+              state.copy(
+                errorMessage = (result.error as GeneralError.ApiError).message.orEmpty(),
+                isLoading = false,
+              )
+            }
           }
 
           GeneralError.NetworkError -> {
-            _state.value = _state.value.copy(
-              error = result.error,
-              message = "No internet connection. Please check your network settings.",
+            _similarState.update { state ->
+              state.copy(
+                errorMessage = "No internet connection. Please check your network settings.",
+                isLoading = false,
+              )
+            }
+          }
+
+          is GeneralError.UnknownError -> _similarState.update { state ->
+            state.copy(
+              errorMessage = (result.error as GeneralError.UnknownError).error.message.orEmpty(),
               isLoading = false,
             )
           }
-
-          is GeneralError.UnknownError -> _state.value = _state.value.copy(
-            error = result.error,
-            message = (result.error as GeneralError.UnknownError).error.message,
-            isLoading = false,
-          )
         }
       }
 
       is Success -> {
-        _similarState.value = _similarState.value.copy(videoItems = result.data, isLoading = false)
+        _similarState.update { state ->
+          state.copy(videoItems = result.data, isLoading = false, errorMessage = "")
+        }
       }
     }
   }
@@ -89,31 +94,39 @@ class MovieDetailViewModel @Inject constructor(
       is Failure -> {
         when (result.error) {
           is GeneralError.ApiError -> {
-            _state.value = _state.value.copy(
-              error = result.error,
-              message = (result.error as GeneralError.ApiError).message,
-              isLoading = false,
-            )
+            _creditState.update { state ->
+              state.copy(
+                error = result.error,
+                message = (result.error as GeneralError.ApiError).message,
+                isLoading = false,
+              )
+            }
           }
 
           GeneralError.NetworkError -> {
-            _state.value = _state.value.copy(
+            _creditState.update { state ->
+              state.copy(
+                error = result.error,
+                message = "No internet connection. Please check your network settings.",
+                isLoading = false,
+              )
+            }
+          }
+
+          is GeneralError.UnknownError -> _creditState.update { state ->
+            state.copy(
               error = result.error,
-              message = "No internet connection. Please check your network settings.",
+              message = (result.error as GeneralError.UnknownError).error.message,
               isLoading = false,
             )
           }
-
-          is GeneralError.UnknownError -> _state.value = _state.value.copy(
-            error = result.error,
-            message = (result.error as GeneralError.UnknownError).error.message,
-            isLoading = false,
-          )
         }
       }
 
       is Success -> {
-        _creditState.value = _creditState.value.copy(credit = result.data, isLoading = false)
+        _creditState.update { state ->
+          state.copy(credit = result.data, isLoading = false)
+        }
       }
     }
   }
@@ -123,32 +136,40 @@ class MovieDetailViewModel @Inject constructor(
 
     when (val result = getMovieDetail(videoId)) {
       is Success -> {
-        _state.value = _state.value.copy(videoDetail = result.data, isLoading = false)
+        _state.update { state ->
+          state.copy(videoDetail = result.data, isLoading = false)
+        }
       }
 
       is Failure -> {
         when (result.error) {
           is GeneralError.ApiError -> {
-            _state.value = _state.value.copy(
-              error = result.error,
-              message = (result.error as GeneralError.ApiError).message,
-              isLoading = false,
-            )
+            _state.update { state ->
+              state.copy(
+                error = result.error,
+                message = (result.error as GeneralError.ApiError).message,
+                isLoading = false,
+              )
+            }
           }
 
           GeneralError.NetworkError -> {
-            _state.value = _state.value.copy(
+            _state.update { state ->
+              state.copy(
+                error = result.error,
+                message = "No internet connection. Please check your network settings.",
+                isLoading = false,
+              )
+            }
+          }
+
+          is GeneralError.UnknownError -> _state.update { state ->
+            state.copy(
               error = result.error,
-              message = "No internet connection. Please check your network settings.",
+              message = (result.error as GeneralError.UnknownError).error.message,
               isLoading = false,
             )
           }
-
-          is GeneralError.UnknownError -> _state.value = _state.value.copy(
-            error = result.error,
-            message = (result.error as GeneralError.UnknownError).error.message,
-            isLoading = false,
-          )
         }
       }
     }
@@ -174,17 +195,5 @@ class MovieDetailViewModel @Inject constructor(
         _state.value = _state.value.copy(videoDetail = updated)
       }
     }
-  }
-
-  fun getRateColor() = when (_state.value.videoDetail?.voteAverage ?: 0.0F) {
-    in 0.0..0.33 -> {
-      Color.Red
-    }
-
-    in 0.34..0.66 -> {
-      Color.Yellow
-    }
-
-    else -> Color.Green
   }
 }

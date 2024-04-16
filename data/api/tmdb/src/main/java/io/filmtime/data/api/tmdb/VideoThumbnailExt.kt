@@ -10,7 +10,7 @@ import io.filmtime.data.network.TmdbShowResultResponse
 import io.filmtime.data.network.TmdbVideoResultResponse
 import java.util.concurrent.TimeUnit
 
-private val TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original/"
+internal val TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original/"
 
 fun TmdbMovieDetailsResponse.toVideoDetail() =
   VideoDetail(
@@ -21,7 +21,7 @@ fun TmdbMovieDetailsResponse.toVideoDetail() =
     title = title ?: "",
     posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
     coverUrl = TMDB_BASE_IMAGE_URL.plus(backdropPath),
-    year = releaseDate?.take(4)?.toInt() ?: 0,
+    year = releaseDate?.takeIf { it.isNotEmpty() }?.take(4)?.toInt() ?: 0,
     genres = genres?.map { it.name } ?: listOf<String>(),
     originalLanguage = originalLanguage,
     spokenLanguages = spokenLanguages?.map { it.englishName ?: "" }?.filter { it.isNotEmpty() }
@@ -30,7 +30,15 @@ fun TmdbMovieDetailsResponse.toVideoDetail() =
     runtime = fromMinutesToHHmm(runtime ?: 0),
     releaseDate = releaseDate?.split("-")?.get(0) ?: "N/A",
     voteAverage = voteAverage?.div(10)?.toFloat() ?: 0.0F,
+    voteColor = voteAverage.toRatingColor(),
   )
+
+fun Double?.toRatingColor() = when (this) {
+  null -> 0xFFFFFFFF
+  in 0.0..0.33 -> 0xFFFF0000
+  in 0.34..0.66 -> 0xFFFFFF00
+  else -> 0xFF00FF00
+}
 
 fun TmdbShowDetailsResponse.toVideoDetail() =
   VideoDetail(

@@ -28,7 +28,8 @@ fun LoadingCastSectionRow(
     items(numberOfSections) {
       Column(
         modifier = Modifier
-          .fillMaxWidth().wrapContentHeight()
+          .fillMaxWidth()
+          .wrapContentHeight()
           .padding(horizontal = 6.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -41,7 +42,9 @@ fun LoadingCastSectionRow(
             .background(shimmerBrush()),
         )
         Box(
-          modifier = Modifier.size(50.dp, 10.dp).padding(vertical = 4.dp)
+          modifier = Modifier
+            .size(50.dp, 10.dp)
+            .padding(vertical = 4.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(shimmerBrush()),
         )

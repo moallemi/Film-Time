@@ -21,6 +21,13 @@ dependencies {
   compileOnly(libs.kotlin.gradlePlugin)
 }
 
+tasks {
+  validatePlugins {
+    enableStricterValidation = true
+    failOnWarning = true
+  }
+}
+
 gradlePlugin {
   plugins {
     register("androidApplicationCompose") {

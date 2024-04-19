@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Film Time</string>
+    <string name="home">Home</string>
+    <string name="movies">Movies</string>
+    <string name="series">Series</string>
+    <string name="settings">Settings</string>
 </resources>

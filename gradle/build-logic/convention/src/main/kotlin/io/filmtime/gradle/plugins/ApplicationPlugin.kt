@@ -5,6 +5,7 @@ import io.filmtime.gradle.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 
 class ApplicationPlugin : Plugin<Project> {
   override fun apply(target: Project) {
@@ -23,6 +24,10 @@ class ApplicationPlugin : Plugin<Project> {
         defaultConfig {
           targetSdk = 34
         }
+      }
+
+      dependencies {
+        add("implementation", project(":core:design-system"))
       }
     }
   }

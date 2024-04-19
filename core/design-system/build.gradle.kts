@@ -18,6 +18,7 @@ dependencies {
   api(platform(libs.compose.bom))
   api(libs.ui)
   api(libs.material3)
+  api(libs.icons.extended)
 
   api(libs.coil.compose)
 

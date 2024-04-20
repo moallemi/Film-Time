@@ -53,7 +53,7 @@ internal class ShowsViewModel @Inject constructor(
                   VideoSection(
                     title = videoListType.name,
                     items = result.data,
-                    type = VideoListType.Trending,
+                    type = videoListType,
                   ),
                 ),
               )

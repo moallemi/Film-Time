@@ -17,6 +17,7 @@ private const val LIST_TYPE_ARG = "listType"
 fun NavGraphBuilder.videoThumbnailGridScreen(
   rootRoute: DestinationRoute,
   onMovieClick: (DestinationRoute, tmdbId: Int) -> Unit,
+  onShowClick: (DestinationRoute, tmdbId: Int) -> Unit,
   onBack: () -> Unit,
 ) {
   composable(
@@ -32,6 +33,7 @@ fun NavGraphBuilder.videoThumbnailGridScreen(
   ) {
     VideoThumbnailGridScreen(
       onMovieClick = { onMovieClick(rootRoute, it) },
+      onShowClick = { onShowClick(rootRoute, it) },
       onBack = onBack,
     )
   }

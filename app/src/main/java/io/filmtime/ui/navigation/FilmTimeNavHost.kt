@@ -55,9 +55,8 @@ fun FilmTimeNavHost(
       nestedGraphs = { rootRoute ->
         videoThumbnailGridScreen(rootRoute, navController)
         movieDetailScreen(rootRoute, navController)
-        playerScreen(
-          rootRoute = rootRoute,
-        )
+        showDetailScreen(rootRoute)
+        playerScreen(rootRoute)
       },
     )
 
@@ -71,11 +70,8 @@ fun FilmTimeNavHost(
         )
       },
       nestedGraphs = { rootRoute ->
-        videoThumbnailGridScreen(
-          rootRoute = rootRoute,
-          onMovieClick = navController::navigateToMovieDetail,
-          onBack = navController::popBackStack,
-        )
+        videoThumbnailGridScreen(rootRoute, navController)
+        movieDetailScreen(rootRoute, navController)
       },
     )
 
@@ -89,11 +85,7 @@ fun FilmTimeNavHost(
         )
       },
       nestedGraphs = { rootRoute ->
-        videoThumbnailGridScreen(
-          rootRoute = rootRoute,
-          onMovieClick = navController::navigateToShowDetail,
-          onBack = navController::popBackStack,
-        )
+        videoThumbnailGridScreen(rootRoute, navController)
         showDetailScreen(rootRoute = rootRoute)
         playerScreen(rootRoute = rootRoute)
       },
@@ -115,6 +107,7 @@ private fun NavGraphBuilder.videoThumbnailGridScreen(
   videoThumbnailGridScreen(
     rootRoute = rootRoute,
     onMovieClick = navController::navigateToMovieDetail,
+    onShowClick = navController::navigateToShowDetail,
     onBack = navController::popBackStack,
   )
 }

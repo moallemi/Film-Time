@@ -22,10 +22,12 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import io.filmtime.core.designsystem.plus
 import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
 import io.filmtime.data.model.VideoThumbnail
+import io.filmtime.data.model.VideoType
 
 @Composable
 fun VideoThumbnailGridScreen(
   onMovieClick: (tmdbId: Int) -> Unit,
+  onShowClick: (tmdbId: Int) -> Unit,
   onBack: () -> Unit,
 ) {
   val viewModel = hiltViewModel<VideoThumbnailGridViewModel>()
@@ -36,6 +38,7 @@ fun VideoThumbnailGridScreen(
     state = state,
     pagedList = pagedList,
     onMovieClick = onMovieClick,
+    onShowClick = onShowClick,
     onBack = onBack,
   )
 }
@@ -46,6 +49,7 @@ private fun VideoThumbnailGridScreen(
   state: VideoThumbnailGridUiState,
   pagedList: LazyPagingItems<VideoThumbnail>,
   onMovieClick: (tmdbId: Int) -> Unit,
+  onShowClick: (tmdbId: Int) -> Unit,
   onBack: () -> Unit,
 ) {
   Scaffold(
@@ -59,6 +63,7 @@ private fun VideoThumbnailGridScreen(
         contentPadding = padding,
         pagedList = pagedList,
         onMovieClick = onMovieClick,
+        onShowClick = onShowClick,
       )
     },
   )
@@ -70,6 +75,7 @@ private fun MovieListContent(
   contentPadding: PaddingValues,
   pagedList: LazyPagingItems<VideoThumbnail>,
   onMovieClick: (tmdbId: Int) -> Unit,
+  onShowClick: (tmdbId: Int) -> Unit,
 ) {
   LazyVerticalGrid(
     columns = GridCells.Adaptive(100.dp),
@@ -82,18 +88,21 @@ private fun MovieListContent(
       pagedList.itemCount,
       key = { index -> pagedList[index]?.ids?.tmdbId ?: index },
     ) { index ->
-      val movie = pagedList[index]
-      if (movie != null) {
+      val videoThumbnail = pagedList[index]
+      if (videoThumbnail != null) {
         VideoThumbnailCard(
           modifier = Modifier
             .animateItemPlacement()
             .width(200.dp),
-          videoThumbnail = movie,
+          videoThumbnail = videoThumbnail,
           onClick = {
-            movie.ids.tmdbId?.let {
-              onMovieClick(it)
+            videoThumbnail.ids.tmdbId?.let {
+              when (videoThumbnail.type) {
+                VideoType.Movie -> onMovieClick(it)
+                VideoType.Show -> onShowClick(it)
+              }
             } ?: run {
-              Log.e("MovieListScreen", "tmdbId is null")
+              Log.e("VideoThumbnailGridScreen", "tmdbId is null")
             }
           },
         )

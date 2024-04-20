@@ -16,7 +16,7 @@ fun NavGraphBuilder.movieDetailScreen(
   onBack: () -> Unit,
 ) {
   composable(
-    route = "${rootRoute.route}/detail/{video_id}",
+    route = "${rootRoute.route}/movie_detail/{video_id}",
     arguments = listOf(
       navArgument("video_id") {
         type = NavType.IntType
@@ -37,5 +37,5 @@ fun NavController.navigateToMovieDetail(
   rootRoute: DestinationRoute,
   tmdbId: Int,
 ) {
-  navigate("${rootRoute.route}/detail/$tmdbId")
+  navigate("${rootRoute.route}/movie_detail/$tmdbId")
 }

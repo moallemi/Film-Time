@@ -12,7 +12,7 @@ fun NavGraphBuilder.showDetailScreen(
   rootRoute: DestinationRoute,
 ) {
   composable(
-    route = "${rootRoute.route}/detail/{video_id}",
+    route = "${rootRoute.route}/show_detail/{video_id}",
     arguments = listOf(
       navArgument("video_id") {
         type = NavType.IntType
@@ -29,5 +29,5 @@ fun NavController.navigateToShowDetail(
   rootRoute: DestinationRoute,
   tmdbId: Int,
 ) {
-  navigate("${rootRoute.route}/detail/$tmdbId")
+  navigate("${rootRoute.route}/show_detail/$tmdbId")
 }

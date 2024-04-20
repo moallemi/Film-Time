@@ -2,17 +2,23 @@ package io.filmtime.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
+import io.filmtime.core.ui.common.DestinationRoute
 import io.filmtime.data.model.VideoListType
 import io.filmtime.data.model.VideoType
+import io.filmtime.feature.home.GRAPH_HOME_ROUTE
+import io.filmtime.feature.home.homeGraph
 import io.filmtime.feature.movie.detail.movieDetailScreen
 import io.filmtime.feature.movie.detail.navigateToMovieDetail
+import io.filmtime.feature.movies.moviesGraph
 import io.filmtime.feature.player.navigateToPlayer
 import io.filmtime.feature.player.playerScreen
+import io.filmtime.feature.settings.settingsGraph
 import io.filmtime.feature.show.detail.navigateToShowDetail
 import io.filmtime.feature.show.detail.showDetailScreen
+import io.filmtime.feature.shows.showsGraph
 import io.filmtime.feature.trakt.login.navigateToTraktLogin
 import io.filmtime.feature.trakt.login.traktLoginScreen
 import io.filmtime.feature.video.thumbnail.grid.navigateToVideoThumbnailGridScreen
@@ -23,65 +29,104 @@ fun FilmTimeNavHost(
   navController: NavHostController,
   modifier: Modifier = Modifier,
 ) {
-  NavHost(navController = navController, startDestination = "home") {
-    homeScreen(
+  NavHost(
+    navController = navController,
+    startDestination = GRAPH_HOME_ROUTE.route,
+  ) {
+    homeGraph(
       onMovieClick = navController::navigateToMovieDetail,
       onShowClick = navController::navigateToShowDetail,
       onTraktClick = navController::navigateToTraktLogin,
-      onTrendingMoviesClick = {
+      onTrendingMoviesClick = { rootRoute ->
         navController.navigateToVideoThumbnailGridScreen(
+          rootRoute = rootRoute,
           videoType = VideoType.Movie,
           listType = VideoListType.Trending,
         )
       },
-      onTrendingShowsClick = {
+      onTrendingShowsClick = { rootRoute ->
         navController.navigateToVideoThumbnailGridScreen(
+          rootRoute = rootRoute,
           videoType = VideoType.Show,
           listType = VideoListType.Trending,
         )
       },
-    )
-
-    videoThumbnailGridScreen(
-      onMovieClick = navController::navigateToMovieDetail,
-      onBack = navController::popBackStack,
-    )
-
-    movieDetailScreen(
-      onStreamReady = navController::navigateToPlayer,
-      onCastItemClick = {},
-      onMovieClick = navController::navigateToMovieDetail,
-      onBack = navController::popBackStack,
-    )
-
-    showDetailScreen()
-
-    playerScreen()
-
-    moviesScreen(
-      onMovieClick = navController::navigateToMovieDetail,
-      onSectionClick = { listType ->
-        navController.navigateToVideoThumbnailGridScreen(
-          videoType = VideoType.Movie,
-          listType = listType,
+      nestedGraphs = { rootRoute ->
+        videoThumbnailGridScreen(rootRoute, navController)
+        movieDetailScreen(rootRoute, navController)
+        playerScreen(
+          rootRoute = rootRoute,
         )
       },
     )
 
-    showsScreen(
+    moviesGraph(
+      onMovieClick = navController::navigateToMovieDetail,
+      onSectionClick = { rootRoute, listType ->
+        navController.navigateToVideoThumbnailGridScreen(
+          rootRoute = rootRoute,
+          videoType = VideoType.Movie,
+          listType = listType,
+        )
+      },
+      nestedGraphs = { rootRoute ->
+        videoThumbnailGridScreen(
+          rootRoute = rootRoute,
+          onMovieClick = navController::navigateToMovieDetail,
+          onBack = navController::popBackStack,
+        )
+      },
+    )
+
+    showsGraph(
       onShowClick = navController::navigateToShowDetail,
-      onSectionClick = { listType ->
+      onSectionClick = { rootRoute, listType ->
         navController.navigateToVideoThumbnailGridScreen(
+          rootRoute = rootRoute,
           videoType = VideoType.Show,
           listType = listType,
         )
       },
-
-      )
+      nestedGraphs = { rootRoute ->
+        videoThumbnailGridScreen(
+          rootRoute = rootRoute,
+          onMovieClick = navController::navigateToShowDetail,
+          onBack = navController::popBackStack,
+        )
+        showDetailScreen(rootRoute = rootRoute)
+        playerScreen(rootRoute = rootRoute)
+      },
+    )
 
     traktLoginScreen(
       onBack = navController::popBackStack,
       onSuccess = navController::popBackStack,
     )
+
+    settingsGraph()
   }
+}
+
+private fun NavGraphBuilder.videoThumbnailGridScreen(
+  rootRoute: DestinationRoute,
+  navController: NavHostController,
+) {
+  videoThumbnailGridScreen(
+    rootRoute = rootRoute,
+    onMovieClick = navController::navigateToMovieDetail,
+    onBack = navController::popBackStack,
+  )
+}
+
+private fun NavGraphBuilder.movieDetailScreen(
+  rootRoute: DestinationRoute,
+  navController: NavHostController,
+) {
+  movieDetailScreen(
+    rootRoute = rootRoute,
+    onStreamReady = navController::navigateToPlayer,
+    onCastItemClick = { _, _ -> },
+    onMovieClick = navController::navigateToMovieDetail,
+    onBack = navController::popBackStack,
+  )
 }

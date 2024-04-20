@@ -6,10 +6,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import io.filmtime.core.ui.common.DestinationRoute
 
-fun NavGraphBuilder.playerScreen() {
+fun NavGraphBuilder.playerScreen(
+  rootRoute: DestinationRoute,
+) {
   composable(
-    route = "player/{stream_url}",
+    route = "${rootRoute.route}/player/{stream_url}",
     arguments = listOf(
       navArgument("stream_url") {
         type = NavType.StringType
@@ -22,7 +25,10 @@ fun NavGraphBuilder.playerScreen() {
   }
 }
 
-fun NavController.navigateToPlayer(streamUrl: String) {
+fun NavController.navigateToPlayer(
+  rootRoute: DestinationRoute,
+  streamUrl: String,
+) {
   val encoded = Uri.encode(streamUrl)
-  navigate("player/$encoded")
+  navigate("${rootRoute.route}/player/$encoded")
 }

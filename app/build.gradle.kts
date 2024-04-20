@@ -21,6 +21,7 @@ android {
 dependencies {
 
   implementation(project(":data:model"))
+  implementation(project(":core:ui:common"))
   implementation(project(":feature:movie-detail"))
   implementation(project(":feature:show-detail"))
   implementation(project(":feature:home"))

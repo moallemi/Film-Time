@@ -6,15 +6,21 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import io.filmtime.core.ui.common.DestinationRoute
 import io.filmtime.data.model.VideoListType
 import io.filmtime.data.model.VideoType
 
+private const val ROUTE_PATH = "video-thumbnail-grid"
+private const val VIDEO_TYPE_ARG = "videoType"
+private const val LIST_TYPE_ARG = "listType"
+
 fun NavGraphBuilder.videoThumbnailGridScreen(
-  onMovieClick: (tmdbId: Int) -> Unit,
+  rootRoute: DestinationRoute,
+  onMovieClick: (DestinationRoute, tmdbId: Int) -> Unit,
   onBack: () -> Unit,
 ) {
   composable(
-    route = "$ROUTE_PATH/{$VIDEO_TYPE_ARG}/{$LIST_TYPE_ARG}",
+    route = "${rootRoute.route}/$ROUTE_PATH/{$VIDEO_TYPE_ARG}/{$LIST_TYPE_ARG}",
     arguments = listOf(
       navArgument(VIDEO_TYPE_ARG) {
         type = NavType.EnumType(VideoType::class.java)
@@ -25,17 +31,18 @@ fun NavGraphBuilder.videoThumbnailGridScreen(
     ),
   ) {
     VideoThumbnailGridScreen(
-      onMovieClick = onMovieClick,
+      onMovieClick = { onMovieClick(rootRoute, it) },
       onBack = onBack,
     )
   }
 }
 
 fun NavController.navigateToVideoThumbnailGridScreen(
+  rootRoute: DestinationRoute,
   videoType: VideoType,
   listType: VideoListType,
 ) {
-  navigate("$ROUTE_PATH/$videoType/$listType")
+  navigate("${rootRoute.route}/$ROUTE_PATH/$videoType/$listType")
 }
 
 internal class VideoThumbnailGridArgs(
@@ -47,7 +54,3 @@ internal class VideoThumbnailGridArgs(
     listType = savedStateHandle[LIST_TYPE_ARG] ?: throw IllegalArgumentException("List type not found"),
   )
 }
-
-internal const val ROUTE_PATH = "video-thumbnail-grid"
-internal const val VIDEO_TYPE_ARG = "videoType"
-internal const val LIST_TYPE_ARG = "listType"

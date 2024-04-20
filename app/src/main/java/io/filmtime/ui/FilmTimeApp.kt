@@ -7,7 +7,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navOptions
-import io.filmtime.feature.settings.navigateToSettingsGraph
 import io.filmtime.ui.navigation.FilmTimeNavHost
 import io.filmtime.ui.navigation.FilmTimeNavigationBar
 import io.filmtime.ui.navigation.RootDestination
@@ -36,10 +35,10 @@ fun FilmTimeApp(
           }
 
           when (destination) {
-            Home -> navController.navigate(Home.destinationRoute, topLevelNavOptions)
-            Movies -> navController.navigate(Movies.destinationRoute, topLevelNavOptions)
-            Settings -> navController.navigateToSettingsGraph()
-            Shows -> navController.navigate(Shows.destinationRoute, topLevelNavOptions)
+            Home -> navController.navigate(Home.destinationRoute.route, topLevelNavOptions)
+            Movies -> navController.navigate(Movies.destinationRoute.route, topLevelNavOptions)
+            Shows -> navController.navigate(Shows.destinationRoute.route, topLevelNavOptions)
+            Settings -> navController.navigate(Settings.destinationRoute.route, topLevelNavOptions)
           }
         },
       )

@@ -6,15 +6,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import io.filmtime.core.ui.common.DestinationRoute
 
 fun NavGraphBuilder.movieDetailScreen(
-  onStreamReady: (streamUrl: String) -> Unit,
-  onCastItemClick: (castId: Long) -> Unit,
-  onMovieClick: (tmdbId: Int) -> Unit,
+  rootRoute: DestinationRoute,
+  onStreamReady: (DestinationRoute, streamUrl: String) -> Unit,
+  onCastItemClick: (DestinationRoute, castId: Long) -> Unit,
+  onMovieClick: (DestinationRoute, tmdbId: Int) -> Unit,
   onBack: () -> Unit,
 ) {
   composable(
-    route = "detail/{video_id}",
+    route = "${rootRoute.route}/detail/{video_id}",
     arguments = listOf(
       navArgument("video_id") {
         type = NavType.IntType
@@ -23,14 +25,17 @@ fun NavGraphBuilder.movieDetailScreen(
   ) {
     MovieDetailScreen(
       viewModel = hiltViewModel(),
-      onStreamReady = onStreamReady,
-      onCastItemClick = onCastItemClick,
-      onMovieClick = onMovieClick,
+      onStreamReady = { onStreamReady(rootRoute, it) },
+      onCastItemClick = { onCastItemClick(rootRoute, it) },
+      onMovieClick = { onMovieClick(rootRoute, it) },
       onBackPressed = onBack,
     )
   }
 }
 
-fun NavController.navigateToMovieDetail(tmdbId: Int) {
-  navigate("detail/$tmdbId")
+fun NavController.navigateToMovieDetail(
+  rootRoute: DestinationRoute,
+  tmdbId: Int,
+) {
+  navigate("${rootRoute.route}/detail/$tmdbId")
 }

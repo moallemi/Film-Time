@@ -6,10 +6,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import io.filmtime.core.ui.common.DestinationRoute
 
-fun NavGraphBuilder.showDetailScreen() {
+fun NavGraphBuilder.showDetailScreen(
+  rootRoute: DestinationRoute,
+) {
   composable(
-    route = "show/detail/{video_id}",
+    route = "${rootRoute.route}/detail/{video_id}",
     arguments = listOf(
       navArgument("video_id") {
         type = NavType.IntType
@@ -22,6 +25,9 @@ fun NavGraphBuilder.showDetailScreen() {
   }
 }
 
-fun NavController.navigateToShowDetail(tmdbId: Int) {
-  navigate("show/detail/$tmdbId")
+fun NavController.navigateToShowDetail(
+  rootRoute: DestinationRoute,
+  tmdbId: Int,
+) {
+  navigate("${rootRoute.route}/detail/$tmdbId")
 }

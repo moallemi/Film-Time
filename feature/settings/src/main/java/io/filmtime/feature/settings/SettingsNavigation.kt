@@ -1,26 +1,22 @@
 package io.filmtime.feature.settings
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import io.filmtime.core.ui.common.DestinationRoute
 
-private const val SETTINGS_GRAPH_ROUTE = "settings_graph"
-private const val SETTINGS_SCREEN_ROUTE = "settings"
+val GRAPH_SETTINGS_ROUTE = DestinationRoute("settings_graph_route")
+private const val ROUTE_SETTINGS_SCREEN = "settings"
 
 fun NavGraphBuilder.settingsGraph() {
   navigation(
-    route = SETTINGS_GRAPH_ROUTE,
-    startDestination = SETTINGS_SCREEN_ROUTE,
+    route = GRAPH_SETTINGS_ROUTE.route,
+    startDestination = "${GRAPH_SETTINGS_ROUTE.route}/$ROUTE_SETTINGS_SCREEN",
   ) {
     composable(
-      route = SETTINGS_SCREEN_ROUTE,
+      route = "${GRAPH_SETTINGS_ROUTE.route}/$ROUTE_SETTINGS_SCREEN",
     ) {
       SettingsScreen()
     }
   }
-}
-
-fun NavController.navigateToSettingsGraph() {
-  navigate(SETTINGS_GRAPH_ROUTE)
 }

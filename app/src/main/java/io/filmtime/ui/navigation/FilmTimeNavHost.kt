@@ -30,6 +30,7 @@ fun FilmTimeNavHost(
   modifier: Modifier = Modifier,
 ) {
   NavHost(
+    modifier = modifier,
     navController = navController,
     startDestination = GRAPH_HOME_ROUTE.route,
   ) {

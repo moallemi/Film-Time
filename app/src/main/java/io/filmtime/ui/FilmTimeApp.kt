@@ -1,5 +1,6 @@
 package io.filmtime.ui
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,6 +22,7 @@ fun FilmTimeApp(
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
+    modifier = modifier,
     bottomBar = {
       FilmTimeNavigationBar(
         destinations = RootDestination.entries,
@@ -46,6 +48,8 @@ fun FilmTimeApp(
   ) { padding ->
     FilmTimeNavHost(
       navController = navController,
+      modifier = Modifier
+        .padding(padding),
     )
   }
 }

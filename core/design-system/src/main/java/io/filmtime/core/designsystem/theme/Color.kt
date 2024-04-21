@@ -1,4 +1,4 @@
-package io.filmtime.ui.theme
+package io.filmtime.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 

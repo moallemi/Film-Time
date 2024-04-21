@@ -9,11 +9,16 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.filmtime.core.designsystem.composable.FilmTimeAlertDialog
 import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
 import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
@@ -25,7 +30,10 @@ internal fun TraktCard(
   isLoggedIn: Boolean,
   modifier: Modifier = Modifier,
   onLoginClick: () -> Unit,
+  onLogoutClick: () -> Unit,
 ) {
+  var shouldLogout by remember { mutableStateOf(false) }
+
   ElevatedCard(
     modifier = modifier,
   ) {
@@ -44,7 +52,7 @@ internal fun TraktCard(
         modifier = Modifier
           .fillMaxWidth()
           .padding(horizontal = 16.dp),
-        onClick = { },
+        onClick = { shouldLogout = true },
       ) {
         Text(text = stringResource(R.string.feature_settings_sign_out))
       }
@@ -65,6 +73,20 @@ internal fun TraktCard(
       style = MaterialTheme.typography.bodyMedium,
     )
   }
+
+  if (shouldLogout) {
+    FilmTimeAlertDialog(
+      title = stringResource(R.string.feature_settings_trakt_sign_out_title),
+      message = stringResource(R.string.feature_settings_trakt_sign_out_message),
+      confirmText = stringResource(R.string.feature_settings_sign_out),
+      onConfirm = {
+        onLogoutClick()
+        shouldLogout = false
+      },
+      dismissText = stringResource(R.string.feature_settings_cancel),
+      onDismissRequest = { shouldLogout = false },
+    )
+  }
 }
 
 @ThemePreviews
@@ -77,11 +99,13 @@ private fun SettingsScreenPreview() {
       TraktCard(
         isLoggedIn = false,
         onLoginClick = {},
+        onLogoutClick = {},
       )
 
       TraktCard(
         isLoggedIn = true,
         onLoginClick = {},
+        onLogoutClick = {},
       )
     }
   }

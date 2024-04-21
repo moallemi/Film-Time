@@ -7,4 +7,5 @@ interface TraktAuthLocalSource {
 
   val tokens: Flow<TraktTokens?>
   suspend fun storeAuthTokens(token: TraktTokens)
+  suspend fun clearAuthTokens()
 }

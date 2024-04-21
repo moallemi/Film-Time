@@ -12,4 +12,6 @@ interface TraktAuthRepository {
   suspend fun getAccessTokenByCode(code: String): Result<TraktTokens, GeneralError>
 
   suspend fun refreshTokenByAccessToken(accessToken: String)
+
+  suspend fun logout()
 }

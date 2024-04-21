@@ -8,4 +8,5 @@ android {
 }
 
 dependencies {
+  implementation(project(":domain:trakt:auth"))
 }

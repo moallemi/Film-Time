@@ -90,12 +90,12 @@ fun FilmTimeNavHost(
       },
     )
 
-    traktLoginScreen(
-      onBack = navController::popBackStack,
-      onSuccess = navController::popBackStack,
+    settingsGraph(
+      onTraktLoginClick = navController::navigateToTraktLogin,
+      nestedGraphs = { rootRoute ->
+        traktLoginScreen(rootRoute, navController)
+      },
     )
-
-    settingsGraph()
   }
 }
 
@@ -121,5 +121,16 @@ private fun NavGraphBuilder.movieDetailScreen(
     onCastItemClick = { _, _ -> },
     onMovieClick = navController::navigateToMovieDetail,
     onBack = navController::popBackStack,
+  )
+}
+
+private fun NavGraphBuilder.traktLoginScreen(
+  rootRoute: DestinationRoute,
+  navController: NavHostController,
+) {
+  traktLoginScreen(
+    rootRoute = rootRoute,
+    onBack = navController::popBackStack,
+    onSuccess = navController::popBackStack,
   )
 }

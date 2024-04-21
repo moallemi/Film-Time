@@ -37,7 +37,6 @@ fun FilmTimeNavHost(
     homeGraph(
       onMovieClick = navController::navigateToMovieDetail,
       onShowClick = navController::navigateToShowDetail,
-      onTraktClick = navController::navigateToTraktLogin,
       onTrendingMoviesClick = { rootRoute ->
         navController.navigateToVideoThumbnailGridScreen(
           rootRoute = rootRoute,

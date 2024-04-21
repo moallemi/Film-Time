@@ -11,7 +11,6 @@ private const val ROUTE_HOME_SCREEN = "home"
 fun NavGraphBuilder.homeGraph(
   onMovieClick: (rootRoute: DestinationRoute, tmdbId: Int) -> Unit,
   onShowClick: (rootRoute: DestinationRoute, tmdbId: Int) -> Unit,
-  onTraktClick: () -> Unit,
   onTrendingMoviesClick: (rootRoute: DestinationRoute) -> Unit,
   onTrendingShowsClick: (rootRoute: DestinationRoute) -> Unit,
   nestedGraphs: NavGraphBuilder.(DestinationRoute) -> Unit,
@@ -26,7 +25,6 @@ fun NavGraphBuilder.homeGraph(
       HomeScreen(
         onMovieClick = { onMovieClick(GRAPH_HOME_ROUTE, it) },
         onShowClick = { onShowClick(GRAPH_HOME_ROUTE, it) },
-        onTraktClick = onTraktClick,
         onTrendingMoviesClick = { onTrendingMoviesClick(GRAPH_HOME_ROUTE) },
         onTrendingShowsClick = { onTrendingShowsClick(GRAPH_HOME_ROUTE) },
       )

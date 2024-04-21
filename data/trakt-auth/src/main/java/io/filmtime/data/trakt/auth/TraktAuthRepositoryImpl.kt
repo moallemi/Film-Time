@@ -29,4 +29,8 @@ class TraktAuthRepositoryImpl @Inject constructor(
   override suspend fun refreshTokenByAccessToken(accessToken: String) {
     TODO("Not yet implemented") // #32
   }
+
+  override suspend fun logout() {
+    traktAuthLocalSource.clearAuthTokens()
+  }
 }

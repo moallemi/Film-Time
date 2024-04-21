@@ -7,7 +7,7 @@ import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.domain.trakt.auth.GetTraktAccessTokenUseCase
 import io.filmtime.domain.trakt.auth.GetTraktAuthStateUseCase
-import io.filmtime.domain.trakt.auth.TraktAuthState
+import io.filmtime.domain.trakt.auth.model.TraktAuthState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

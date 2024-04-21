@@ -30,4 +30,11 @@ class TraktAuthLocalSourceImpl @Inject constructor(
       preferences[refreshTokenKey] = token.refreshToken
     }
   }
+
+  override suspend fun clearAuthTokens() {
+    dataStore.edit { preferences ->
+      preferences.remove(accessTokenKey)
+      preferences.remove(refreshTokenKey)
+    }
+  }
 }

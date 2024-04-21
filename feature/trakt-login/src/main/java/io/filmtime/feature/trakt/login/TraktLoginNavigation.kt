@@ -4,13 +4,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import io.filmtime.core.ui.common.DestinationRoute
 
 fun NavGraphBuilder.traktLoginScreen(
+  rootRoute: DestinationRoute,
   onBack: () -> Unit,
   onSuccess: () -> Unit,
 ) {
   composable(
-    route = "trakt/login",
+    route = "${rootRoute.route}/trakt/login",
   ) {
     TraktLoginWebView(
       viewModel = hiltViewModel(),
@@ -20,6 +22,8 @@ fun NavGraphBuilder.traktLoginScreen(
   }
 }
 
-fun NavController.navigateToTraktLogin() {
-  navigate("trakt/login")
+fun NavController.navigateToTraktLogin(
+  rootRoute: DestinationRoute,
+) {
+  navigate("${rootRoute.route}/trakt/login")
 }

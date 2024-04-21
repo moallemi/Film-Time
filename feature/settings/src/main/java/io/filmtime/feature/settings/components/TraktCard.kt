@@ -1,6 +1,8 @@
 package io.filmtime.feature.settings.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ElevatedCard
@@ -13,13 +15,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
+import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
 import io.filmtime.feature.settings.R
 
 @Composable
 internal fun TraktCard(
+  isLoggedIn: Boolean,
   modifier: Modifier = Modifier,
+  onLoginClick: () -> Unit,
 ) {
   ElevatedCard(
     modifier = modifier,
@@ -34,13 +39,24 @@ internal fun TraktCard(
       contentDescription = stringResource(R.string.feature_settings_trakt_logo),
       contentScale = ContentScale.Inside,
     )
-    FilmTimeFilledButton(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp),
-      onClick = { /*TODO*/ },
-    ) {
-      Text(text = stringResource(R.string.feature_settings_sign_in))
+    if (isLoggedIn) {
+      FilmTimeFilledTonalButton(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(horizontal = 16.dp),
+        onClick = { },
+      ) {
+        Text(text = stringResource(R.string.feature_settings_sign_out))
+      }
+    } else {
+      FilmTimeFilledButton(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(horizontal = 16.dp),
+        onClick = onLoginClick,
+      ) {
+        Text(text = stringResource(R.string.feature_settings_sign_in))
+      }
     }
     Text(
       modifier = Modifier
@@ -55,6 +71,18 @@ internal fun TraktCard(
 @Composable
 private fun SettingsScreenPreview() {
   PreviewFilmTimeTheme {
-    TraktCard()
+    Column(
+      verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+      TraktCard(
+        isLoggedIn = false,
+        onLoginClick = {},
+      )
+
+      TraktCard(
+        isLoggedIn = true,
+        onLoginClick = {},
+      )
+    }
   }
 }

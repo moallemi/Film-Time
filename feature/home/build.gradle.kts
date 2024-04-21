@@ -10,5 +10,4 @@ android {
 dependencies {
   implementation(project(":domain:tmdb-movies"))
   implementation(project(":domain:tmdb-shows"))
-  implementation(project(":domain:trakt:auth"))
 }

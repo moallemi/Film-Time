@@ -27,6 +27,7 @@ fun SettingsScreen(
   SettingsScreen(
     state = state,
     onTraktLoginClick = onTraktLoginClick,
+    onTraktLogoutClick = viewModel::traktLogout,
   )
 }
 
@@ -35,6 +36,7 @@ fun SettingsScreen(
 private fun SettingsScreen(
   state: SettingsUiState,
   onTraktLoginClick: () -> Unit,
+  onTraktLogoutClick: () -> Unit,
 ) {
   Scaffold(
     topBar = {
@@ -47,6 +49,7 @@ private fun SettingsScreen(
       state = state,
       contentPadding = padding,
       onTraktLoginClick = onTraktLoginClick,
+      onTraktLogoutClick = onTraktLogoutClick,
     )
   }
 }
@@ -56,6 +59,7 @@ private fun SettingsContent(
   state: SettingsUiState,
   contentPadding: PaddingValues,
   onTraktLoginClick: () -> Unit,
+  onTraktLogoutClick: () -> Unit,
 ) {
   LazyColumn(
     contentPadding = contentPadding,
@@ -66,6 +70,7 @@ private fun SettingsContent(
           .padding(16.dp),
         isLoggedIn = state.isTraktLoggedIn,
         onLoginClick = onTraktLoginClick,
+        onLogoutClick = onTraktLogoutClick,
       )
     }
   }
@@ -79,6 +84,7 @@ private fun SettingsScreenPreview() {
       state = SettingsUiState(),
       contentPadding = PaddingValues(16.dp),
       onTraktLoginClick = { },
+      onTraktLogoutClick = { },
     )
   }
 }

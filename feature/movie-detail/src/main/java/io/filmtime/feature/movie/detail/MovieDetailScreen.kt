@@ -57,6 +57,7 @@ import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import io.filmtime.core.ui.common.componnents.CreditRowItem
 import io.filmtime.core.ui.common.componnents.LoadingCastSectionRow
 import io.filmtime.core.ui.common.componnents.LoadingVideoSectionRow
 import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
@@ -364,34 +365,3 @@ fun MovieDetailContent(
   }
 }
 
-@Composable
-fun CreditRowItem(item: CreditItem) {
-  Column(
-    modifier = Modifier
-      .fillMaxWidth()
-      .wrapContentHeight()
-      .padding(horizontal = 6.dp),
-    verticalArrangement = Arrangement.Center,
-    horizontalAlignment = Alignment.CenterHorizontally,
-  ) {
-    AsyncImage(
-      modifier = Modifier
-        .size(60.dp)
-        .clip(CircleShape) // clip to the circle shape
-        .border(1.dp, Color.Transparent, CircleShape),
-      contentScale = ContentScale.Crop,
-      model = item.profile,
-      contentDescription = "credit_profile",
-      alignment = Alignment.Center,
-    )
-    Text(
-      text = item.name,
-      style = TextStyle(
-        fontWeight = FontWeight.Light,
-        fontSize = 10.sp,
-        color = Color.Black,
-      ),
-      modifier = Modifier.padding(vertical = 4.dp),
-    )
-  }
-}

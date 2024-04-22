@@ -39,4 +39,14 @@ interface TmdbShowsService {
     @Query("page") page: Int,
     @Query("timezone") timezone: String,
   ): NetworkResponse<TmdbShowListResponse, TmdbErrorResponse>
+
+  @GET("tv/{series_id}/credits")
+  suspend fun getCredit(
+    @Path("series_id") seriesId: Int,
+  ): NetworkResponse<TmdbCreditsResponse, TmdbErrorResponse>
+
+  @GET("tv/{series_id}/similar")
+  suspend fun getSimilar(
+    @Path("series_id") seriesId: Int,
+  ): NetworkResponse<TmdbShowListResponse, TmdbErrorResponse>
 }

@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -74,30 +76,34 @@ fun TraktLoginWebView(
     ) {
       when (state) {
         LoginState.Initial, is Failed -> {
-          AndroidView(
-            factory = {
-              WebView(it).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                  ViewGroup.LayoutParams.MATCH_PARENT,
-                  ViewGroup.LayoutParams.MATCH_PARENT,
-                )
-                webViewClient = object : WebViewClient() {
-                  override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                    request?.url?.let { uri ->
-                      if (uri.scheme == "filmtime") {
-                        viewModel.getAccessToken(uri.getQueryParameter("code")!!)
+          Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()),
+          ) {
+            AndroidView(
+              factory = {
+                WebView(it).apply {
+                  layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                  )
+                  webViewClient = object : WebViewClient() {
+                    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                      request?.url?.let { uri ->
+                        if (uri.scheme == "filmtime") {
+                          viewModel.getAccessToken(uri.getQueryParameter("code")!!)
+                        }
                       }
+                      return super.shouldOverrideUrlLoading(view, request)
                     }
-                    return super.shouldOverrideUrlLoading(view, request)
                   }
+                  loadUrl(TRAKT_LOGIN_URL)
                 }
-                loadUrl(TRAKT_LOGIN_URL)
-              }
-            },
-            update = {
-              it.loadUrl(TRAKT_LOGIN_URL)
-            },
-          )
+              },
+              update = {
+                it.loadUrl(TRAKT_LOGIN_URL)
+              },
+            )
+          }
         }
 
         LoginState.Loading ->

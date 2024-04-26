@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import io.filmtime.data.api.tmdb.TmdbMoviesRemoteSource
 import io.filmtime.data.api.trakt.TraktSearchRemoteSource
 import io.filmtime.data.api.trakt.TraktSyncRemoteSource
+import io.filmtime.data.database.MovieDetailDao
 import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
@@ -14,16 +15,20 @@ import io.filmtime.data.model.VideoThumbnail
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-internal class TmdbMovieRepositoryImpl @Inject constructor(
+class TmdbMovieRepositoryImpl @Inject constructor(
   private val tmdbMoviesRemoteSource: TmdbMoviesRemoteSource,
   private val traktMovieSearchRemoteSource: TraktSearchRemoteSource,
   private val traktSyncRemoteSource: TraktSyncRemoteSource,
+  private val movieDao: MovieDetailDao,
 ) : TmdbMovieRepository {
 
   override suspend fun getMovieDetails(movieId: Int): Result<VideoDetail, GeneralError> {
+    val localMovie = movieDao.getMovieByTmdbId(movieId)
+    if (localMovie != null) return Result.Success(localMovie.toMovie())
     return when (val result = tmdbMoviesRemoteSource.movieDetails(movieId)) {
       is Result.Failure -> result
       is Result.Success -> {
+        movieDao.storeMovie(result.data.toEntity())
         return when (val traktIdResult = traktMovieSearchRemoteSource.getByTmdbId(result.data.ids.tmdbId.toString())) {
           is Result.Failure -> traktIdResult
           is Result.Success -> {
@@ -39,15 +44,19 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
                 )
               }
 
-              is Result.Success -> result.run {
-                copy(
-                  data = data.copy(
-                    ids = data.ids.copy(
-                      traktId = traktId,
+              is Result.Success -> {
+                val res = result.run {
+                  copy(
+                    data = data.copy(
+                      ids = data.ids.copy(
+                        traktId = traktId,
+                      ),
+                      isWatched = watched.data,
                     ),
-                    isWatched = watched.data,
-                  ),
-                )
+                  )
+                }
+
+                return res
               }
             }
           }

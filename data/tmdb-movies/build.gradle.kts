@@ -11,4 +11,5 @@ dependencies {
   implementation(project(":data:api:trakt"))
 
   api(libs.paging.runtime)
+  implementation(project(":data:database"))
 }

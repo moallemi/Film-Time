@@ -12,7 +12,7 @@ fun NavGraphBuilder.movieDetailScreen(
   rootRoute: DestinationRoute,
   onStreamReady: (DestinationRoute, streamUrl: String) -> Unit,
   onCastItemClick: (DestinationRoute, castId: Long) -> Unit,
-  onMovieClick: (DestinationRoute, tmdbId: Int) -> Unit,
+  onSimilarClick: (DestinationRoute, tmdbId: Int) -> Unit,
   onBack: () -> Unit,
 ) {
   composable(
@@ -27,7 +27,7 @@ fun NavGraphBuilder.movieDetailScreen(
       viewModel = hiltViewModel(),
       onStreamReady = { onStreamReady(rootRoute, it) },
       onCastItemClick = { onCastItemClick(rootRoute, it) },
-      onMovieClick = { onMovieClick(rootRoute, it) },
+      onSimilarClick = { onSimilarClick(rootRoute, it) },
       onBackPressed = onBack,
     )
   }

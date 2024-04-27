@@ -22,7 +22,7 @@ class ShowDetailViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   private val getShowDetails: GetShowDetailsUseCase,
   private val getShowCreditUseCase: GetShowCreditUseCase,
-  private val getSimilarUseCase: GetSimilarUseCase
+  private val getSimilarUseCase: GetSimilarUseCase,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
@@ -123,7 +123,6 @@ class ShowDetailViewModel @Inject constructor(
       }
     }
   }
-
 
   fun load() = viewModelScope.launch {
     _state.value = _state.value.copy(isLoading = true)

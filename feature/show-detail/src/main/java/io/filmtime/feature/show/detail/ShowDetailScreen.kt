@@ -1,6 +1,5 @@
 package io.filmtime.feature.show.detail
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -60,6 +59,10 @@ import io.filmtime.feature.show.detail.R.drawable
 @Composable
 fun ShowDetailScreen(
   viewModel: ShowDetailViewModel,
+  onStreamReady: (String) -> Unit,
+  onCastItemClick: (Long) -> Unit,
+  onSimilarClick: (Int) -> Unit,
+  onBackPressed: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
   val creditState by viewModel.creditState.collectAsStateWithLifecycle()
@@ -75,22 +78,24 @@ fun ShowDetailScreen(
       viewModel.load()
     }
   } else if (videoDetail != null) {
-    ShowDetailContent(videoDetail, state, creditState, similarState, {})
+    ShowDetailContent(videoDetail, state, creditState, similarState, onSimilarClick,onBackPressed)
   }
 }
 
 @Composable
 fun ShowDetailContent(
-  videoDetail: VideoDetail, state: ShowDetailState,
+  videoDetail: VideoDetail,
+  state: ShowDetailState,
   creditState: ShowDetailCreditState,
   similarState: ShowDetailSimilarState,
   onSimilarItemClick: (Int) -> Unit,
+  onBackPressed: () -> Unit,
 ) {
   val scrollState = rememberScrollState()
-  val sizeImage by remember { mutableStateOf(IntSize.Zero) }
+  var sizeImage by remember { mutableStateOf(IntSize.Zero) }
   val gradient = Brush.verticalGradient(
     colors = listOf(Color.Transparent, Color.Black),
-    startY = sizeImage.height.toFloat() / 3, // 1/3
+    startY = sizeImage.height.toFloat() / 2, // 1/3
     endY = sizeImage.height.toFloat(),
   )
   Column(
@@ -104,17 +109,20 @@ fun ShowDetailContent(
     ) {
       AsyncImage(
         modifier = Modifier
-          .fillMaxWidth()
-          .aspectRatio(16f / 9f),
+          .onGloballyPositioned {
+            sizeImage = it.size
+          }
+          .fillMaxWidth(),
         contentScale = ContentScale.Crop,
         model = videoDetail.coverUrl,
         contentDescription = null,
+        alignment = Alignment.BottomCenter,
       )
-      /*Box(
+      Box(
         modifier = Modifier
           .matchParentSize()
           .background(gradient),
-      )*/
+      )
       Column(
         modifier = Modifier
           .align(Alignment.BottomStart)
@@ -180,7 +188,7 @@ fun ShowDetailContent(
         }
       }
 
-      IconButton(onClick = {}) {
+      IconButton(onClick = onBackPressed) {
         Icon(Filled.ArrowBack, contentDescription = "back")
       }
     }
@@ -207,42 +215,43 @@ fun ShowDetailContent(
         }
       }
     }
-    Text(
-      modifier = Modifier.padding(horizontal = 16.dp),
-      style = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 16.sp,
-        color = Color.Black,
-      ),
-      text = "Similar",
-    )
-//    if (similarState.isLoading) {
-//      LoadingVideoSectionRow(numberOfSections = 10)
-//    } else if (similarState.videoItems.isNotEmpty()) {
-//      LazyRow(
-//        modifier = Modifier
-//          .height(200.dp)
-//          .padding(bottom = 6.dp)
-//          .fillMaxWidth(),
-//        contentPadding = PaddingValues(horizontal = 16.dp),
-//        horizontalArrangement = Arrangement.spacedBy(8.dp),
-//      ) {
-//        items(similarState.videoItems) { item ->
-//          VideoThumbnailCard(
-//            modifier = Modifier,
-//            videoThumbnail = item,
-//            onClick = {
-//              item.ids.tmdbId?.let {
-//                onSimilarItemClick(it)
-//              } ?: run {
-//                Log.e("MovieListScreen", "tmdbId is null")
-//              }
-//            },
-//          )
-//        }
-//      }
-//    }
 
+    if (similarState.isLoading) {
+      LoadingVideoSectionRow(numberOfSections = 10, modifier = Modifier.height(200.dp))
+    } else if (similarState.videoItems.isNotEmpty()) {
+
+        Text(
+          modifier = Modifier.padding(horizontal = 16.dp),
+          style = TextStyle(
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = Color.Black,
+          ),
+          text = "Similar",
+        )
+        LazyRow(
+          modifier = Modifier
+            .height(200.dp)
+            .padding(bottom = 6.dp)
+            .fillMaxWidth(),
+          contentPadding = PaddingValues(horizontal = 16.dp),
+          horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+          items(similarState.videoItems) { item ->
+            VideoThumbnailCard(
+              modifier = Modifier,
+              videoThumbnail = item,
+              onClick = {
+                item.ids.tmdbId?.let {
+                  onSimilarItemClick(it)
+                } ?: run {
+                }
+              },
+            )
+
+        }
+      }
+    }
   }
 }
 
@@ -264,7 +273,7 @@ fun ShowError(error: GeneralError, message: String, onRefresh: () -> Unit) {
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+  ) {
     LottieAnimation(
       modifier = Modifier.size(size = 240.dp),
       composition = composition,

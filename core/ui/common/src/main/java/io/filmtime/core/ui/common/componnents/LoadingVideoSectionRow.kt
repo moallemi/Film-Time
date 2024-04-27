@@ -21,8 +21,10 @@ import io.filmtime.core.ui.common.graphics.shimmerBrush
 @Composable
 fun LoadingVideoSectionRow(
   numberOfSections: Int,
+  modifier: Modifier=Modifier
 ) {
   LazyColumn(
+    modifier=modifier,
     contentPadding = PaddingValues(top = 16.dp),
     verticalArrangement = Arrangement.spacedBy(8.dp),
   ) {

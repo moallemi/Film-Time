@@ -55,7 +55,7 @@ fun TmdbShowDetailsResponse.toVideoDetail() =
     spokenLanguages = spokenLanguages?.map { it.englishName ?: "" }?.filter { it.isNotEmpty() }
       ?: listOf(),
     description = overview ?: "",
-    runtime = episodeRunTime?.firstOrNull()?.let { fromMinutesToHHmm(it) }?:"N/A",
+    runtime = episodeRunTime?.firstOrNull()?.let { fromMinutesToHHmm(it) } ?: "N/A",
     releaseDate = firstAirDate?.split("-")?.get(0) ?: "N/A",
     voteAverage = voteAverage?.div(10)?.toFloat() ?: 0.0F,
     voteColor = voteAverage.toRatingColor(),

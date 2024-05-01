@@ -12,7 +12,6 @@ import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -27,7 +26,6 @@ class TmdbMovieRepositoryImpl @Inject constructor(
   override suspend fun getMovieDetails(movieId: Int): Flow<Result<VideoDetail, GeneralError>> = flow {
     val localMovie = movieDao.getMovieByTmdbId(movieId)
     if (localMovie != null) emit(Result.Success(localMovie.toMovie()))
-    delay(3000)
     val result = when (val result = tmdbMoviesRemoteSource.movieDetails(movieId)) {
       is Result.Failure -> result
       is Result.Success -> {

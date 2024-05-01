@@ -132,43 +132,45 @@ class MovieDetailViewModel @Inject constructor(
   }
 
   fun load() = viewModelScope.launch {
-    _state.value = _state.value.copy(isLoading = true)
+    _state.update { it.copy(isLoading = true) }
 
-    when (val result = getMovieDetail(videoId)) {
-      is Success -> {
-        _state.update { state ->
-          state.copy(videoDetail = result.data, isLoading = false)
+    getMovieDetail(videoId).collect {
+      when (val result = it) {
+        is Success -> {
+          _state.update { state ->
+            state.copy(videoDetail = result.data, isLoading = false)
+          }
         }
-      }
 
-      is Failure -> {
-        when (result.error) {
-          is GeneralError.ApiError -> {
-            _state.update { state ->
+        is Failure -> {
+          when (result.error) {
+            is GeneralError.ApiError -> {
+              _state.update { state ->
+                state.copy(
+                  error = result.error,
+                  message = (result.error as GeneralError.ApiError).message,
+                  isLoading = false,
+                )
+              }
+            }
+
+            GeneralError.NetworkError -> {
+              _state.update { state ->
+                state.copy(
+                  error = result.error,
+                  message = "No internet connection. Please check your network settings.",
+                  isLoading = false,
+                )
+              }
+            }
+
+            is GeneralError.UnknownError -> _state.update { state ->
               state.copy(
                 error = result.error,
-                message = (result.error as GeneralError.ApiError).message,
+                message = (result.error as GeneralError.UnknownError).error.message,
                 isLoading = false,
               )
             }
-          }
-
-          GeneralError.NetworkError -> {
-            _state.update { state ->
-              state.copy(
-                error = result.error,
-                message = "No internet connection. Please check your network settings.",
-                isLoading = false,
-              )
-            }
-          }
-
-          is GeneralError.UnknownError -> _state.update { state ->
-            state.copy(
-              error = result.error,
-              message = (result.error as GeneralError.UnknownError).error.message,
-              isLoading = false,
-            )
           }
         }
       }

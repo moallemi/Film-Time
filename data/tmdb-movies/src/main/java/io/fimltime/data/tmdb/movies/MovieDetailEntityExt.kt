@@ -6,7 +6,7 @@ import io.filmtime.data.model.VideoId
 
 fun MovieDetailEntity.toMovie(): VideoDetail {
   return VideoDetail(
-    ids = VideoId(tmdbId = tmdbId, traktId = traktId),
+    ids = VideoId(tmdbId = tmdbId, traktId = null),
     title = name,
     posterUrl = posterUrl,
     coverUrl = coverUrl,
@@ -14,10 +14,10 @@ fun MovieDetailEntity.toMovie(): VideoDetail {
     genres = listOf(),
     description = description,
     releaseDate = releaseDate,
-    isWatched = isWatched,
+    isWatched = null,
     runtime = runtime,
-    voteAverage = voteAverage,
-    voteColor = voteColor,
+    voteAverage = 0F,
+    voteColor = 0,
     originalLanguage = originalLanguage,
     spokenLanguages = listOf(),
   )
@@ -25,20 +25,14 @@ fun MovieDetailEntity.toMovie(): VideoDetail {
 
 fun VideoDetail.toEntity(): MovieDetailEntity {
   return MovieDetailEntity(
-    traktId = ids.traktId,
     tmdbId = ids.tmdbId!!,
     name = title,
     coverUrl = coverUrl,
     description = description,
-//    genres = genres.filterNotNull(),
-    isWatched = isWatched ?: false,
     posterUrl = posterUrl,
     releaseDate = releaseDate,
     year = year,
-//    spokenLanguages = spokenLanguages,
     originalLanguage = originalLanguage,
-    voteColor = voteColor,
-    voteAverage = voteAverage,
     runtime = runtime,
   )
 }

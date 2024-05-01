@@ -12,7 +12,9 @@ import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class TmdbMovieRepositoryImpl @Inject constructor(
@@ -22,18 +24,19 @@ class TmdbMovieRepositoryImpl @Inject constructor(
   private val movieDao: MovieDetailDao,
 ) : TmdbMovieRepository {
 
-  override suspend fun getMovieDetails(movieId: Int): Result<VideoDetail, GeneralError> {
+  override suspend fun getMovieDetails(movieId: Int): Flow<Result<VideoDetail, GeneralError>> = flow {
     val localMovie = movieDao.getMovieByTmdbId(movieId)
-    if (localMovie != null) return Result.Success(localMovie.toMovie())
-    return when (val result = tmdbMoviesRemoteSource.movieDetails(movieId)) {
+    if (localMovie != null) emit(Result.Success(localMovie.toMovie()))
+    delay(3000)
+    val result = when (val result = tmdbMoviesRemoteSource.movieDetails(movieId)) {
       is Result.Failure -> result
       is Result.Success -> {
         movieDao.storeMovie(result.data.toEntity())
-        return when (val traktIdResult = traktMovieSearchRemoteSource.getByTmdbId(result.data.ids.tmdbId.toString())) {
+        when (val traktIdResult = traktMovieSearchRemoteSource.getByTmdbId(result.data.ids.tmdbId.toString())) {
           is Result.Failure -> traktIdResult
           is Result.Success -> {
             val traktId = traktIdResult.data.toInt()
-            return when (val watched = traktSyncRemoteSource.getHistoryById(traktId.toString())) {
+            when (val watched = traktSyncRemoteSource.getHistoryById(traktId.toString())) {
               is Result.Failure -> result.run {
                 copy(
                   data = data.copy(
@@ -45,7 +48,7 @@ class TmdbMovieRepositoryImpl @Inject constructor(
               }
 
               is Result.Success -> {
-                val res = result.run {
+                result.run {
                   copy(
                     data = data.copy(
                       ids = data.ids.copy(
@@ -55,14 +58,14 @@ class TmdbMovieRepositoryImpl @Inject constructor(
                     ),
                   )
                 }
-
-                return res
               }
             }
           }
         }
       }
     }
+
+    emit(result)
   }
 
   override suspend fun getTrendingMovies(): Result<List<VideoThumbnail>, GeneralError> =

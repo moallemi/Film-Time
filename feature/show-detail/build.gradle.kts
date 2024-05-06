@@ -10,5 +10,4 @@ android {
 dependencies {
   implementation(project(":data:model"))
   implementation(project(":domain:tmdb-shows"))
-  implementation(libs.lottie)
 }

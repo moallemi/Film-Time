@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.filmtime.core.designsystem.composable.FilmTimeSmallTopAppBar
+import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.LoadingVideoSectionRow
 import io.filmtime.core.ui.common.componnents.VideoSectionRow
 
@@ -40,6 +41,11 @@ fun HomeScreen(
     Box(modifier = Modifier.padding(it)) {
       if (state.isLoading) {
         LoadingVideoSectionRow(numberOfSections = 2)
+      } else if (state.error != null) {
+        ErrorContent(
+          uiMessage = state.error!!,
+          onRetryClick = viewModel::reload,
+        )
       } else {
         LazyColumn(
           contentPadding = PaddingValues(vertical = 16.dp),

@@ -1,6 +1,6 @@
 package io.filmtime.feature.movie.detail
 
-import io.filmtime.data.model.GeneralError
+import io.filmtime.core.ui.common.UiMessage
 import io.filmtime.data.model.StreamInfo
 import io.filmtime.data.model.VideoDetail
 
@@ -9,6 +9,5 @@ data class MovieDetailState(
   val videoDetail: VideoDetail? = null,
   val isStreamLoading: Boolean = false,
   val streamInfo: StreamInfo? = null,
-  val message: String? = null,
-  val error: GeneralError? = null,
+  val error: UiMessage? = null,
 )

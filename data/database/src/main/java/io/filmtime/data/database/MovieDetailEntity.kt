@@ -3,7 +3,7 @@ package io.filmtime.data.database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "movie_detail")
 data class MovieDetailEntity(
   @PrimaryKey
   val tmdbId: Int,
@@ -15,4 +15,7 @@ data class MovieDetailEntity(
   val releaseDate: String,
   val runtime: String?,
   val originalLanguage: String?,
+  val spokenLanguages: List<String>,
+  val genres: List<String>,
+  val voteAverage: Float,
 )

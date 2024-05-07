@@ -11,15 +11,15 @@ fun MovieDetailEntity.toMovie(): VideoDetail {
     posterUrl = posterUrl,
     coverUrl = coverUrl,
     year = year,
-    genres = listOf(),
+    genres = genres,
     description = description,
     releaseDate = releaseDate,
     isWatched = null,
     runtime = runtime,
-    voteAverage = 0F,
+    voteAverage = voteAverage,
     voteColor = 0,
     originalLanguage = originalLanguage,
-    spokenLanguages = listOf(),
+    spokenLanguages = spokenLanguages,
   )
 }
 
@@ -34,5 +34,8 @@ fun VideoDetail.toEntity(): MovieDetailEntity {
     year = year,
     originalLanguage = originalLanguage,
     runtime = runtime,
+    genres = genres.filterNotNull(),
+    spokenLanguages = spokenLanguages,
+    voteAverage = voteAverage,
   )
 }

@@ -28,6 +28,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,7 +59,6 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import io.filmtime.core.ui.common.componnents.LoadingCastSectionRow
-import io.filmtime.core.ui.common.componnents.LoadingVideoSectionRow
 import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
 import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
@@ -293,11 +293,7 @@ fun MovieDetailContent(
     }
     Text(
       modifier = Modifier.padding(horizontal = 16.dp),
-      style = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 16.sp,
-        color = Color.Black,
-      ),
+      style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
       text = "Cast",
     )
     if (creditState.isLoading) {
@@ -311,15 +307,11 @@ fun MovieDetailContent(
     }
     Text(
       modifier = Modifier.padding(horizontal = 16.dp),
-      style = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 16.sp,
-        color = Color.Black,
-      ),
+      style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
       text = "Similar",
     )
     if (similarState.isLoading) {
-      LoadingVideoSectionRow(numberOfSections = 10)
+      Box {}
     } else if (similarState.videoItems.isNotEmpty()) {
       LazyRow(
         modifier = Modifier

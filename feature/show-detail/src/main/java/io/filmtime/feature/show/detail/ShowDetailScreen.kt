@@ -26,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,17 +69,35 @@ fun ShowDetailScreen(
   val creditState by viewModel.creditState.collectAsStateWithLifecycle()
   val similarState by viewModel.similarState.collectAsStateWithLifecycle()
   val videoDetail = state.videoDetail
-
+  val navigateToPlayer by viewModel.navigateToPlayer.collectAsStateWithLifecycle(null)
+  LaunchedEffect(key1 = navigateToPlayer) {
+    navigateToPlayer?.let { streamUrl ->
+      onStreamReady(streamUrl)
+    }
+  }
   if (state.isLoading) {
-    CircularProgressIndicator(
-      modifier = Modifier.wrapContentSize(unbounded = true),
-    )
+    Box(
+      contentAlignment = Alignment.Center,
+      modifier = Modifier.fillMaxSize(),
+    ) {
+      CircularProgressIndicator(
+        modifier = Modifier.wrapContentSize(unbounded = true),
+      )
+    }
   } else if (state.error != null) {
     ShowError(state.error!!, state.message!!) {
       viewModel.load()
     }
   } else if (videoDetail != null) {
-    ShowDetailContent(videoDetail, state, creditState, similarState, onSimilarClick,onBackPressed)
+    ShowDetailContent(
+      videoDetail,
+      state,
+      creditState,
+      similarState,
+      onSimilarClick,
+      onBackPressed,
+      viewModel::loadStreamInfo,
+    )
   }
 }
 
@@ -90,6 +109,7 @@ fun ShowDetailContent(
   similarState: ShowDetailSimilarState,
   onSimilarItemClick: (Int) -> Unit,
   onBackPressed: () -> Unit,
+  onPlayPressed: () -> Unit,
 ) {
   val scrollState = rememberScrollState()
   var sizeImage by remember { mutableStateOf(IntSize.Zero) }
@@ -140,8 +160,8 @@ fun ShowDetailContent(
         }
 
         Row(horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.CenterVertically) {
-          IconButton(onClick = {}) {
-            if (false) {
+          IconButton(onClick = onPlayPressed) {
+            if (state.isStreamLoading) {
               CircularProgressIndicator(
                 modifier = Modifier.size(16.dp),
                 color = Color.White,
@@ -219,36 +239,34 @@ fun ShowDetailContent(
     if (similarState.isLoading) {
       LoadingVideoSectionRow(numberOfSections = 10, modifier = Modifier.height(200.dp))
     } else if (similarState.videoItems.isNotEmpty()) {
-
-        Text(
-          modifier = Modifier.padding(horizontal = 16.dp),
-          style = TextStyle(
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
-            color = Color.Black,
-          ),
-          text = "Similar",
-        )
-        LazyRow(
-          modifier = Modifier
-            .height(200.dp)
-            .padding(bottom = 6.dp)
-            .fillMaxWidth(),
-          contentPadding = PaddingValues(horizontal = 16.dp),
-          horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-          items(similarState.videoItems) { item ->
-            VideoThumbnailCard(
-              modifier = Modifier,
-              videoThumbnail = item,
-              onClick = {
-                item.ids.tmdbId?.let {
-                  onSimilarItemClick(it)
-                } ?: run {
-                }
-              },
-            )
-
+      Text(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        style = TextStyle(
+          fontWeight = FontWeight.Bold,
+          fontSize = 16.sp,
+          color = Color.Black,
+        ),
+        text = "Similar",
+      )
+      LazyRow(
+        modifier = Modifier
+          .height(200.dp)
+          .padding(bottom = 6.dp)
+          .fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+      ) {
+        items(similarState.videoItems) { item ->
+          VideoThumbnailCard(
+            modifier = Modifier,
+            videoThumbnail = item,
+            onClick = {
+              item.ids.tmdbId?.let {
+                onSimilarItemClick(it)
+              } ?: run {
+              }
+            },
+          )
         }
       }
     }

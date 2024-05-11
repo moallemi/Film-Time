@@ -46,6 +46,7 @@ dependencies {
   implementation(project(":data:model"))
   implementation(project(":domain:tmdb-shows"))
   implementation(project(":core:ui:common"))
+  implementation(project(":domain:stream"))
 
   implementation(libs.core.ktx)
   implementation(libs.appcompat)

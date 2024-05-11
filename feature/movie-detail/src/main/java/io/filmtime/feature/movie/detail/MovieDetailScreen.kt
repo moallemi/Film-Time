@@ -81,9 +81,14 @@ fun MovieDetailScreen(
   }
 
   if (state.isLoading) {
-    CircularProgressIndicator(
-      modifier = Modifier.wrapContentSize(),
-    )
+    Box(
+      contentAlignment = Alignment.Center,
+      modifier = Modifier.fillMaxSize(),
+    ) {
+      CircularProgressIndicator(
+        modifier = Modifier.wrapContentSize(unbounded = true),
+      )
+    }
   } else if (state.error != null) {
     ShowError(error = state.error!!, message = state.message!!, onRefresh = viewModel::load)
   } else if (videoDetail != null) {
@@ -308,7 +313,7 @@ fun MovieDetailContent(
     }
 
     if (similarState.isLoading) {
-      LoadingVideoSectionRow(numberOfSections = 10,modifier = Modifier.height(200.dp))
+      LoadingVideoSectionRow(numberOfSections = 10, modifier = Modifier.height(200.dp))
     } else if (similarState.videoItems.isNotEmpty()) {
       Text(
         modifier = Modifier.padding(horizontal = 16.dp),

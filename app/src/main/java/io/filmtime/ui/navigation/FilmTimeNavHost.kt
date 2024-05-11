@@ -86,7 +86,7 @@ fun FilmTimeNavHost(
       },
       nestedGraphs = { rootRoute ->
         videoThumbnailGridScreen(rootRoute, navController)
-        showDetailScreen(rootRoute = rootRoute,navController)
+        showDetailScreen(rootRoute = rootRoute, navController)
         playerScreen(rootRoute = rootRoute)
       },
     )

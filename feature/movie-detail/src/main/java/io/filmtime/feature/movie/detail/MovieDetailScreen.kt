@@ -28,7 +28,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -293,7 +292,11 @@ fun MovieDetailContent(
     }
     Text(
       modifier = Modifier.padding(horizontal = 16.dp),
-      style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+      style = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        color = Color.Black,
+      ),
       text = "Cast",
     )
     if (creditState.isLoading) {
@@ -307,7 +310,11 @@ fun MovieDetailContent(
     }
     Text(
       modifier = Modifier.padding(horizontal = 16.dp),
-      style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+      style = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        color = Color.Black,
+      ),
       text = "Similar",
     )
     if (similarState.isLoading) {

@@ -12,13 +12,9 @@ import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 internal class TmdbMovieRepositoryImpl @Inject constructor(
@@ -28,39 +24,48 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
   private val movieDao: MovieDetailDao,
 ) : TmdbMovieRepository {
 
-  override suspend fun getMovieDetails(movieId: Int): Flow<Result<VideoDetail, GeneralError>> {
-    GlobalScope.launch {
-      delay(3000)
-      when (val result = tmdbMoviesRemoteSource.movieDetails(movieId)) {
-        is Result.Failure -> result
-        is Result.Success -> {
-          movieDao.storeMovie(result.data.toEntity())
-          when (val traktIdResult = traktMovieSearchRemoteSource.getByTmdbId(result.data.ids.tmdbId.toString())) {
-            is Result.Failure -> traktIdResult
-            is Result.Success -> {
-              val traktId = traktIdResult.data.toInt()
-              when (val watched = traktSyncRemoteSource.getHistoryById(traktId.toString())) {
-                is Result.Failure -> result.run {
+  override suspend fun getMovieDetails(movieId: Int): Flow<Result<VideoDetail, GeneralError>> = flow {
+    val localData = movieDao.getMovieByTmdbId(movieId).firstOrNull()
+    if (localData != null) {
+      emit(Result.Success(localData.toMovie()))
+      // TODO: invalidate cache later
+      fetchMovieDetailsFromNetwork(movieId)
+    } else {
+      val apiResult = fetchMovieDetailsFromNetwork(movieId)
+      emit(apiResult)
+    }
+  }
+
+  private suspend fun fetchMovieDetailsFromNetwork(movieId: Int): Result<VideoDetail, GeneralError> {
+    return when (val result = tmdbMoviesRemoteSource.movieDetails(movieId)) {
+      is Result.Failure -> result
+      is Result.Success -> {
+        movieDao.storeMovie(result.data.toEntity())
+        when (val traktIdResult = traktMovieSearchRemoteSource.getByTmdbId(result.data.ids.tmdbId.toString())) {
+          is Result.Failure -> result
+          is Result.Success -> {
+            val traktId = traktIdResult.data.toInt()
+            when (val watched = traktSyncRemoteSource.getHistoryById(traktId.toString())) {
+              is Result.Failure -> result.run {
+                copy(
+                  data = data.copy(
+                    ids = data.ids.copy(
+                      traktId = traktId,
+                    ),
+                  ),
+                )
+              }
+
+              is Result.Success -> {
+                result.run {
                   copy(
                     data = data.copy(
                       ids = data.ids.copy(
                         traktId = traktId,
                       ),
+                      isWatched = watched.data,
                     ),
                   )
-                }
-
-                is Result.Success -> {
-                  result.run {
-                    copy(
-                      data = data.copy(
-                        ids = data.ids.copy(
-                          traktId = traktId,
-                        ),
-                        isWatched = watched.data,
-                      ),
-                    )
-                  }
                 }
               }
             }
@@ -68,15 +73,6 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
         }
       }
     }
-    return movieDao.getMovieByTmdbId(movieId)
-      .catch { Result.Failure(it) }
-      .map {
-        if (it != null) {
-          Result.Success(it.toMovie())
-        } else {
-          Result.Failure(GeneralError.UnknownError(Throwable("Data not found")))
-        }
-      }
   }
 
   override suspend fun getTrendingMovies(): Result<List<VideoThumbnail>, GeneralError> =

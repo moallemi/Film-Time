@@ -140,7 +140,7 @@ class MovieDetailViewModel @Inject constructor(
       when (val result = it) {
         is Success -> {
           _state.update { state ->
-            state.copy(videoDetail = result.data, isLoading = false)
+            state.copy(videoDetail = result.data, isLoading = false, error = null)
           }
         }
 

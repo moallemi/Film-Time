@@ -1,6 +1,5 @@
 package io.filmtime.feature.movie.detail
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -136,7 +135,6 @@ class MovieDetailViewModel @Inject constructor(
     _state.update { it.copy(isLoading = true) }
 
     getMovieDetail(videoId).collect {
-      Log.d("repeat", videoId.toString())
       when (val result = it) {
         is Success -> {
           _state.update { state ->

@@ -1,5 +1,6 @@
 plugins {
   id("io.filmtime.gradle.android.data")
+  alias(libs.plugins.ksp)
 }
 
 android {
@@ -9,5 +10,5 @@ android {
 dependencies {
   implementation(libs.room.runtime)
   implementation(libs.room.ktx)
-  kapt(libs.room.compiler)
+  ksp(libs.room.compiler)
 }

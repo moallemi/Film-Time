@@ -15,9 +15,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,7 +58,11 @@ private fun VideoThumbnailGridScreen(
   onShowClick: (tmdbId: Int) -> Unit,
   onBack: () -> Unit,
 ) {
+  val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
   Scaffold(
+    modifier = Modifier
+      .nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
       TopAppBar(
         title = { Text(text = state.title) },
@@ -70,6 +76,7 @@ private fun VideoThumbnailGridScreen(
             )
           }
         },
+        scrollBehavior = scrollBehavior,
       )
     },
     content = { padding ->

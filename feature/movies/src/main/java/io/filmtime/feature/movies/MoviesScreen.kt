@@ -10,9 +10,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,10 +31,15 @@ fun MoviesScreen(
   val viewModel = hiltViewModel<MoviesViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
 
+  val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
   Scaffold(
+    modifier = Modifier
+      .nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
       TopAppBar(
         title = { Text("Movies") },
+        scrollBehavior = scrollBehavior,
       )
     },
   ) {

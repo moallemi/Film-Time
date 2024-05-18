@@ -8,4 +8,8 @@ android {
 }
 
 dependencies {
+  implementation(project(":data:model"))
+  implementation(project(":domain:tmdb-shows"))
+  implementation(project(":domain:tmdb-movies"))
+  implementation(project(":data:tmdb-movies"))
 }

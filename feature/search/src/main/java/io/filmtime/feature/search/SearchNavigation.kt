@@ -9,6 +9,8 @@ val GRAPH_SEARCH_ROUTE = DestinationRoute("search_graph_route")
 private const val ROUTE_SEARCH_SCREEN = "search"
 
 fun NavGraphBuilder.searchGraph(
+  onMovieClick: (rootRoute: DestinationRoute, tmdbId: Int) -> Unit,
+  onShowClick: (rootRoute: DestinationRoute, tmdbId: Int) -> Unit,
   nestedGraphs: NavGraphBuilder.(DestinationRoute) -> Unit,
 ) {
   navigation(
@@ -16,7 +18,10 @@ fun NavGraphBuilder.searchGraph(
     startDestination = "${GRAPH_SEARCH_ROUTE.route}/$ROUTE_SEARCH_SCREEN",
   ) {
     composable("${GRAPH_SEARCH_ROUTE.route}/$ROUTE_SEARCH_SCREEN") {
-      SearchScreen()
+      SearchScreen(
+        onMovieClick = { onMovieClick(GRAPH_SEARCH_ROUTE, it) },
+        onShowClick = { onShowClick(GRAPH_SEARCH_ROUTE, it) },
+      )
     }
     nestedGraphs(GRAPH_SEARCH_ROUTE)
   }

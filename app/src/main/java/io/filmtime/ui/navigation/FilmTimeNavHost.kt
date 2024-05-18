@@ -15,6 +15,7 @@ import io.filmtime.feature.movie.detail.navigateToMovieDetail
 import io.filmtime.feature.movies.moviesGraph
 import io.filmtime.feature.player.navigateToPlayer
 import io.filmtime.feature.player.playerScreen
+import io.filmtime.feature.search.searchGraph
 import io.filmtime.feature.settings.settingsGraph
 import io.filmtime.feature.show.detail.navigateToShowDetail
 import io.filmtime.feature.show.detail.showDetailScreen
@@ -89,6 +90,9 @@ fun FilmTimeNavHost(
         playerScreen(rootRoute = rootRoute)
       },
     )
+
+    searchGraph {
+    }
 
     settingsGraph(
       onTraktLoginClick = navController::navigateToTraktLogin,

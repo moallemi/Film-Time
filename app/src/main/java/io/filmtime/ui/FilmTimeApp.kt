@@ -15,6 +15,7 @@ import io.filmtime.ui.navigation.FilmTimeNavigationBar
 import io.filmtime.ui.navigation.RootDestination
 import io.filmtime.ui.navigation.RootScreen.Home
 import io.filmtime.ui.navigation.RootScreen.Movies
+import io.filmtime.ui.navigation.RootScreen.Search
 import io.filmtime.ui.navigation.RootScreen.Settings
 import io.filmtime.ui.navigation.RootScreen.Shows
 
@@ -42,6 +43,7 @@ fun FilmTimeApp(
             Home -> navController.navigate(Home.destinationRoute.route, topLevelNavOptions)
             Movies -> navController.navigate(Movies.destinationRoute.route, topLevelNavOptions)
             Shows -> navController.navigate(Shows.destinationRoute.route, topLevelNavOptions)
+            Search -> navController.navigate(Search.destinationRoute.route, topLevelNavOptions)
             Settings -> navController.navigate(Settings.destinationRoute.route, topLevelNavOptions)
           }
         },

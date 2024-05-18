@@ -3,5 +3,6 @@
     <string name="home">Home</string>
     <string name="movies">Movies</string>
     <string name="series">Series</string>
+    <string name="search">Search</string>
     <string name="settings">Settings</string>
 </resources>

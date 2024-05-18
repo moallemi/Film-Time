@@ -91,8 +91,14 @@ fun FilmTimeNavHost(
       },
     )
 
-    searchGraph {
-    }
+    searchGraph(
+      onMovieClick = navController::navigateToMovieDetail,
+      onShowClick = navController::navigateToShowDetail,
+      nestedGraphs = { rootRoute ->
+        movieDetailScreen(rootRoute, navController)
+        showDetailScreen(rootRoute, navController)
+      },
+    )
 
     settingsGraph(
       onTraktLoginClick = navController::navigateToTraktLogin,

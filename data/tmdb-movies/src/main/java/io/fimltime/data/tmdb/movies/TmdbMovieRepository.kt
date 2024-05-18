@@ -26,6 +26,8 @@ interface TmdbMovieRepository {
   suspend fun getCredit(movieId: Int): Result<List<CreditItem>, GeneralError>
 
   suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError>
+
+  suspend fun searchMovies(query: String): Result<List<VideoThumbnail>, GeneralError>
 }
 
 enum class MovieListType {

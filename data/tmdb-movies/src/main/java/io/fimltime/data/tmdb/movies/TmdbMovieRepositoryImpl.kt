@@ -109,4 +109,7 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
 
   override suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError> =
     tmdbMoviesRemoteSource.getSimilar(movieId)
+
+  override suspend fun searchMovies(query: String): Result<List<VideoThumbnail>, GeneralError> =
+    tmdbMoviesRemoteSource.searchMovie(query)
 }

@@ -61,6 +61,11 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
       )
     }
 
+  override suspend fun searchMovie(query: String): Result<List<VideoThumbnail>, GeneralError> =
+    getMovieList {
+      tmdbMoviesService.searchMovies(query)
+    }
+
   override suspend fun upcomingMovies(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError> =

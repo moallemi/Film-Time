@@ -31,6 +31,9 @@ interface TmdbMoviesRemoteSource {
   ): Result<List<VideoThumbnail>, GeneralError>
   suspend fun getCredit(movieId: Int): Result<List<CreditItem>, GeneralError>
   suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError>
+
+  suspend fun searchMovie(query: String): Result<List<VideoThumbnail>, GeneralError>
+
   companion object {
     const val PAGE_SIZE = 20 // TMDB API default page size
   }

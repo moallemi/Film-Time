@@ -29,6 +29,7 @@ dependencies {
   implementation(project(":feature:settings"))
   implementation(project(":feature:player"))
   implementation(project(":feature:trakt-login"))
+  implementation(project(":feature:search"))
   implementation(project(":feature:video-thumbnail-grid"))
 
   implementation(project(":core:libs:logger"))

@@ -60,7 +60,6 @@ import io.filmtime.feature.show.detail.R.drawable
 @Composable
 fun ShowDetailScreen(
   viewModel: ShowDetailViewModel,
-  onStreamReady: (String) -> Unit,
   onCastItemClick: (Long) -> Unit,
   onSimilarClick: (Int) -> Unit,
   onBackPressed: () -> Unit,
@@ -69,12 +68,7 @@ fun ShowDetailScreen(
   val creditState by viewModel.creditState.collectAsStateWithLifecycle()
   val similarState by viewModel.similarState.collectAsStateWithLifecycle()
   val videoDetail = state.videoDetail
-  val navigateToPlayer by viewModel.navigateToPlayer.collectAsStateWithLifecycle(null)
-  LaunchedEffect(key1 = navigateToPlayer) {
-    navigateToPlayer?.let { streamUrl ->
-      onStreamReady(streamUrl)
-    }
-  }
+
   if (state.isLoading) {
     Box(
       contentAlignment = Alignment.Center,
@@ -91,12 +85,10 @@ fun ShowDetailScreen(
   } else if (videoDetail != null) {
     ShowDetailContent(
       videoDetail,
-      state,
       creditState,
       similarState,
       onSimilarClick,
       onBackPressed,
-      viewModel::loadStreamInfo,
     )
   }
 }
@@ -104,12 +96,10 @@ fun ShowDetailScreen(
 @Composable
 fun ShowDetailContent(
   videoDetail: VideoDetail,
-  state: ShowDetailState,
   creditState: ShowDetailCreditState,
   similarState: ShowDetailSimilarState,
   onSimilarItemClick: (Int) -> Unit,
   onBackPressed: () -> Unit,
-  onPlayPressed: () -> Unit,
 ) {
   val scrollState = rememberScrollState()
   var sizeImage by remember { mutableStateOf(IntSize.Zero) }
@@ -160,17 +150,7 @@ fun ShowDetailContent(
         }
 
         Row(horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.CenterVertically) {
-          IconButton(onClick = onPlayPressed) {
-            if (state.isStreamLoading) {
-              CircularProgressIndicator(
-                modifier = Modifier.size(16.dp),
-                color = Color.White,
-                strokeWidth = 2.dp,
-              )
-            } else {
-              Icon(painter = painterResource(drawable.play_circle), contentDescription = "play", tint = Color.White)
-            }
-          }
+
           Text(
             modifier = Modifier.padding(start = 16.dp),
             style = TextStyle(
@@ -291,7 +271,7 @@ fun ShowError(error: GeneralError, message: String, onRefresh: () -> Unit) {
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
 
-  ) {
+    ) {
     LottieAnimation(
       modifier = Modifier.size(size = 240.dp),
       composition = composition,

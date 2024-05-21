@@ -25,7 +25,6 @@ fun NavGraphBuilder.showDetailScreen(
   ) {
     ShowDetailScreen(
       viewModel = hiltViewModel(),
-      onStreamReady = { onStreamReady(rootRoute, it) },
       onCastItemClick = { onCastItemClick(rootRoute, it) },
       onSimilarClick = { onSimilarClick(rootRoute, it) },
       onBackPressed = onBack,

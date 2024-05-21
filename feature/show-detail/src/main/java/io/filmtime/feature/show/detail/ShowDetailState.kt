@@ -9,6 +9,5 @@ data class ShowDetailState(
   val videoDetail: VideoDetail? = null,
   val message: String? = null,
   val error: GeneralError? = null,
-  val isStreamLoading: Boolean = false,
   val streamInfo: StreamInfo? = null,
 )

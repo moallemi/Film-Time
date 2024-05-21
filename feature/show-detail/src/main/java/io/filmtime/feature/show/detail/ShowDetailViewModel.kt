@@ -38,7 +38,6 @@ class ShowDetailViewModel @Inject constructor(
   private val _creditState: MutableStateFlow<ShowDetailCreditState> = MutableStateFlow(ShowDetailCreditState())
   val creditState = _creditState.asStateFlow()
 
-  val navigateToPlayer = MutableSharedFlow<String?>()
 
   init {
     load()
@@ -163,13 +162,5 @@ class ShowDetailViewModel @Inject constructor(
       }
     }
   }
-  fun loadStreamInfo() = viewModelScope.launch {
-    _state.value = _state.value.copy(isStreamLoading = true)
-    getStreamInfo()
-      .onEach { streamInfo ->
-        _state.value = _state.value.copy(streamInfo = streamInfo, isStreamLoading = false)
-        navigateToPlayer.emit(streamInfo.url)
-      }
-      .collect()
-  }
+
 }

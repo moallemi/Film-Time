@@ -26,7 +26,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +36,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -55,7 +53,6 @@ import io.filmtime.core.ui.common.componnents.LoadingVideoSectionRow
 import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.VideoDetail
-import io.filmtime.feature.show.detail.R.drawable
 
 @Composable
 fun ShowDetailScreen(
@@ -150,7 +147,6 @@ fun ShowDetailContent(
         }
 
         Row(horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.CenterVertically) {
-
           Text(
             modifier = Modifier.padding(start = 16.dp),
             style = TextStyle(
@@ -271,7 +267,7 @@ fun ShowError(error: GeneralError, message: String, onRefresh: () -> Unit) {
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+  ) {
     LottieAnimation(
       modifier = Modifier.size(size = 240.dp),
       composition = composition,

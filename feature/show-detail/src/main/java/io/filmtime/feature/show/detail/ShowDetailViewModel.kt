@@ -11,11 +11,8 @@ import io.filmtime.domain.stream.GetStreamInfoUseCase
 import io.filmtime.domain.tmdb.shows.GetShowCreditUseCase
 import io.filmtime.domain.tmdb.shows.GetShowDetailsUseCase
 import io.filmtime.domain.tmdb.shows.GetSimilarUseCase
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,7 +34,6 @@ class ShowDetailViewModel @Inject constructor(
 
   private val _creditState: MutableStateFlow<ShowDetailCreditState> = MutableStateFlow(ShowDetailCreditState())
   val creditState = _creditState.asStateFlow()
-
 
   init {
     load()
@@ -162,5 +158,4 @@ class ShowDetailViewModel @Inject constructor(
       }
     }
   }
-
 }

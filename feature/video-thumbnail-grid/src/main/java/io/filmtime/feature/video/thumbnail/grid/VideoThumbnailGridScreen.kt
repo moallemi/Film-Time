@@ -4,7 +4,8 @@ import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
@@ -114,7 +115,8 @@ private fun MovieListContent(
         VideoThumbnailCard(
           modifier = Modifier
             .animateItemPlacement()
-            .width(200.dp),
+            .fillMaxWidth()
+            .aspectRatio(2 / 3f),
           videoThumbnail = videoThumbnail,
           onClick = {
             videoThumbnail.ids.tmdbId?.let {

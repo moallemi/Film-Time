@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,7 +35,7 @@ fun HomeScreen(
   Scaffold(
     topBar = {
       FilmTimeSmallTopAppBar(
-        title = { Text("FilmTime") },
+        title = { Text(stringResource(R.string.film_time)) },
       )
     },
   ) {
@@ -48,7 +49,7 @@ fun HomeScreen(
         )
       } else {
         LazyColumn(
-          contentPadding = PaddingValues(vertical = 16.dp),
+          contentPadding = PaddingValues(bottom = 16.dp),
           verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
           items(state.videoSections) { videoSection ->

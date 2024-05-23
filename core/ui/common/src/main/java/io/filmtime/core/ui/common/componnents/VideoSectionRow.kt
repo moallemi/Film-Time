@@ -33,7 +33,7 @@ fun VideoSectionRow(
   items: List<VideoThumbnail>,
   onMovieClick: (tmdbId: Int) -> Unit,
   onShowClick: (tmdbId: Int) -> Unit,
-  onSectionClick: () -> Unit,
+  onSectionClick: (() -> Unit)?,
   modifier: Modifier = Modifier,
 ) {
   Column(
@@ -75,11 +75,15 @@ fun VideoSectionRow(
 }
 
 @Composable
-private fun Header(onSectionClick: () -> Unit, title: String) {
+private fun Header(
+  onSectionClick: (() -> Unit)?,
+  title: String,
+) {
+  val isClickable = onSectionClick != null
   Row(
     modifier = Modifier
       .fillMaxWidth()
-      .clickable { onSectionClick() }
+      .clickable(isClickable) { onSectionClick?.invoke() }
       .padding(16.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
@@ -89,9 +93,11 @@ private fun Header(onSectionClick: () -> Unit, title: String) {
       text = title,
       style = MaterialTheme.typography.titleMedium,
     )
-    Icon(
-      imageVector = Rounded.ArrowForward,
-      contentDescription = "Open section",
-    )
+    if (isClickable) {
+      Icon(
+        imageVector = Rounded.ArrowForward,
+        contentDescription = "Open section",
+      )
+    }
   }
 }

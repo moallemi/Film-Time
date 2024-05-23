@@ -1,12 +1,10 @@
 package io.filmtime.feature.movie.detail
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,7 +50,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.LoadingCastSectionRow
-import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
+import io.filmtime.core.ui.common.componnents.VideoSectionRow
 import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.VideoDetail
 
@@ -262,40 +260,20 @@ fun MovieDetailContent(
         }
       }
     }
-    Text(
-      modifier = Modifier.padding(horizontal = 16.dp),
-      style = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 16.sp,
-        color = Color.Black,
-      ),
-      text = "Similar",
-    )
     if (similarState.isLoading) {
       Box {}
     } else if (similarState.videoItems.isNotEmpty()) {
-      LazyRow(
+      VideoSectionRow(
         modifier = Modifier
-          .height(200.dp)
-          .padding(bottom = 6.dp)
-          .fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-      ) {
-        items(similarState.videoItems) { item ->
-          VideoThumbnailCard(
-            modifier = Modifier,
-            videoThumbnail = item,
-            onClick = {
-              item.ids.tmdbId?.let {
-                onSimilarItemClick(it)
-              } ?: run {
-                Log.e("MovieListScreen", "tmdbId is null")
-              }
-            },
-          )
-        }
-      }
+          .padding(bottom = 16.dp),
+        title = "Similar",
+        items = similarState.videoItems,
+        onMovieClick = {
+          onSimilarItemClick(it)
+        },
+        onShowClick = {},
+        onSectionClick = null,
+      )
 
 //    Row(
 //      modifier = Modifier.padding(horizontal = 16.dp),

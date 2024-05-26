@@ -10,4 +10,6 @@ android {
 dependencies {
   implementation(project(":data:model"))
   implementation(project(":core:design-system"))
+
+  implementation(libs.lottie)
 }

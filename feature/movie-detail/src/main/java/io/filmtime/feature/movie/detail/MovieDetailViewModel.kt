@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.filmtime.core.ui.common.toUiMessage
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
@@ -132,41 +133,20 @@ class MovieDetailViewModel @Inject constructor(
   }
 
   fun load() = viewModelScope.launch {
-    _state.value = _state.value.copy(isLoading = true)
+    _state.value = _state.value.copy(isLoading = true, error = null)
 
-    when (val result = getMovieDetail(videoId)) {
-      is Success -> {
-        _state.update { state ->
-          state.copy(videoDetail = result.data, isLoading = false)
+    getMovieDetail(videoId).collect {
+      when (val result = it) {
+        is Success -> {
+          _state.update { state ->
+            state.copy(videoDetail = result.data, isLoading = false, error = null)
+          }
         }
-      }
 
-      is Failure -> {
-        when (result.error) {
-          is GeneralError.ApiError -> {
-            _state.update { state ->
-              state.copy(
-                error = result.error,
-                message = (result.error as GeneralError.ApiError).message,
-                isLoading = false,
-              )
-            }
-          }
-
-          GeneralError.NetworkError -> {
-            _state.update { state ->
-              state.copy(
-                error = result.error,
-                message = "No internet connection. Please check your network settings.",
-                isLoading = false,
-              )
-            }
-          }
-
-          is GeneralError.UnknownError -> _state.update { state ->
+        is Failure -> {
+          _state.update { state ->
             state.copy(
-              error = result.error,
-              message = (result.error as GeneralError.UnknownError).error.message,
+              error = result.error.toUiMessage(),
               isLoading = false,
             )
           }

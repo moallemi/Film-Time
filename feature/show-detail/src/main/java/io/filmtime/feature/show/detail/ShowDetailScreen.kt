@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,11 +18,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons.Filled
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,20 +35,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieComposition
 import io.filmtime.core.ui.common.componnents.CreditRowItem
+import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.LoadingCastSectionRow
 import io.filmtime.core.ui.common.componnents.LoadingVideoSectionRow
 import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
-import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.VideoDetail
 
 @Composable
@@ -76,9 +69,10 @@ fun ShowDetailScreen(
       )
     }
   } else if (state.error != null) {
-    ShowError(state.error!!, state.message!!) {
-      viewModel.load()
-    }
+    ErrorContent(
+      uiMessage = state.error!!,
+      onRetryClick = viewModel::load,
+    )
   } else if (videoDetail != null) {
     ShowDetailContent(
       videoDetail,
@@ -245,45 +239,6 @@ fun ShowDetailContent(
           )
         }
       }
-    }
-  }
-}
-
-@Composable
-fun ShowError(error: GeneralError, message: String, onRefresh: () -> Unit) {
-  val composition by rememberLottieComposition(
-    LottieCompositionSpec.RawRes(
-      if (error is GeneralError.NetworkError) {
-        R.raw.network_lost
-      } else {
-        R.raw.not_found
-      },
-    ),
-  )
-  Column(
-    modifier = Modifier
-      .fillMaxSize()
-      .padding(horizontal = 13.dp),
-    verticalArrangement = Arrangement.Center,
-    horizontalAlignment = Alignment.CenterHorizontally,
-
-  ) {
-    LottieAnimation(
-      modifier = Modifier.size(size = 240.dp),
-      composition = composition,
-    )
-    Spacer(modifier = Modifier.size(10.dp))
-    Text(
-      text = message,
-      textAlign = TextAlign.Center,
-      style = MaterialTheme.typography.bodyLarge,
-    )
-
-    Spacer(modifier = Modifier.size(60.dp))
-    Button(
-      onClick = onRefresh,
-    ) {
-      Text(text = "Refresh")
     }
   }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_settings_sign_in">Sign In</string>
+    <string name="feature_settings_sign_out">Sign Out</string>
+    <string name="feature_settings_trackt_sign_in_desc">Sign in with your account to track and scrobble your watched Movies and TV shows.</string>
+    <string name="feature_settings_trakt_logo">Trakt logo</string>
+    <string name="feature_settings_settings">Settings</string>
+    <string name="feature_settings_trakt_sign_out_title">Sign Out Trakt?</string>
+    <string name="feature_settings_trakt_sign_out_message">Are you sure you want to sign out from Trakt?</string>
+    <string name="feature_settings_cancel">Cancel</string>
+</resources>

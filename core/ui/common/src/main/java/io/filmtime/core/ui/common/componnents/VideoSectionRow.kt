@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Icons.AutoMirrored.Rounded
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,30 +33,19 @@ fun VideoSectionRow(
   items: List<VideoThumbnail>,
   onMovieClick: (tmdbId: Int) -> Unit,
   onShowClick: (tmdbId: Int) -> Unit,
-  onSectionClick: () -> Unit,
+  onSectionClick: (() -> Unit)?,
+  modifier: Modifier = Modifier,
 ) {
-  Column {
-    Row(
-      modifier = Modifier
-        .fillMaxWidth()
-        .clickable { onSectionClick() }
-        .padding(16.dp),
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      Text(
-        modifier = Modifier
-          .weight(1f),
-        text = title,
-        style = MaterialTheme.typography.titleMedium,
-      )
-      Icon(
-        imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
-        contentDescription = "Open section",
-      )
-    }
+  Column(
+    modifier = modifier,
+  ) {
+    Header(
+      onSectionClick = onSectionClick,
+      title = title,
+    )
     LazyRow(
       modifier = Modifier
-        .height(200.dp)
+        .height(180.dp)
         .fillMaxWidth(),
       contentPadding = PaddingValues(horizontal = 16.dp),
       horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -81,6 +70,34 @@ fun VideoSectionRow(
           },
         )
       }
+    }
+  }
+}
+
+@Composable
+private fun Header(
+  onSectionClick: (() -> Unit)?,
+  title: String,
+) {
+  val isClickable = onSectionClick != null
+  Row(
+    modifier = Modifier
+      .fillMaxWidth()
+      .clickable(isClickable) { onSectionClick?.invoke() }
+      .padding(16.dp),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Text(
+      modifier = Modifier
+        .weight(1f),
+      text = title,
+      style = MaterialTheme.typography.titleMedium,
+    )
+    if (isClickable) {
+      Icon(
+        imageVector = Rounded.ArrowForward,
+        contentDescription = "Open section",
+      )
     }
   }
 }

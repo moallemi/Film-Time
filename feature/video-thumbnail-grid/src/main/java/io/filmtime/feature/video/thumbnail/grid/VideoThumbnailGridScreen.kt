@@ -4,7 +4,8 @@ import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
@@ -15,9 +16,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,7 +59,11 @@ private fun VideoThumbnailGridScreen(
   onShowClick: (tmdbId: Int) -> Unit,
   onBack: () -> Unit,
 ) {
+  val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
   Scaffold(
+    modifier = Modifier
+      .nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
       TopAppBar(
         title = { Text(text = state.title) },
@@ -70,6 +77,7 @@ private fun VideoThumbnailGridScreen(
             )
           }
         },
+        scrollBehavior = scrollBehavior,
       )
     },
     content = { padding ->
@@ -107,7 +115,8 @@ private fun MovieListContent(
         VideoThumbnailCard(
           modifier = Modifier
             .animateItemPlacement()
-            .width(200.dp),
+            .fillMaxWidth()
+            .aspectRatio(2 / 3f),
           videoThumbnail = videoThumbnail,
           onClick = {
             videoThumbnail.ids.tmdbId?.let {

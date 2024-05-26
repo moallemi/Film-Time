@@ -1,5 +1,7 @@
 package io.filmtime.ui
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -45,11 +47,13 @@ fun FilmTimeApp(
         },
       )
     },
+    contentWindowInsets = WindowInsets(0, 0, 0, 0),
   ) { padding ->
     FilmTimeNavHost(
       navController = navController,
       modifier = Modifier
-        .padding(padding),
+        .padding(padding)
+        .consumeWindowInsets(padding),
     )
   }
 }

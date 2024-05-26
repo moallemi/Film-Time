@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface TmdbMovieRepository {
 
-  suspend fun getMovieDetails(movieId: Int): Result<VideoDetail, GeneralError>
+  suspend fun getMovieDetails(movieId: Int): Flow<Result<VideoDetail, GeneralError>>
 
   suspend fun getTrendingMovies(): Result<List<VideoThumbnail>, GeneralError>
 

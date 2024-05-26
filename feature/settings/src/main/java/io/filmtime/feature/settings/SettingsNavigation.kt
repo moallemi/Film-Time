@@ -8,7 +8,10 @@ import io.filmtime.core.ui.common.DestinationRoute
 val GRAPH_SETTINGS_ROUTE = DestinationRoute("settings_graph_route")
 private const val ROUTE_SETTINGS_SCREEN = "settings"
 
-fun NavGraphBuilder.settingsGraph() {
+fun NavGraphBuilder.settingsGraph(
+  onTraktLoginClick: (DestinationRoute) -> Unit,
+  nestedGraphs: NavGraphBuilder.(DestinationRoute) -> Unit,
+) {
   navigation(
     route = GRAPH_SETTINGS_ROUTE.route,
     startDestination = "${GRAPH_SETTINGS_ROUTE.route}/$ROUTE_SETTINGS_SCREEN",
@@ -16,7 +19,11 @@ fun NavGraphBuilder.settingsGraph() {
     composable(
       route = "${GRAPH_SETTINGS_ROUTE.route}/$ROUTE_SETTINGS_SCREEN",
     ) {
-      SettingsScreen()
+      SettingsScreen(
+        onTraktLoginClick = { onTraktLoginClick(GRAPH_SETTINGS_ROUTE) },
+      )
     }
+
+    nestedGraphs(GRAPH_SETTINGS_ROUTE)
   }
 }

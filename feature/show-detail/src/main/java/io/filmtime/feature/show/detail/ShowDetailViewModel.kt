@@ -4,10 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.filmtime.core.ui.common.toUiMessage
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
-import io.filmtime.domain.stream.GetStreamInfoUseCase
 import io.filmtime.domain.tmdb.shows.GetShowCreditUseCase
 import io.filmtime.domain.tmdb.shows.GetShowDetailsUseCase
 import io.filmtime.domain.tmdb.shows.GetSimilarUseCase
@@ -23,7 +23,6 @@ class ShowDetailViewModel @Inject constructor(
   private val getShowDetails: GetShowDetailsUseCase,
   private val getShowCreditUseCase: GetShowCreditUseCase,
   private val getSimilarUseCase: GetSimilarUseCase,
-  private val getStreamInfo: GetStreamInfoUseCase,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
@@ -124,7 +123,7 @@ class ShowDetailViewModel @Inject constructor(
   }
 
   fun load() = viewModelScope.launch {
-    _state.value = _state.value.copy(isLoading = true)
+    _state.value = _state.value.copy(isLoading = true, error = null)
 
     when (val result = getShowDetails(videoId)) {
       is Success -> {
@@ -132,26 +131,9 @@ class ShowDetailViewModel @Inject constructor(
       }
 
       is Failure -> {
-        when (result.error) {
-          is GeneralError.ApiError -> {
-            _state.value = _state.value.copy(
-              error = result.error,
-              message = (result.error as GeneralError.ApiError).message,
-              isLoading = false,
-            )
-          }
-
-          GeneralError.NetworkError -> {
-            _state.value = _state.value.copy(
-              error = result.error,
-              message = "No internet connection. Please check your network settings.",
-              isLoading = false,
-            )
-          }
-
-          is GeneralError.UnknownError -> _state.value = _state.value.copy(
-            error = result.error,
-            message = (result.error as GeneralError.UnknownError).error.message,
+        _state.update { state ->
+          state.copy(
+            error = result.error.toUiMessage(),
             isLoading = false,
           )
         }

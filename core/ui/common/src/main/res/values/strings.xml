@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="refresh">Refresh</string>
+    <string name="check_internet_connection">Please check your internet connection.</string>
+    <string name="unknown_error">Unknown error occurred.</string>
+    <string name="unknown_api_error">Unknown API error</string>
+</resources>

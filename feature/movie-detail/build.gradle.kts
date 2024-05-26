@@ -14,6 +14,4 @@ dependencies {
   implementation(project(":domain:stream"))
   implementation(project(":data:trakt"))
   implementation(project(":core:ui:common"))
-
-  implementation(libs.lottie)
 }

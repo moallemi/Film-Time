@@ -7,7 +7,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.core.ui.common.toUiMessage
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
+import io.filmtime.data.model.VideoType.Movie
 import io.filmtime.data.trakt.TraktHistoryRepository
+import io.filmtime.domain.bookmarks.AddBookmarkUseCase
+import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
+import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
 import io.filmtime.domain.stream.GetStreamInfoUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieCreditsUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
@@ -29,6 +33,9 @@ class MovieDetailViewModel @Inject constructor(
   private val getCredit: GetMovieCreditsUseCase,
   private val getSimilar: GetSimilarUseCase,
   private val traktHistoryRepository: TraktHistoryRepository,
+  private val addBookmark: AddBookmarkUseCase,
+  private val deleteBookmark: DeleteBookmarkUseCase,
+  private val observeBookmark: ObserveBookmarkUseCase,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
@@ -48,6 +55,7 @@ class MovieDetailViewModel @Inject constructor(
     load()
     loadCredits()
     loadSimilar()
+    observeBookmark()
   }
 
   fun load() = viewModelScope.launch {
@@ -126,5 +134,23 @@ class MovieDetailViewModel @Inject constructor(
         _state.value = _state.value.copy(videoDetail = updated)
       }
     }
+  }
+
+  private fun observeBookmark() = viewModelScope.launch {
+    observeBookmark(videoId, Movie)
+      .onEach { isBookmarked ->
+        _state.update { state ->
+          state.copy(isBookmarked = isBookmarked)
+        }
+      }
+      .collect()
+  }
+
+  fun addBookmark() = viewModelScope.launch {
+    addBookmark(videoId, Movie)
+  }
+
+  fun removeBookmark() = viewModelScope.launch {
+    deleteBookmark(videoId, Movie)
   }
 }

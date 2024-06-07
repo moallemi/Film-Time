@@ -43,7 +43,6 @@ import coil.compose.AsyncImage
 import io.filmtime.core.ui.common.componnents.CreditRowItem
 import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.LoadingCastSectionRow
-import io.filmtime.core.ui.common.componnents.LoadingVideoSectionRow
 import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
 import io.filmtime.data.model.VideoDetail
 
@@ -207,7 +206,7 @@ fun ShowDetailContent(
     }
 
     if (similarState.isLoading) {
-      LoadingVideoSectionRow(numberOfSections = 10, modifier = Modifier.height(200.dp))
+      Box {} // Fixme: Add shimmer
     } else if (similarState.videoItems.isNotEmpty()) {
       Text(
         modifier = Modifier.padding(horizontal = 16.dp),

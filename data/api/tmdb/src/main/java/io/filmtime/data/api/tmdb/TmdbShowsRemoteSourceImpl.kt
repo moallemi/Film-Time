@@ -1,9 +1,11 @@
 package io.filmtime.data.api.tmdb
 
+import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
+import io.filmtime.data.network.TmdbCreditsResponse
 import io.filmtime.data.network.TmdbErrorResponse
 import io.filmtime.data.network.TmdbShowListResponse
 import io.filmtime.data.network.TmdbShowsService
@@ -73,6 +75,30 @@ class TmdbShowsRemoteSourceImpl @Inject constructor(
         page = page,
         timezone = "America/New_York",
       )
+    }
+
+  override suspend fun getCredit(seriesId: Int): Result<List<CreditItem>, GeneralError> =
+    getCredits { tmdbShowsService.getCredit(seriesId) }
+
+  override suspend fun getSimilar(seriesId: Int): Result<List<VideoThumbnail>, GeneralError> =
+    getShowsList { tmdbShowsService.getSimilar(seriesId) }
+
+  private suspend fun getCredits(
+    apiFunction: suspend () -> NetworkResponse<TmdbCreditsResponse, TmdbErrorResponse>,
+  ): Result<List<CreditItem>, GeneralError> =
+    when (val result = apiFunction()) {
+      is NetworkResponse.Success -> {
+        val creditResponse = result.body?.cast ?: emptyList()
+        Result.Success(creditResponse.map { it.toCreditItem() })
+      }
+
+      is NetworkResponse.ApiError -> {
+        val errorResponse = result.body
+        Result.Failure(GeneralError.ApiError(errorResponse.statusMessage, errorResponse.statusCode))
+      }
+
+      is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
+      is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
     }
 
   private suspend fun getShowsList(

@@ -10,6 +10,10 @@ import io.filmtime.core.ui.common.DestinationRoute
 
 fun NavGraphBuilder.showDetailScreen(
   rootRoute: DestinationRoute,
+  onStreamReady: (DestinationRoute, streamUrl: String) -> Unit,
+  onCastItemClick: (DestinationRoute, castId: Long) -> Unit,
+  onSimilarClick: (DestinationRoute, tmdbId: Int) -> Unit,
+  onBack: () -> Unit,
 ) {
   composable(
     route = "${rootRoute.route}/show_detail/{video_id}",
@@ -21,6 +25,9 @@ fun NavGraphBuilder.showDetailScreen(
   ) {
     ShowDetailScreen(
       viewModel = hiltViewModel(),
+      onCastItemClick = { onCastItemClick(rootRoute, it) },
+      onSimilarClick = { onSimilarClick(rootRoute, it) },
+      onBackPressed = onBack,
     )
   }
 }

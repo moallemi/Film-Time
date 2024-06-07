@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import io.filmtime.data.api.tmdb.TmdbShowsRemoteSource
+import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
@@ -48,4 +49,10 @@ internal class TmdbShowsRepositoryImpl @Inject constructor(
         )
       },
     ).flow
+
+  override suspend fun getCredit(movieId: Int): Result<List<CreditItem>, GeneralError> =
+    tmdbShowsRemoteSource.getCredit(movieId)
+
+  override suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError> =
+    tmdbShowsRemoteSource.getSimilar(movieId)
 }

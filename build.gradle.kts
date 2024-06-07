@@ -5,15 +5,16 @@ plugins {
   alias(libs.plugins.com.android.library) apply false
   alias(libs.plugins.kotlinx.serialization) apply false
   alias(libs.plugins.ksp) apply false
+  alias(libs.plugins.compose) apply false
+  alias(libs.plugins.hilt.android) apply false
 
   alias(libs.plugins.spotless)
-  alias(libs.plugins.hilt.android) apply false
 }
 
 spotless {
   kotlin {
     target("**/*.kt", "**/*.kts")
-    targetExclude("$buildDir/**/*.kt", "bin/**/*.kt", "buildSrc/**/*.kt")
+    targetExclude("${layout.buildDirectory}/**/*.kt", "bin/**/*.kt", "buildSrc/**/*.kt")
 
     ktlint()
   }

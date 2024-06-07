@@ -1,6 +1,6 @@
 package io.fimltime.data.tmdb.movies
 
-import io.filmtime.data.database.MovieDetailEntity
+import io.filmtime.data.database.entity.MovieDetailEntity
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoId
 

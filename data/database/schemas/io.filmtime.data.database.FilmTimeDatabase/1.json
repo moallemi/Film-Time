@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "214ce2535d26400416bd354e1c802549",
+    "identityHash": "9de1ff5e2dbc5778fc6570b680c72ca6",
     "entities": [
       {
         "tableName": "movie_detail",
@@ -113,12 +113,38 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "bookmarks",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tmdbId` INTEGER NOT NULL, `videoType` TEXT NOT NULL, PRIMARY KEY(`tmdbId`))",
+        "fields": [
+          {
+            "fieldPath": "tmdbId",
+            "columnName": "tmdbId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "videoType",
+            "columnName": "videoType",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "tmdbId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '214ce2535d26400416bd354e1c802549')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9de1ff5e2dbc5778fc6570b680c72ca6')"
     ]
   }
 }

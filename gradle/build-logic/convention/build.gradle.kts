@@ -20,6 +20,8 @@ kotlin {
 dependencies {
   compileOnly(libs.android.gradlePlugin)
   compileOnly(libs.kotlin.gradlePlugin)
+  compileOnly(libs.ksp.gradlePlugin)
+  compileOnly(libs.room.gradlePlugin)
   compileOnly(libs.compose.gradlePlugin)
 }
 
@@ -67,6 +69,10 @@ gradlePlugin {
     register("jvmLibrary") {
       id = "io.filmtime.gradle.jvm.library"
       implementationClass = "io.filmtime.gradle.plugins.LibraryJvmPlugin"
+    }
+    register("roomLibrary") {
+      id = "io.filmtime.gradle.android.room"
+      implementationClass = "io.filmtime.gradle.plugins.RoomPlugin"
     }
   }
 }

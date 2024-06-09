@@ -4,7 +4,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,7 +16,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,21 +32,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
+import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
 import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.LoadingCastSectionRow
 import io.filmtime.core.ui.common.componnents.VideoSectionRow
 import io.filmtime.data.model.CreditItem
+import io.filmtime.data.model.Preview
 import io.filmtime.data.model.VideoDetail
-import io.filmtime.data.model.VideoId
+import io.filmtime.feature.movie.detail.components.VideoThumbnailInfo
 
 @Composable
 fun MovieDetailScreen(
@@ -111,7 +107,7 @@ fun MovieDetailScreen(
             .aspectRatio(2 / 3f)
             .drawWithCache {
               val gradient = Brush.verticalGradient(
-                colors = listOf(Color.Transparent, Color(0x99000000), Color(0xBB000000)),
+                colors = listOf(Color.Transparent, Color(0x99000000), Color(0xDD000000)),
                 startY = imageHeight.toFloat() / 2,
                 endY = imageHeight.toFloat(),
               )
@@ -125,50 +121,14 @@ fun MovieDetailScreen(
           model = videoDetail.posterUrl,
           contentDescription = "Poster Image",
         )
-        Column(
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .align(Alignment.BottomStart),
-          verticalArrangement = Arrangement.spacedBy(4.dp),
+        FilmTimeTheme(
+          darkTheme = true,
         ) {
-          Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = videoDetail.title,
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-          )
-          Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(space = 8.dp, alignment = Alignment.CenterHorizontally),
-          ) {
-            ProvideTextStyle(
-              MaterialTheme.typography.bodySmall.copy(
-                color = Color.White,
-              ),
-            ) {
-              Text(text = videoDetail.genres.firstOrNull().orEmpty())
-              Text(text = "\u2022")
-              Text(text = videoDetail.year.toString())
-              Text(text = "\u2022")
-              Text(text = videoDetail.runtime.orEmpty())
-            }
-          }
-          FilmTimeFilledButton(
+          VideoThumbnailInfo(
             modifier = Modifier
-              .fillMaxWidth(),
-            onClick = {},
-          ) {
-            Text("Play")
-          }
-          Text(
-            text = videoDetail.description,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.White,
+              .padding(16.dp)
+              .align(Alignment.BottomCenter),
+            videoDetail = videoDetail,
           )
         }
       }
@@ -238,21 +198,7 @@ fun CreditRowItem(item: CreditItem) {
 private fun MovieDetailScreenPreview() {
   PreviewFilmTimeTheme {
     MovieDetailScreen(
-      videoDetail = VideoDetail(
-        ids = VideoId(1, 1),
-        title = "Movie Title",
-        posterUrl = "",
-        coverUrl = "",
-        year = 2021,
-        genres = listOf("Action", "Adventure"),
-        originalLanguage = "en",
-        spokenLanguages = listOf("en"),
-        description = "Movie Description",
-        runtime = "120 min",
-        releaseDate = "2021-01-01",
-        voteAverage = 7.5F,
-        voteColor = 0xFF00FF00,
-      ),
+      videoDetail = VideoDetail.Preview,
       creditState = MovieDetailCreditState(
         credit = listOf(
           CreditItem(

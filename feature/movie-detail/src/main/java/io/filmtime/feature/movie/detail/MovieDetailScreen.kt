@@ -3,6 +3,7 @@ package io.filmtime.feature.movie.detail
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -62,7 +63,9 @@ fun MovieDetailScreen(
 
   if (state.isLoading) {
     CircularProgressIndicator(
-      modifier = Modifier.wrapContentSize(),
+      modifier = Modifier
+        .fillMaxSize()
+        .wrapContentSize(),
     )
   } else if (state.error != null) {
     ErrorContent(
@@ -75,16 +78,18 @@ fun MovieDetailScreen(
       creditState = creditState,
       similarState = similarState,
       onSimilarItemClick = onMovieClick,
+      onCreditsRetry = viewModel::loadCredits,
     )
   }
 }
 
 @Composable
-fun MovieDetailScreen(
+private fun MovieDetailScreen(
   videoDetail: VideoDetail,
   creditState: MovieDetailCreditState,
   similarState: MovieDetailSimilarState,
   onSimilarItemClick: (Int) -> Unit,
+  onCreditsRetry: () -> Unit,
 ) {
   LazyColumn(
     verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -131,6 +136,8 @@ fun MovieDetailScreen(
       CreditsRow(
         isLoading = creditState.isLoading,
         credits = creditState.credit,
+        error = creditState.error,
+        onRetryClick = onCreditsRetry,
       )
     }
     item {
@@ -174,6 +181,7 @@ private fun MovieDetailScreenPreview() {
         videoItems = listOf(),
       ),
       onSimilarItemClick = {},
+      onCreditsRetry = {},
     )
   }
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
 import io.filmtime.core.ui.common.R
+import io.filmtime.core.ui.common.UiMessage
 import io.filmtime.data.model.Person
 import io.filmtime.data.model.PreviewCast
 import io.filmtime.data.model.PreviewCrew
@@ -26,6 +28,8 @@ fun CreditsRow(
   isLoading: Boolean,
   credits: List<Person>,
   modifier: Modifier = Modifier,
+  error: UiMessage? = null,
+  onRetryClick: () -> Unit,
 ) {
   Column(
     modifier = modifier,
@@ -38,7 +42,17 @@ fun CreditsRow(
       text = stringResource(R.string.core_ui_cast_crew),
     )
     if (isLoading) {
-      CircularProgressIndicator()
+      CircularProgressIndicator(
+        modifier = Modifier
+          .fillMaxWidth()
+          .wrapContentSize(),
+      )
+    } else if (error != null) {
+      ErrorContent(
+        uiMessage = error,
+        onRetryClick = onRetryClick,
+        showGraphicalError = false,
+      )
     } else if (credits.isNotEmpty()) {
       LazyRow(
         modifier = Modifier
@@ -61,6 +75,8 @@ private fun CreditsRowPreview() {
     CreditsRow(
       isLoading = false,
       credits = listOf(Person.PreviewCast, Person.PreviewCast, Person.PreviewCrew),
+      error = null,
+      onRetryClick = {},
     )
   }
 }

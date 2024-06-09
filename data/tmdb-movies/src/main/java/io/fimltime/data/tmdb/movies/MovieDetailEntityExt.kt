@@ -20,6 +20,10 @@ fun MovieDetailEntity.toMovie(): VideoDetail {
     voteColor = 0,
     originalLanguage = originalLanguage,
     spokenLanguages = spokenLanguages,
+    budget = budget,
+    homePage = homePage,
+    status = status,
+    tagline = tagline,
   )
 }
 
@@ -34,8 +38,12 @@ fun VideoDetail.toEntity(): MovieDetailEntity {
     year = year,
     originalLanguage = originalLanguage,
     runtime = runtime,
-    genres = genres.filterNotNull(),
+    genres = genres,
     spokenLanguages = spokenLanguages,
     voteAverage = voteAverage,
+    homePage = homePage,
+    status = status,
+    budget = budget,
+    tagline = tagline,
   )
 }

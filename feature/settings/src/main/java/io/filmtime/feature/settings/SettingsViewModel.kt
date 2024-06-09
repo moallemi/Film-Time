@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.domain.trakt.auth.GetTraktAuthStateUseCase
 import io.filmtime.domain.trakt.auth.LogoutTraktUseCase
-import io.filmtime.domain.trakt.auth.model.TraktAuthState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -30,7 +29,7 @@ class SettingsViewModel @Inject constructor(
   private fun observeTraktState() = viewModelScope.launch {
     getTraktAuthState()
       .onEach { state ->
-        _state.update { it.copy(isTraktLoggedIn = state == TraktAuthState.LoggedIn) }
+        _state.update { it.copy(isTraktLoggedIn = state) }
       }
       .collect()
   }

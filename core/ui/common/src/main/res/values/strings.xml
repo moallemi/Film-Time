@@ -4,4 +4,5 @@
     <string name="check_internet_connection">Please check your internet connection.</string>
     <string name="unknown_error">Unknown error occurred.</string>
     <string name="unknown_api_error">Unknown API error</string>
+    <string name="core_ui_cast_crew"><![CDATA[Cast & Crew]]></string>
 </resources>

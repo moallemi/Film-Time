@@ -22,7 +22,7 @@ internal abstract class TmdbShowsDomainModule {
   abstract fun bindGetShowsListUseCase(impl: GetShowsListUseCaseImpl): GetShowsListUseCase
 
   @Binds
-  abstract fun bindGetShowCredit(impl: GetShowCreditUseCaseImpl): GetShowCreditUseCase
+  abstract fun bindGetShowCredit(impl: GetShowCreditsUseCaseImpl): GetShowCreditsUseCase
 
   @Binds
   abstract fun bindGetSimilar(impl: GetSimilarUseCaseImpl): GetSimilarUseCase

@@ -20,10 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import io.filmtime.data.model.CreditItem
+import io.filmtime.data.model.Person
 
 @Composable
-fun CreditRowItem(item: CreditItem) {
+fun CreditRowItem(item: Person) {
   Column(
     modifier = Modifier
       .fillMaxWidth()
@@ -38,7 +38,7 @@ fun CreditRowItem(item: CreditItem) {
         .clip(CircleShape) // clip to the circle shape
         .border(1.dp, Color.Transparent, CircleShape),
       contentScale = ContentScale.Crop,
-      model = item.profile,
+      model = item.imageUrl,
       contentDescription = "credit_profile",
       alignment = Alignment.Center,
     )

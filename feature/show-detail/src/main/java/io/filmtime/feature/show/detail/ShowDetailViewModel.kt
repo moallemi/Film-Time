@@ -8,7 +8,7 @@ import io.filmtime.core.ui.common.toUiMessage
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
-import io.filmtime.domain.tmdb.shows.GetShowCreditUseCase
+import io.filmtime.domain.tmdb.shows.GetShowCreditsUseCase
 import io.filmtime.domain.tmdb.shows.GetShowDetailsUseCase
 import io.filmtime.domain.tmdb.shows.GetSimilarUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class ShowDetailViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   private val getShowDetails: GetShowDetailsUseCase,
-  private val getShowCreditUseCase: GetShowCreditUseCase,
+  private val getShowCreditsUseCase: GetShowCreditsUseCase,
   private val getSimilarUseCase: GetSimilarUseCase,
 ) : ViewModel() {
 
@@ -81,7 +81,7 @@ class ShowDetailViewModel @Inject constructor(
 
   private fun loadCredits() = viewModelScope.launch {
     _creditState.value = _creditState.value.copy(isLoading = true)
-    when (val result = getShowCreditUseCase(videoId)) {
+    when (val result = getShowCreditsUseCase(videoId)) {
       is Failure -> {
         when (result.error) {
           is GeneralError.ApiError -> {

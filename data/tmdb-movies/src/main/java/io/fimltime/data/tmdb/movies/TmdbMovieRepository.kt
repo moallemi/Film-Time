@@ -1,8 +1,8 @@
 package io.fimltime.data.tmdb.movies
 
 import androidx.paging.PagingData
-import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
+import io.filmtime.data.model.Person
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
@@ -23,7 +23,8 @@ interface TmdbMovieRepository {
   suspend fun upcomingMovies(): Result<List<VideoThumbnail>, GeneralError>
 
   fun moviesStream(movieListType: MovieListType): Flow<PagingData<VideoThumbnail>>
-  suspend fun getCredit(movieId: Int): Result<List<CreditItem>, GeneralError>
+
+  suspend fun credits(movieId: Int): Result<List<Person>, GeneralError>
 
   suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError>
 }

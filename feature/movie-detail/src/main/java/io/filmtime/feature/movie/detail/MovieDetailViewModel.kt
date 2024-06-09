@@ -5,12 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.core.ui.common.toUiMessage
-import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
 import io.filmtime.data.trakt.TraktHistoryRepository
 import io.filmtime.domain.stream.GetStreamInfoUseCase
-import io.filmtime.domain.tmdb.movies.GetMovieCreditUseCase
+import io.filmtime.domain.tmdb.movies.GetMovieCreditsUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
 import io.filmtime.domain.tmdb.movies.GetSimilarUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,14 +26,16 @@ class MovieDetailViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   private val getMovieDetail: GetMovieDetailsUseCase,
   private val getStreamInfo: GetStreamInfoUseCase,
-  private val getCredit: GetMovieCreditUseCase,
+  private val getCredit: GetMovieCreditsUseCase,
   private val getSimilar: GetSimilarUseCase,
   private val traktHistoryRepository: TraktHistoryRepository,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
+
   private val _state: MutableStateFlow<MovieDetailState> = MutableStateFlow(MovieDetailState())
   val state = _state.asStateFlow()
+
   private val _similarState: MutableStateFlow<MovieDetailSimilarState> = MutableStateFlow(MovieDetailSimilarState())
   val similarState = _similarState.asStateFlow()
 
@@ -45,91 +46,8 @@ class MovieDetailViewModel @Inject constructor(
 
   init {
     load()
-    loadSimilar()
     loadCredits()
-  }
-
-  private fun loadSimilar() = viewModelScope.launch {
-    _similarState.value = _similarState.value.copy(isLoading = true)
-    when (val result = getSimilar(videoId)) {
-      is Failure -> {
-        when (result.error) {
-          is GeneralError.ApiError -> {
-            _similarState.update { state ->
-              state.copy(
-                errorMessage = (result.error as GeneralError.ApiError).message.orEmpty(),
-                isLoading = false,
-              )
-            }
-          }
-
-          GeneralError.NetworkError -> {
-            _similarState.update { state ->
-              state.copy(
-                errorMessage = "No internet connection. Please check your network settings.",
-                isLoading = false,
-              )
-            }
-          }
-
-          is GeneralError.UnknownError -> _similarState.update { state ->
-            state.copy(
-              errorMessage = (result.error as GeneralError.UnknownError).error.message.orEmpty(),
-              isLoading = false,
-            )
-          }
-        }
-      }
-
-      is Success -> {
-        _similarState.update { state ->
-          state.copy(videoItems = result.data, isLoading = false, errorMessage = "")
-        }
-      }
-    }
-  }
-
-  private fun loadCredits() = viewModelScope.launch {
-    _creditState.value = _creditState.value.copy(isLoading = true)
-    when (val result = getCredit(videoId)) {
-      is Failure -> {
-        when (result.error) {
-          is GeneralError.ApiError -> {
-            _creditState.update { state ->
-              state.copy(
-                error = result.error,
-                message = (result.error as GeneralError.ApiError).message,
-                isLoading = false,
-              )
-            }
-          }
-
-          GeneralError.NetworkError -> {
-            _creditState.update { state ->
-              state.copy(
-                error = result.error,
-                message = "No internet connection. Please check your network settings.",
-                isLoading = false,
-              )
-            }
-          }
-
-          is GeneralError.UnknownError -> _creditState.update { state ->
-            state.copy(
-              error = result.error,
-              message = (result.error as GeneralError.UnknownError).error.message,
-              isLoading = false,
-            )
-          }
-        }
-      }
-
-      is Success -> {
-        _creditState.update { state ->
-          state.copy(credit = result.data, isLoading = false)
-        }
-      }
-    }
+    loadSimilar()
   }
 
   fun load() = viewModelScope.launch {
@@ -145,11 +63,44 @@ class MovieDetailViewModel @Inject constructor(
 
         is Failure -> {
           _state.update { state ->
-            state.copy(
-              error = result.error.toUiMessage(),
-              isLoading = false,
-            )
+            state.copy(error = result.error.toUiMessage(), isLoading = false)
           }
+        }
+      }
+    }
+  }
+
+  fun loadSimilar() = viewModelScope.launch {
+    _similarState.value = _similarState.value.copy(isLoading = true, error = null)
+
+    when (val result = getSimilar(videoId)) {
+      is Success -> {
+        _similarState.update { state ->
+          state.copy(videoItems = result.data, isLoading = false, error = null)
+        }
+      }
+
+      is Failure -> {
+        _similarState.update { state ->
+          state.copy(error = result.error.toUiMessage(), isLoading = false)
+        }
+      }
+    }
+  }
+
+  fun loadCredits() = viewModelScope.launch {
+    _creditState.value = _creditState.value.copy(isLoading = true, error = null)
+
+    when (val result = getCredit(videoId)) {
+      is Success -> {
+        _creditState.update { state ->
+          state.copy(credit = result.data, isLoading = false, error = null)
+        }
+      }
+
+      is Failure -> {
+        _creditState.update { state ->
+          state.copy(error = result.error.toUiMessage(), isLoading = false)
         }
       }
     }

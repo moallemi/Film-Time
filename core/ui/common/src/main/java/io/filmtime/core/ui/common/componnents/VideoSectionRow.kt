@@ -11,10 +11,12 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons.AutoMirrored.Rounded
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import io.filmtime.core.ui.common.UiMessage
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.model.VideoType
 
@@ -35,6 +38,9 @@ fun VideoSectionRow(
   onShowClick: (tmdbId: Int) -> Unit,
   onSectionClick: (() -> Unit)?,
   modifier: Modifier = Modifier,
+  isLoading: Boolean = false,
+  error: UiMessage? = null,
+  onRetryClick: (() -> Unit)? = null,
 ) {
   Column(
     modifier = modifier,
@@ -43,32 +49,46 @@ fun VideoSectionRow(
       onSectionClick = onSectionClick,
       title = title,
     )
-    LazyRow(
-      modifier = Modifier
-        .height(180.dp)
-        .fillMaxWidth(),
-      contentPadding = PaddingValues(horizontal = 16.dp),
-      horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-      items(items) { item ->
-        VideoThumbnailCard(
-          modifier = Modifier
-            .testTag("discover_carousel_item")
-            .animateItemPlacement()
-            .fillParentMaxHeight()
-            .aspectRatio(2 / 3f),
-          videoThumbnail = item,
-          onClick = {
-            item.ids.tmdbId?.let {
-              when (item.type) {
-                VideoType.Movie -> onMovieClick(it)
-                VideoType.Show -> onShowClick(it)
+    if (isLoading) {
+      CircularProgressIndicator(
+        modifier = Modifier
+          .fillMaxWidth()
+          .wrapContentSize(),
+      )
+    } else if (error != null) {
+      ErrorContent(
+        uiMessage = error,
+        onRetryClick = onRetryClick,
+        showGraphicalError = false,
+      )
+    } else if (items.isNotEmpty()) {
+      LazyRow(
+        modifier = Modifier
+          .height(180.dp)
+          .fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+      ) {
+        items(items) { item ->
+          VideoThumbnailCard(
+            modifier = Modifier
+              .testTag("discover_carousel_item")
+              .animateItemPlacement()
+              .fillParentMaxHeight()
+              .aspectRatio(2 / 3f),
+            videoThumbnail = item,
+            onClick = {
+              item.ids.tmdbId?.let {
+                when (item.type) {
+                  VideoType.Movie -> onMovieClick(it)
+                  VideoType.Show -> onShowClick(it)
+                }
+              } ?: run {
+                Log.e("VideoSectionRow", "tmdbId is null")
               }
-            } ?: run {
-              Log.e("VideoSectionRow", "tmdbId is null")
-            }
-          },
-        )
+            },
+          )
+        }
       }
     }
   }

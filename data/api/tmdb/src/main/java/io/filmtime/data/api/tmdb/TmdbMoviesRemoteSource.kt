@@ -1,7 +1,7 @@
 package io.filmtime.data.api.tmdb
 
-import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
+import io.filmtime.data.model.Person
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
@@ -29,8 +29,11 @@ interface TmdbMoviesRemoteSource {
   suspend fun upcomingMovies(
     page: Int,
   ): Result<List<VideoThumbnail>, GeneralError>
-  suspend fun getCredit(movieId: Int): Result<List<CreditItem>, GeneralError>
+
+  suspend fun credits(movieId: Int): Result<List<Person>, GeneralError>
+
   suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError>
+
   companion object {
     const val PAGE_SIZE = 20 // TMDB API default page size
   }

@@ -22,15 +22,19 @@ fun TmdbMovieDetailsResponse.toVideoDetail() =
     posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
     coverUrl = TMDB_BASE_IMAGE_URL.plus(backdropPath),
     year = releaseDate?.takeIf { it.isNotEmpty() }?.take(4)?.toInt() ?: 0,
-    genres = genres?.map { it.name } ?: listOf<String>(),
+    genres = genres?.mapNotNull { it.name } ?: listOf<String>(),
     originalLanguage = originalLanguage,
     spokenLanguages = spokenLanguages?.map { it.englishName ?: "" }?.filter { it.isNotEmpty() }
       ?: listOf(),
     description = overview ?: "",
     runtime = fromMinutesToHHmm(runtime ?: 0),
-    releaseDate = releaseDate?.split("-")?.get(0) ?: "N/A",
+    releaseDate = releaseDate ?: "N/A",
     voteAverage = voteAverage?.div(10)?.toFloat() ?: 0.0F,
     voteColor = voteAverage.toRatingColor(),
+    homePage = homepage,
+    status = status,
+    budget = budget,
+    tagline = tagline,
   )
 
 fun Double?.toRatingColor() = when (this) {
@@ -50,15 +54,19 @@ fun TmdbShowDetailsResponse.toVideoDetail() =
     posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
     coverUrl = TMDB_BASE_IMAGE_URL.plus(backdropPath),
     year = firstAirDate?.take(4)?.toInt() ?: 0,
-    genres = genres?.map { it.name } ?: listOf<String>(),
+    genres = genres?.mapNotNull { it.name } ?: listOf<String>(),
     originalLanguage = originalLanguage,
     spokenLanguages = spokenLanguages?.map { it.englishName ?: "" }?.filter { it.isNotEmpty() }
       ?: listOf(),
     description = overview ?: "",
     runtime = episodeRunTime?.firstOrNull()?.let { fromMinutesToHHmm(it) } ?: "N/A",
-    releaseDate = firstAirDate?.split("-")?.get(0) ?: "N/A",
+    releaseDate = firstAirDate ?: "N/A",
     voteAverage = voteAverage?.div(10)?.toFloat() ?: 0.0F,
     voteColor = voteAverage.toRatingColor(),
+    status = status,
+    homePage = homepage,
+    budget = null,
+    tagline = null,
   )
 
 fun TmdbVideoResultResponse.toVideoThumbnail() = VideoThumbnail(

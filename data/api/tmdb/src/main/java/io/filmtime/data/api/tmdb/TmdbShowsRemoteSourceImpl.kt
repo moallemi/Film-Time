@@ -1,11 +1,10 @@
 package io.filmtime.data.api.tmdb
 
-import io.filmtime.data.model.CreditItem
 import io.filmtime.data.model.GeneralError
+import io.filmtime.data.model.Person
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
-import io.filmtime.data.network.TmdbCreditsResponse
 import io.filmtime.data.network.TmdbErrorResponse
 import io.filmtime.data.network.TmdbShowListResponse
 import io.filmtime.data.network.TmdbShowsService
@@ -77,19 +76,15 @@ class TmdbShowsRemoteSourceImpl @Inject constructor(
       )
     }
 
-  override suspend fun getCredit(seriesId: Int): Result<List<CreditItem>, GeneralError> =
-    getCredits { tmdbShowsService.getCredit(seriesId) }
-
-  override suspend fun getSimilar(seriesId: Int): Result<List<VideoThumbnail>, GeneralError> =
-    getShowsList { tmdbShowsService.getSimilar(seriesId) }
-
-  private suspend fun getCredits(
-    apiFunction: suspend () -> NetworkResponse<TmdbCreditsResponse, TmdbErrorResponse>,
-  ): Result<List<CreditItem>, GeneralError> =
-    when (val result = apiFunction()) {
+  override suspend fun credits(showId: Int): Result<List<Person>, GeneralError> =
+    when (val result = tmdbShowsService.getCredit(showId)) {
       is NetworkResponse.Success -> {
-        val creditResponse = result.body?.cast ?: emptyList()
-        Result.Success(creditResponse.map { it.toCreditItem() })
+        val castsResponse = result.body?.cast.orEmpty()
+        val crewsResponse = result.body?.crew.orEmpty()
+
+        Result.Success(
+          data = castsResponse.map { it.asCastItem() } + crewsResponse.map { it.asCrewItem() },
+        )
       }
 
       is NetworkResponse.ApiError -> {
@@ -100,6 +95,9 @@ class TmdbShowsRemoteSourceImpl @Inject constructor(
       is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
     }
+
+  override suspend fun getSimilar(seriesId: Int): Result<List<VideoThumbnail>, GeneralError> =
+    getShowsList { tmdbShowsService.getSimilar(seriesId) }
 
   private suspend fun getShowsList(
     apiCall: suspend () -> NetworkResponse<TmdbShowListResponse, TmdbErrorResponse>,

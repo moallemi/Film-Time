@@ -39,7 +39,7 @@ interface TmdbMoviesService {
   ): NetworkResponse<TmdbVideoListResponse, TmdbErrorResponse>
 
   @GET("movie/{movie_id}/credits")
-  suspend fun getCredit(
+  suspend fun credits(
     @Path("movie_id") movieId: Int,
   ): NetworkResponse<TmdbCreditsResponse, TmdbErrorResponse>
 

@@ -33,6 +33,7 @@ fun ErrorContent(
   message: String,
   modifier: Modifier = Modifier,
   @RawRes animationResource: Int? = null,
+  showGraphicalError: Boolean,
   onRetryClick: (() -> Unit)? = null,
 ) {
   Column(
@@ -40,7 +41,7 @@ fun ErrorContent(
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
-    animationResource?.let {
+    if (animationResource != null && showGraphicalError) {
       val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(animationResource))
       LottieAnimation(
         modifier = Modifier
@@ -72,6 +73,7 @@ fun ErrorContent(
 fun ErrorContent(
   uiMessage: UiMessage,
   modifier: Modifier = Modifier,
+  showGraphicalError: Boolean = true,
   onRetryClick: (() -> Unit)? = null,
 ) {
   when (uiMessage) {
@@ -79,6 +81,7 @@ fun ErrorContent(
       ErrorContent(
         message = stringResource(id = uiMessage.textId),
         animationResource = uiMessage.animationResource,
+        showGraphicalError = showGraphicalError,
         modifier = modifier,
         onRetryClick = onRetryClick,
       )
@@ -92,6 +95,7 @@ fun ErrorContent(
           *uiMessage.formatArgs.toTypedArray(),
         ),
         animationResource = uiMessage.animationResource,
+        showGraphicalError = showGraphicalError,
         modifier = modifier,
         onRetryClick = onRetryClick,
       )
@@ -101,6 +105,7 @@ fun ErrorContent(
       ErrorContent(
         message = uiMessage.text,
         animationResource = uiMessage.animationResource,
+        showGraphicalError = showGraphicalError,
         modifier = modifier,
         onRetryClick = onRetryClick,
       )

@@ -79,6 +79,7 @@ fun MovieDetailScreen(
       similarState = similarState,
       onSimilarItemClick = onMovieClick,
       onCreditsRetry = viewModel::loadCredits,
+      onSimilarRetry = viewModel::loadSimilar,
     )
   }
 }
@@ -90,6 +91,7 @@ private fun MovieDetailScreen(
   similarState: MovieDetailSimilarState,
   onSimilarItemClick: (Int) -> Unit,
   onCreditsRetry: () -> Unit,
+  onSimilarRetry: () -> Unit,
 ) {
   LazyColumn(
     verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -142,8 +144,8 @@ private fun MovieDetailScreen(
     }
     item {
       VideoSectionRow(
-        modifier = Modifier
-          .padding(bottom = 16.dp),
+        isLoading = similarState.isLoading,
+        error = similarState.error,
         title = "Similar",
         items = similarState.videoItems,
         onMovieClick = {
@@ -151,6 +153,7 @@ private fun MovieDetailScreen(
         },
         onShowClick = {},
         onSectionClick = null,
+        onRetryClick = onSimilarRetry,
       )
     }
     item {
@@ -182,6 +185,7 @@ private fun MovieDetailScreenPreview() {
       ),
       onSimilarItemClick = {},
       onCreditsRetry = {},
+      onSimilarRetry = {},
     )
   }
 }

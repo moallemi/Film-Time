@@ -70,7 +70,7 @@ class MovieDetailViewModel @Inject constructor(
     }
   }
 
-  private fun loadSimilar() = viewModelScope.launch {
+  fun loadSimilar() = viewModelScope.launch {
     _similarState.value = _similarState.value.copy(isLoading = true, error = null)
 
     when (val result = getSimilar(videoId)) {

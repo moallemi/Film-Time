@@ -10,7 +10,7 @@ import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
 import io.filmtime.data.trakt.TraktHistoryRepository
 import io.filmtime.domain.stream.GetStreamInfoUseCase
-import io.filmtime.domain.tmdb.movies.GetMovieCreditUseCase
+import io.filmtime.domain.tmdb.movies.GetMovieCreditsUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
 import io.filmtime.domain.tmdb.movies.GetSimilarUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,7 +27,7 @@ class MovieDetailViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   private val getMovieDetail: GetMovieDetailsUseCase,
   private val getStreamInfo: GetStreamInfoUseCase,
-  private val getCredit: GetMovieCreditUseCase,
+  private val getCredit: GetMovieCreditsUseCase,
   private val getSimilar: GetSimilarUseCase,
   private val traktHistoryRepository: TraktHistoryRepository,
 ) : ViewModel() {

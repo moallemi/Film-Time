@@ -6,12 +6,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TmdbCreditsResponse(
   val id: Long? = null,
-  val cast: List<Cast>? = null,
-  val crew: List<Cast>? = null,
+  val cast: List<PersonDto>? = null,
+  val crew: List<PersonDto>? = null,
 )
 
 @Serializable
-data class Cast(
+data class PersonDto(
   val adult: Boolean? = null,
   val gender: Long? = null,
   val id: Long? = null,

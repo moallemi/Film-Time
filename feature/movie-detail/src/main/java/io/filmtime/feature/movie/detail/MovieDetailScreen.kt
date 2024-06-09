@@ -1,22 +1,13 @@
 package io.filmtime.feature.movie.detail
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
@@ -38,11 +28,13 @@ import coil.compose.AsyncImage
 import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
+import io.filmtime.core.ui.common.componnents.CreditsRow
 import io.filmtime.core.ui.common.componnents.ErrorContent
-import io.filmtime.core.ui.common.componnents.LoadingCastSectionRow
 import io.filmtime.core.ui.common.componnents.VideoSectionRow
-import io.filmtime.data.model.CreditItem
+import io.filmtime.data.model.Person
 import io.filmtime.data.model.Preview
+import io.filmtime.data.model.PreviewCast
+import io.filmtime.data.model.PreviewCrew
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.feature.movie.detail.components.VideoThumbnailInfo
 
@@ -134,20 +126,10 @@ fun MovieDetailScreen(
       }
     }
     item {
-      Text(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        style = MaterialTheme.typography.titleMedium,
-        text = "Cast",
+      CreditsRow(
+        isLoading = creditState.isLoading,
+        credits = creditState.credit,
       )
-      if (creditState.isLoading) {
-        LoadingCastSectionRow(numberOfSections = 10)
-      } else if (creditState.credit.isNotEmpty()) {
-        LazyRow() {
-          items(creditState.credit) { item ->
-            CreditRowItem(item = item)
-          }
-        }
-      }
     }
     item {
       VideoSectionRow(
@@ -165,34 +147,6 @@ fun MovieDetailScreen(
   }
 }
 
-@Composable
-fun CreditRowItem(item: CreditItem) {
-  Column(
-    modifier = Modifier
-      .fillMaxWidth()
-      .wrapContentHeight()
-      .padding(horizontal = 6.dp),
-    verticalArrangement = Arrangement.Center,
-    horizontalAlignment = Alignment.CenterHorizontally,
-  ) {
-    AsyncImage(
-      modifier = Modifier
-        .size(60.dp)
-        .clip(CircleShape) // clip to the circle shape
-        .border(1.dp, Color.Transparent, CircleShape),
-      contentScale = ContentScale.Crop,
-      model = item.profile,
-      contentDescription = "credit_profile",
-      alignment = Alignment.Center,
-    )
-    Text(
-      text = item.name,
-      style = MaterialTheme.typography.bodySmall,
-      modifier = Modifier.padding(vertical = 4.dp),
-    )
-  }
-}
-
 @ThemePreviews
 @Composable
 private fun MovieDetailScreenPreview() {
@@ -200,23 +154,7 @@ private fun MovieDetailScreenPreview() {
     MovieDetailScreen(
       videoDetail = VideoDetail.Preview,
       creditState = MovieDetailCreditState(
-        credit = listOf(
-          CreditItem(
-            id = 1,
-            name = "Actor 1",
-            profile = "",
-          ),
-          CreditItem(
-            id = 2,
-            name = "Actor 2",
-            profile = "",
-          ),
-          CreditItem(
-            id = 3,
-            name = "Actor 3",
-            profile = "",
-          ),
-        ),
+        credit = listOf(Person.PreviewCast, Person.PreviewCast, Person.PreviewCrew),
         isLoading = false,
         error = null,
       ),

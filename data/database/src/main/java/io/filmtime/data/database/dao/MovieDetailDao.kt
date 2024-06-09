@@ -1,9 +1,10 @@
-package io.filmtime.data.database
+package io.filmtime.data.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import io.filmtime.data.database.entity.MovieDetailEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

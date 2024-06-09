@@ -75,11 +75,14 @@ fun MovieDetailScreen(
   } else if (videoDetail != null) {
     MovieDetailScreen(
       videoDetail = videoDetail,
+      isBookmarked = state.isBookmarked,
       creditState = creditState,
       similarState = similarState,
       onSimilarItemClick = onMovieClick,
       onCreditsRetry = viewModel::loadCredits,
       onSimilarRetry = viewModel::loadSimilar,
+      onAddBookmark = viewModel::addBookmark,
+      onRemoveBookmark = viewModel::removeBookmark,
     )
   }
 }
@@ -88,10 +91,13 @@ fun MovieDetailScreen(
 private fun MovieDetailScreen(
   videoDetail: VideoDetail,
   creditState: MovieDetailCreditState,
+  isBookmarked: Boolean,
   similarState: MovieDetailSimilarState,
   onSimilarItemClick: (Int) -> Unit,
   onCreditsRetry: () -> Unit,
   onSimilarRetry: () -> Unit,
+  onAddBookmark: () -> Unit,
+  onRemoveBookmark: () -> Unit,
 ) {
   LazyColumn(
     verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -130,6 +136,9 @@ private fun MovieDetailScreen(
               .padding(16.dp)
               .align(Alignment.BottomCenter),
             videoDetail = videoDetail,
+            isBookmarked = isBookmarked,
+            onAddBookmark = onAddBookmark,
+            onRemoveBookmark = onRemoveBookmark,
           )
         }
       }
@@ -175,6 +184,7 @@ private fun MovieDetailScreenPreview() {
   PreviewFilmTimeTheme {
     MovieDetailScreen(
       videoDetail = VideoDetail.Preview,
+      isBookmarked = false,
       creditState = MovieDetailCreditState(
         credit = listOf(Person.PreviewCast, Person.PreviewCast, Person.PreviewCrew),
         isLoading = false,
@@ -186,6 +196,8 @@ private fun MovieDetailScreenPreview() {
       onSimilarItemClick = {},
       onCreditsRetry = {},
       onSimilarRetry = {},
+      onAddBookmark = {},
+      onRemoveBookmark = {},
     )
   }
 }

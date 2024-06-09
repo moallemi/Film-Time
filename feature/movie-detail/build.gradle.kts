@@ -12,6 +12,7 @@ dependencies {
   implementation(project(":data:model"))
   implementation(project(":domain:tmdb-movies"))
   implementation(project(":domain:stream"))
+  implementation(project(":domain:bookmarks"))
   implementation(project(":data:trakt"))
   implementation(project(":core:ui:common"))
 }

@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import io.filmtime.data.api.tmdb.TmdbMoviesRemoteSource
 import io.filmtime.data.api.trakt.TraktSearchRemoteSource
 import io.filmtime.data.api.trakt.TraktSyncRemoteSource
-import io.filmtime.data.database.MovieDetailDao
+import io.filmtime.data.database.dao.MovieDetailDao
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Person
 import io.filmtime.data.model.Result

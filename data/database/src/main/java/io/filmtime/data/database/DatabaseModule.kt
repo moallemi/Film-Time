@@ -7,6 +7,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import io.filmtime.data.database.dao.BookmarksDao
+import io.filmtime.data.database.dao.MovieDetailDao
 import javax.inject.Singleton
 
 @Module
@@ -23,4 +25,8 @@ internal object DatabaseModule {
   @Provides
   @Singleton
   fun providesMovieDetailDao(db: FilmTimeDatabase): MovieDetailDao = db.movieDao()
+
+  @Provides
+  @Singleton
+  fun providesBookmarksDao(db: FilmTimeDatabase): BookmarksDao = db.bookmarksDao()
 }

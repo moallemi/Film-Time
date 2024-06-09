@@ -1,4 +1,4 @@
-package io.filmtime.data.database
+package io.filmtime.data.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

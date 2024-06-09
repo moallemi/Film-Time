@@ -36,6 +36,8 @@ import io.filmtime.data.model.Preview
 import io.filmtime.data.model.PreviewCast
 import io.filmtime.data.model.PreviewCrew
 import io.filmtime.data.model.VideoDetail
+import io.filmtime.feature.movie.detail.components.VideoDescription
+import io.filmtime.feature.movie.detail.components.VideoInfo
 import io.filmtime.feature.movie.detail.components.VideoThumbnailInfo
 
 @Composable
@@ -142,6 +144,16 @@ fun MovieDetailScreen(
         },
         onShowClick = {},
         onSectionClick = null,
+      )
+    }
+    item {
+      VideoDescription(
+        videoDetail = videoDetail,
+      )
+    }
+    item {
+      VideoInfo(
+        videoDetail = videoDetail,
       )
     }
   }

@@ -27,7 +27,7 @@ To build and run the project, you'll need to obtain an API key from TMDB. Follow
 
 2. **Create New Application:**
    - Once logged in, navigate to the [Apps](https://trakt.tv/oauth/applications) page.
-   - Create new application with this redirect uri ```filmtime://```
+   - Create new application with this redirect uri ```filmtime://trakt/auth```
 
 
 Once you have obtained your API key, follow the existing instructions in the README to set up the project.

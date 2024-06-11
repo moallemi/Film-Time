@@ -1,9 +1,9 @@
 package io.filmtime.feature.trakt.login
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.domain.trakt.auth.GetTraktAccessTokenUseCase
 import io.filmtime.domain.trakt.auth.GetTraktAuthStateUseCase
@@ -15,34 +15,46 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TraktLoginViewModel @Inject constructor(
+  savedStateHandle: SavedStateHandle,
   private val getTraktAccessTokenUseCase: GetTraktAccessTokenUseCase,
   private val getTraktAuthStateUseCase: GetTraktAuthStateUseCase,
 ) : ViewModel() {
 
-  private val _loginState: MutableStateFlow<LoginState> = MutableStateFlow(value = LoginState.Initial)
+  private val code: String? = savedStateHandle.get<String>("code")
+  private val error: String? = savedStateHandle.get<String>("error")
+
+  private val _loginState: MutableStateFlow<LoginState> = MutableStateFlow(value = LoginState.Loading)
   val loginState = _loginState.asStateFlow()
 
-  private val _traktState: MutableStateFlow<Boolean> = MutableStateFlow(false)
-  val traktState = _traktState.asStateFlow()
+  private val _isLoggedIn: MutableStateFlow<Boolean> = MutableStateFlow(false)
+  val isLoggedIn = _isLoggedIn.asStateFlow()
 
   init {
     viewModelScope.launch {
       collectAuthState()
     }
+    viewModelScope.launch {
+      if (code != null) {
+        getAccessToken(code)
+      } else if (error != null) {
+        _loginState.update { LoginState.Failed }
+      }
+    }
   }
 
   private suspend fun collectAuthState() {
     getTraktAuthStateUseCase().collect {
-      _traktState.value = it
+      _isLoggedIn.value = it
     }
   }
 
-  fun getAccessToken(code: String) = viewModelScope.launch {
+  private fun getAccessToken(code: String) = viewModelScope.launch {
     _loginState.update { LoginState.Loading }
-    when (val result = getTraktAccessTokenUseCase(code)) {
+    when (getTraktAccessTokenUseCase(code)) {
       is Result.Failure -> {
-        _loginState.update { LoginState.Failed(result.error) }
+        _loginState.update { LoginState.Failed }
       }
+
       is Result.Success -> {
         _loginState.update { LoginState.Success }
       }
@@ -50,12 +62,8 @@ class TraktLoginViewModel @Inject constructor(
   }
 }
 
-sealed class LoginState {
-  data object Initial : LoginState()
-
-  data object Loading : LoginState()
-
-  data class Failed(val error: GeneralError) : LoginState()
-
-  data object Success : LoginState()
+enum class LoginState {
+  Loading,
+  Success,
+  Failed,
 }

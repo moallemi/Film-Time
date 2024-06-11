@@ -5,4 +5,5 @@
     <string name="unknown_error">Unknown error occurred.</string>
     <string name="unknown_api_error">Unknown API error</string>
     <string name="core_ui_cast_crew"><![CDATA[Cast & Crew]]></string>
+    <string name="core_ui_device_does_not_support_this_action">Your device doesn\'t support this action.</string>
 </resources>

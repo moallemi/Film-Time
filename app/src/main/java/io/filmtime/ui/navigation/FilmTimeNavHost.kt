@@ -144,6 +144,5 @@ private fun NavGraphBuilder.traktLoginScreen(
   traktLoginScreen(
     rootRoute = rootRoute,
     onBack = navController::popBackStack,
-    onSuccess = navController::popBackStack,
   )
 }

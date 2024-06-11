@@ -20,7 +20,7 @@ class TraktAuthRemoteSourceImpl @Inject constructor(
         clientID = BuildConfig.TRAKT_CLIENT_ID,
         clientSecret = BuildConfig.TRAKT_CLIENT_SECRET,
         grantType = "authorization_code",
-        redirectURI = "filmtime://",
+        redirectURI = "filmtime://trakt/auth",
       ),
     )
     return when (result) {

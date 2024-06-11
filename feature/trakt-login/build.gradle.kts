@@ -16,5 +16,7 @@ android {
 }
 
 dependencies {
+  implementation(project(":core:browser"))
+
   implementation(project(":domain:trakt:auth"))
 }

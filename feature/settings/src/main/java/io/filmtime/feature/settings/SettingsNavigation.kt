@@ -9,7 +9,7 @@ val GRAPH_SETTINGS_ROUTE = DestinationRoute("settings_graph_route")
 private const val ROUTE_SETTINGS_SCREEN = "settings"
 
 fun NavGraphBuilder.settingsGraph(
-  onTraktLoginClick: (DestinationRoute) -> Unit,
+  onTraktLoginClick: () -> Unit,
   nestedGraphs: NavGraphBuilder.(DestinationRoute) -> Unit,
 ) {
   navigation(
@@ -20,7 +20,7 @@ fun NavGraphBuilder.settingsGraph(
       route = "${GRAPH_SETTINGS_ROUTE.route}/$ROUTE_SETTINGS_SCREEN",
     ) {
       SettingsScreen(
-        onTraktLoginClick = { onTraktLoginClick(GRAPH_SETTINGS_ROUTE) },
+        onTraktLoginClick = { onTraktLoginClick() },
       )
     }
 

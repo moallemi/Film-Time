@@ -13,7 +13,6 @@ import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
 import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
 import io.filmtime.domain.stream.GetStreamInfoUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
-import io.filmtime.domain.tmdb.movies.GetSimilarUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,7 +27,6 @@ class MovieDetailViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   private val getMovieDetail: GetMovieDetailsUseCase,
   private val getStreamInfo: GetStreamInfoUseCase,
-  private val getSimilar: GetSimilarUseCase,
   private val addBookmark: AddBookmarkUseCase,
   private val deleteBookmark: DeleteBookmarkUseCase,
   private val observeBookmark: ObserveBookmarkUseCase,
@@ -39,17 +37,10 @@ class MovieDetailViewModel @Inject constructor(
   private val _state: MutableStateFlow<MovieDetailState> = MutableStateFlow(MovieDetailState())
   val state = _state.asStateFlow()
 
-  private val _similarState: MutableStateFlow<MovieDetailSimilarState> = MutableStateFlow(MovieDetailSimilarState())
-  val similarState = _similarState.asStateFlow()
-
-  private val _creditState: MutableStateFlow<MovieDetailCreditState> = MutableStateFlow(MovieDetailCreditState())
-  val creditState = _creditState.asStateFlow()
-
   val navigateToPlayer = MutableSharedFlow<String?>()
 
   init {
     load()
-    loadSimilar()
     observeBookmark()
   }
 
@@ -68,24 +59,6 @@ class MovieDetailViewModel @Inject constructor(
           _state.update { state ->
             state.copy(error = result.error.toUiMessage(), isLoading = false)
           }
-        }
-      }
-    }
-  }
-
-  fun loadSimilar() = viewModelScope.launch {
-    _similarState.value = _similarState.value.copy(isLoading = true, error = null)
-
-    when (val result = getSimilar(videoId)) {
-      is Success -> {
-        _similarState.update { state ->
-          state.copy(videoItems = result.data, isLoading = false, error = null)
-        }
-      }
-
-      is Failure -> {
-        _similarState.update { state ->
-          state.copy(error = result.error.toUiMessage(), isLoading = false)
         }
       }
     }

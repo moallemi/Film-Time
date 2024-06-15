@@ -18,4 +18,5 @@ dependencies {
 
   implementation(project(":feature:trakt-buttons"))
   implementation(project(":feature:credits"))
+  implementation(project(":feature:similar"))
 }

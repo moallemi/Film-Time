@@ -8,7 +8,6 @@ import io.filmtime.core.ui.common.toUiMessage
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
 import io.filmtime.data.model.VideoType.Movie
-import io.filmtime.data.trakt.TraktHistoryRepository
 import io.filmtime.domain.bookmarks.AddBookmarkUseCase
 import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
 import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
@@ -32,7 +31,6 @@ class MovieDetailViewModel @Inject constructor(
   private val getStreamInfo: GetStreamInfoUseCase,
   private val getCredit: GetMovieCreditsUseCase,
   private val getSimilar: GetSimilarUseCase,
-  private val traktHistoryRepository: TraktHistoryRepository,
   private val addBookmark: AddBookmarkUseCase,
   private val deleteBookmark: DeleteBookmarkUseCase,
   private val observeBookmark: ObserveBookmarkUseCase,
@@ -122,18 +120,6 @@ class MovieDetailViewModel @Inject constructor(
         navigateToPlayer.emit(streamInfo.url)
       }
       .collect()
-  }
-
-  fun addItemToHistory() = viewModelScope.launch {
-    val traktId = _state.value.videoDetail?.ids?.traktId ?: return@launch
-    val result = traktHistoryRepository.addToHistory(traktId.toString())
-    when (result) {
-      is Failure -> TODO()
-      is Success -> {
-        val updated = _state.value.videoDetail?.copy(isWatched = true)
-        _state.value = _state.value.copy(videoDetail = updated)
-      }
-    }
   }
 
   private fun observeBookmark() = viewModelScope.launch {

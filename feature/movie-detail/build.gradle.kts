@@ -10,9 +10,11 @@ android {
 dependencies {
 
   implementation(project(":data:model"))
+  implementation(project(":core:ui:common"))
+
   implementation(project(":domain:tmdb-movies"))
   implementation(project(":domain:stream"))
   implementation(project(":domain:bookmarks"))
-  implementation(project(":data:trakt"))
-  implementation(project(":core:ui:common"))
+
+  implementation(project(":feature:trakt-buttons"))
 }

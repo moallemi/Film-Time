@@ -9,6 +9,6 @@ interface TraktSearchService {
   @GET("search/{id_type}/{id}?type=movie")
   suspend fun movieIDLookup(
     @Path("id_type") idType: String,
-    @Path("id") id: String,
+    @Path("id") id: Int,
   ): NetworkResponse<List<TraktMovieIDLookupResponse>, TraktErrorResponse>
 }

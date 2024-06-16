@@ -6,6 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface TraktSyncService {
 
@@ -18,13 +19,20 @@ interface TraktSyncService {
   @GET("sync/history/{type}/{id}")
   suspend fun getHistoryById(
     @Path("type") type: String,
-    @Path("id") id: String,
+    @Path("id") id: Int,
     @Header("Authorization") accessToken: String,
+    @Query("limit") limit: Int = 240,
   ): NetworkResponse<List<HistoryMovie>, TraktErrorResponse>
 
   @POST("sync/history")
   suspend fun addMovieToHistory(
     @Header("Authorization") accessToken: String,
-    @Body body: AddHistoryRequest,
-  ): NetworkResponse<AddToHistoryResponse, TraktErrorResponse>
+    @Body body: SyncHistoryRequest,
+  ): NetworkResponse<SyncHistoryResponse, TraktErrorResponse>
+
+  @POST("sync/history/remove")
+  suspend fun removeMovieFromHistory(
+    @Header("Authorization") accessToken: String,
+    @Body body: SyncHistoryRequest,
+  ): NetworkResponse<SyncHistoryResponse, TraktErrorResponse>
 }

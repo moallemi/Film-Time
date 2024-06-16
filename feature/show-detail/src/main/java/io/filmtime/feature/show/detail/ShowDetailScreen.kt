@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import io.filmtime.core.ui.common.componnents.CreditRowItem
 import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.LoadingCastSectionRow
 import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
@@ -203,7 +202,7 @@ fun ShowDetailContent(
     } else if (creditState.credit.isNotEmpty()) {
       LazyRow() {
         items(creditState.credit) { item ->
-          CreditRowItem(item = item)
+          // TODO: Add PeopleInCreditsRow
         }
       }
     }

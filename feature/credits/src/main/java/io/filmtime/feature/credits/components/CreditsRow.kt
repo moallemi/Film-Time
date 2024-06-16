@@ -1,4 +1,4 @@
-package io.filmtime.core.ui.common.componnents
+package io.filmtime.feature.credits.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,19 +12,48 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
 import io.filmtime.core.ui.common.R
 import io.filmtime.core.ui.common.UiMessage
+import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.data.model.Person
 import io.filmtime.data.model.PreviewCast
 import io.filmtime.data.model.PreviewCrew
+import io.filmtime.data.model.VideoType
+import io.filmtime.feature.credits.CreditsViewModel
 
 @Composable
 fun CreditsRow(
+  modifier: Modifier = Modifier,
+  tmdbId: Int,
+  videoType: VideoType,
+) {
+  val viewModel = hiltViewModel<CreditsViewModel>()
+  val state by viewModel.state.collectAsStateWithLifecycle()
+
+  LaunchedEffect(tmdbId, videoType) {
+    viewModel.loadCredits(tmdbId, videoType)
+  }
+
+  CreditsRow(
+    isLoading = state.isLoading,
+    credits = state.credit,
+    modifier = modifier,
+    error = state.error,
+    onRetryClick = { viewModel.loadCredits(tmdbId, videoType) },
+  )
+}
+
+@Composable
+internal fun CreditsRow(
   isLoading: Boolean,
   credits: List<Person>,
   modifier: Modifier = Modifier,

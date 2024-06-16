@@ -4,8 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import io.filmtime.data.api.tmdb.TmdbMoviesRemoteSource
-import io.filmtime.data.api.trakt.TraktSearchRemoteSource
-import io.filmtime.data.api.trakt.TraktSyncRemoteSource
 import io.filmtime.data.database.dao.MovieDetailDao
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Person
@@ -19,8 +17,6 @@ import javax.inject.Inject
 
 internal class TmdbMovieRepositoryImpl @Inject constructor(
   private val tmdbMoviesRemoteSource: TmdbMoviesRemoteSource,
-  private val traktMovieSearchRemoteSource: TraktSearchRemoteSource,
-  private val traktSyncRemoteSource: TraktSyncRemoteSource,
   private val movieDao: MovieDetailDao,
 ) : TmdbMovieRepository {
 
@@ -38,40 +34,11 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
 
   private suspend fun fetchMovieDetailsFromNetwork(movieId: Int): Result<VideoDetail, GeneralError> {
     return when (val result = tmdbMoviesRemoteSource.movieDetails(movieId)) {
-      is Result.Failure -> result
       is Result.Success -> {
         movieDao.storeMovie(result.data.toEntity())
-        when (val traktIdResult = traktMovieSearchRemoteSource.getByTmdbId(result.data.ids.tmdbId!!)) {
-          is Result.Failure -> result
-          is Result.Success -> {
-            val traktId = traktIdResult.data
-            when (val watched = traktSyncRemoteSource.getHistoryById(traktId)) {
-              is Result.Failure -> result.run {
-                copy(
-                  data = data.copy(
-                    ids = data.ids.copy(
-                      traktId = traktId,
-                    ),
-                  ),
-                )
-              }
-
-              is Result.Success -> {
-                result.run {
-                  copy(
-                    data = data.copy(
-                      ids = data.ids.copy(
-                        traktId = traktId,
-                      ),
-                      isWatched = watched.data,
-                    ),
-                  )
-                }
-              }
-            }
-          }
-        }
+        result
       }
+      is Result.Failure -> result
     }
   }
 

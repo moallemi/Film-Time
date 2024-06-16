@@ -1,4 +1,4 @@
-package io.filmtime.core.ui.common.componnents
+package io.filmtime.feature.credits.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement

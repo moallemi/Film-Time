@@ -17,4 +17,5 @@ dependencies {
   implementation(project(":domain:bookmarks"))
 
   implementation(project(":feature:trakt-buttons"))
+  implementation(project(":feature:credits"))
 }

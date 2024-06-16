@@ -41,11 +41,11 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
       is Result.Failure -> result
       is Result.Success -> {
         movieDao.storeMovie(result.data.toEntity())
-        when (val traktIdResult = traktMovieSearchRemoteSource.getByTmdbId(result.data.ids.tmdbId.toString())) {
+        when (val traktIdResult = traktMovieSearchRemoteSource.getByTmdbId(result.data.ids.tmdbId!!)) {
           is Result.Failure -> result
           is Result.Success -> {
-            val traktId = traktIdResult.data.toInt()
-            when (val watched = traktSyncRemoteSource.getHistoryById(traktId.toString())) {
+            val traktId = traktIdResult.data
+            when (val watched = traktSyncRemoteSource.getHistoryById(traktId)) {
               is Result.Failure -> result.run {
                 copy(
                   data = data.copy(

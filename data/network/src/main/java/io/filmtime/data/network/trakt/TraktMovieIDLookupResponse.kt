@@ -18,8 +18,8 @@ data class Movie(
 
 @Serializable
 data class IDS(
-  val trakt: Long,
+  val trakt: Int,
   val slug: String,
   val imdb: String,
-  val tmdb: Long,
+  val tmdb: Int,
 )

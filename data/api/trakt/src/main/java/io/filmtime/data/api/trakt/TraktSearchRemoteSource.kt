@@ -12,5 +12,5 @@ enum class TmdbType {
 
 interface TraktSearchRemoteSource {
 
-  suspend fun getByTmdbId(id: String, type: TmdbType? = null): Result<Long, GeneralError>
+  suspend fun getByTmdbId(id: Int, type: TmdbType? = null): Result<Int, GeneralError>
 }

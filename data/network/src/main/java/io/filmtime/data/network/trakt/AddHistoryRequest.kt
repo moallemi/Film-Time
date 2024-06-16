@@ -20,10 +20,10 @@ data class MovieHistory(
 
 @Serializable
 data class HistoryIDS(
-  val trakt: Long? = null,
-  val tvdb: Long? = null,
+  val trakt: Int? = null,
+  val tvdb: Int? = null,
   val imdb: String? = null,
-  val tmdb: Long? = null,
+  val tmdb: Int? = null,
   val slug: String? = null,
 )
 

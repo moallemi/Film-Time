@@ -31,7 +31,7 @@ class TraktSyncRemoteSourceImpl
     }
   }
 
-  override suspend fun getHistoryById(id: String): Result<Boolean, GeneralError> {
+  override suspend fun getHistoryById(id: Int): Result<Boolean, GeneralError> {
     // TODO: move check token in a function
     val tokens =
       traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
@@ -45,13 +45,13 @@ class TraktSyncRemoteSourceImpl
       is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
       is NetworkResponse.Success -> {
-        val watched = result.body?.any { it.movie.ids.trakt == id.toLong() } ?: false
+        val watched = result.body?.any { it.movie.ids.trakt == id } ?: false
         Result.Success(watched)
       }
     }
   }
 
-  override suspend fun addToHistory(id: String): Result<Unit, GeneralError> {
+  override suspend fun addToHistory(id: Int): Result<Unit, GeneralError> {
     val tokens =
       traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
     val result = traktSyncService.addMovieToHistory(
@@ -60,7 +60,7 @@ class TraktSyncRemoteSourceImpl
         movies = listOf(
           MovieHistory(
             ids = HistoryIDS(
-              trakt = id.toLong(),
+              trakt = id,
             ),
           ),
         ),

@@ -8,7 +8,8 @@ import javax.inject.Inject
 class TraktHistoryRepositoryImpl @Inject constructor(
   private val traktSyncRemoteSource: TraktSyncRemoteSource,
 ) : TraktHistoryRepository {
-  override suspend fun addToHistory(id: String): Result<Unit, GeneralError> {
-    return traktSyncRemoteSource.addToHistory(id)
+
+  override suspend fun addToHistory(traktId: Int): Result<Unit, GeneralError> {
+    return traktSyncRemoteSource.addToHistory(traktId)
   }
 }

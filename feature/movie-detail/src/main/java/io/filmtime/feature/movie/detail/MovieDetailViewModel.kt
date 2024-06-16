@@ -12,7 +12,6 @@ import io.filmtime.domain.bookmarks.AddBookmarkUseCase
 import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
 import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
 import io.filmtime.domain.stream.GetStreamInfoUseCase
-import io.filmtime.domain.tmdb.movies.GetMovieCreditsUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
 import io.filmtime.domain.tmdb.movies.GetSimilarUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,7 +28,6 @@ class MovieDetailViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   private val getMovieDetail: GetMovieDetailsUseCase,
   private val getStreamInfo: GetStreamInfoUseCase,
-  private val getCredit: GetMovieCreditsUseCase,
   private val getSimilar: GetSimilarUseCase,
   private val addBookmark: AddBookmarkUseCase,
   private val deleteBookmark: DeleteBookmarkUseCase,
@@ -51,7 +49,6 @@ class MovieDetailViewModel @Inject constructor(
 
   init {
     load()
-    loadCredits()
     loadSimilar()
     observeBookmark()
   }
@@ -88,24 +85,6 @@ class MovieDetailViewModel @Inject constructor(
 
       is Failure -> {
         _similarState.update { state ->
-          state.copy(error = result.error.toUiMessage(), isLoading = false)
-        }
-      }
-    }
-  }
-
-  fun loadCredits() = viewModelScope.launch {
-    _creditState.value = _creditState.value.copy(isLoading = true, error = null)
-
-    when (val result = getCredit(videoId)) {
-      is Success -> {
-        _creditState.update { state ->
-          state.copy(credit = result.data, isLoading = false, error = null)
-        }
-      }
-
-      is Failure -> {
-        _creditState.update { state ->
           state.copy(error = result.error.toUiMessage(), isLoading = false)
         }
       }

@@ -1,16 +1,22 @@
 package io.filmtime.feature.movie.detail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -23,9 +29,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
 import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
@@ -37,9 +45,11 @@ import io.filmtime.data.model.Preview
 import io.filmtime.data.model.PreviewCast
 import io.filmtime.data.model.PreviewCrew
 import io.filmtime.data.model.VideoDetail
+import io.filmtime.data.model.VideoType
 import io.filmtime.feature.movie.detail.components.VideoDescription
 import io.filmtime.feature.movie.detail.components.VideoInfo
 import io.filmtime.feature.movie.detail.components.VideoThumbnailInfo
+import io.filmtime.feature.trakt.buttons.addremovehistory.TraktAddRemoveHistoryButton
 
 @Composable
 fun MovieDetailScreen(
@@ -83,6 +93,14 @@ fun MovieDetailScreen(
       onSimilarRetry = viewModel::loadSimilar,
       onAddBookmark = viewModel::addBookmark,
       onRemoveBookmark = viewModel::removeBookmark,
+      traktHistoryButton = {
+        TraktAddRemoveHistoryButton(
+          modifier = Modifier
+            .weight(1f),
+          videoType = VideoType.Movie,
+          tmdbId = videoDetail.ids.tmdbId ?: 0,
+        )
+      },
     )
   }
 }
@@ -98,39 +116,53 @@ private fun MovieDetailScreen(
   onSimilarRetry: () -> Unit,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
+  traktHistoryButton: @Composable RowScope.() -> Unit,
 ) {
+  var imageHeight by remember { mutableIntStateOf(4000) }
+  val density = LocalDensity.current
+  val boxHeight by remember(imageHeight) {
+    derivedStateOf {
+      with(density) {
+        (imageHeight + 150).toDp()
+      }
+    }
+  }
   LazyColumn(
     verticalArrangement = Arrangement.spacedBy(16.dp),
   ) {
     item {
-      Box {
-        var imageHeight by remember { mutableIntStateOf(500) }
-        AsyncImage(
+      FilmTimeTheme(
+        darkTheme = true,
+      ) {
+        Box(
           modifier = Modifier
-            .onGloballyPositioned {
-              imageHeight = it.size.height
-            }
-            .fillMaxWidth()
-            .aspectRatio(2 / 3f)
-            .drawWithCache {
-              val gradient = Brush.verticalGradient(
-                colors = listOf(Color.Transparent, Color(0x99000000), Color(0xDD000000)),
-                startY = imageHeight.toFloat() / 2,
-                endY = imageHeight.toFloat(),
-              )
-              // Draw the image
-              onDrawWithContent {
-                drawContent()
-                drawRect(gradient, blendMode = BlendMode.Multiply)
-              }
-            },
-          contentScale = ContentScale.Crop,
-          model = videoDetail.posterUrl,
-          contentDescription = "Poster Image",
-        )
-        FilmTimeTheme(
-          darkTheme = true,
+            .background(MaterialTheme.colorScheme.background)
+            .height(boxHeight),
         ) {
+          AsyncImage(
+            modifier = Modifier
+              .onGloballyPositioned {
+                imageHeight = it.size.height
+              }
+              .fillMaxWidth()
+              .aspectRatio(2 / 3f)
+              .drawWithCache {
+                val gradient = Brush.verticalGradient(
+                  colors = listOf(Color.Transparent, Color(0x99000000), Color(0xDD000000)),
+                  startY = imageHeight.toFloat() / 3,
+                  endY = imageHeight.toFloat(),
+                )
+                // Draw the image
+                onDrawWithContent {
+                  drawContent()
+                  drawRect(gradient, blendMode = BlendMode.Multiply)
+                }
+              },
+            contentScale = ContentScale.Crop,
+            model = videoDetail.posterUrl,
+            contentDescription = "Poster Image",
+          )
+
           VideoThumbnailInfo(
             modifier = Modifier
               .padding(16.dp)
@@ -139,6 +171,7 @@ private fun MovieDetailScreen(
             isBookmarked = isBookmarked,
             onAddBookmark = onAddBookmark,
             onRemoveBookmark = onRemoveBookmark,
+            traktHistoryButton = traktHistoryButton,
           )
         }
       }
@@ -198,6 +231,15 @@ private fun MovieDetailScreenPreview() {
       onSimilarRetry = {},
       onAddBookmark = {},
       onRemoveBookmark = {},
+      traktHistoryButton = {
+        FilmTimeFilledTonalButton(
+          modifier = Modifier
+            .weight(1f),
+          onClick = {},
+        ) {
+          Text("Add to history")
+        }
+      },
     )
   }
 }

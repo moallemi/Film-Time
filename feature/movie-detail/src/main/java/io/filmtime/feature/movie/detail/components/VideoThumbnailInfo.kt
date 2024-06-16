@@ -3,10 +3,11 @@ package io.filmtime.feature.movie.detail.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Icons.Filled
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
@@ -35,6 +36,7 @@ internal fun VideoThumbnailInfo(
   modifier: Modifier = Modifier,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
+  traktHistoryButton: @Composable RowScope.() -> Unit,
 ) {
   Column(
     modifier = modifier,
@@ -71,37 +73,58 @@ internal fun VideoThumbnailInfo(
     ) {
       Text("Play")
     }
-    Row {
-      if (isBookmarked) {
-        FilmTimeOutlinedButton(
-          onClick = onRemoveBookmark,
-        ) {
-          Icon(
-            Icons.Filled.Check,
-            contentDescription = "",
-            modifier = Modifier.size(20.dp),
-          )
-          Spacer(modifier = Modifier.size(8.dp))
-          Text("Bookmarked")
-        }
-      } else {
-        FilmTimeFilledTonalButton(
-          onClick = onAddBookmark,
-        ) {
-          Icon(
-            Icons.Filled.Add,
-            contentDescription = "",
-            modifier = Modifier.size(20.dp),
-          )
-          Spacer(modifier = Modifier.size(8.dp))
-          Text("Bookmark")
-        }
-      }
+    Row(
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+      traktHistoryButton()
+      BookmarkButton(
+        modifier = Modifier
+          .weight(1f),
+        isBookmarked = isBookmarked,
+        onRemoveBookmark = onRemoveBookmark,
+        onAddBookmark = onAddBookmark,
+      )
     }
     ExpandableText(
       text = videoDetail.description,
       minimizedMaxLines = 3,
     )
+  }
+}
+
+@Composable
+private fun BookmarkButton(
+  isBookmarked: Boolean,
+  onRemoveBookmark: () -> Unit,
+  onAddBookmark: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  if (isBookmarked) {
+    FilmTimeOutlinedButton(
+      modifier = modifier,
+      onClick = onRemoveBookmark,
+    ) {
+      Icon(
+        Filled.Check,
+        contentDescription = "",
+        modifier = Modifier.size(20.dp),
+      )
+      Spacer(modifier = Modifier.size(8.dp))
+      Text("Bookmarked")
+    }
+  } else {
+    FilmTimeFilledTonalButton(
+      modifier = modifier,
+      onClick = onAddBookmark,
+    ) {
+      Icon(
+        Filled.Add,
+        contentDescription = "",
+        modifier = Modifier.size(20.dp),
+      )
+      Spacer(modifier = Modifier.size(8.dp))
+      Text("Bookmark")
+    }
   }
 }
 
@@ -114,6 +137,15 @@ private fun MovieDetailScreenPreview() {
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},
+      traktHistoryButton = {
+        FilmTimeFilledTonalButton(
+          modifier = Modifier
+            .weight(1f),
+          onClick = {},
+        ) {
+          Text("Add to history")
+        }
+      },
     )
   }
 }

@@ -27,6 +27,12 @@ interface TraktSyncService {
   @POST("sync/history")
   suspend fun addMovieToHistory(
     @Header("Authorization") accessToken: String,
-    @Body body: AddHistoryRequest,
-  ): NetworkResponse<AddToHistoryResponse, TraktErrorResponse>
+    @Body body: SyncHistoryRequest,
+  ): NetworkResponse<SyncHistoryResponse, TraktErrorResponse>
+
+  @POST("sync/history/remove")
+  suspend fun removeMovieFromHistory(
+    @Header("Authorization") accessToken: String,
+    @Body body: SyncHistoryRequest,
+  ): NetworkResponse<SyncHistoryResponse, TraktErrorResponse>
 }

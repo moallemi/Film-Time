@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AddHistoryRequest(
+data class SyncHistoryRequest(
   val movies: List<MovieHistory>? = null,
   val shows: List<Show>? = null,
 )

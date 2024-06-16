@@ -9,4 +9,6 @@ interface TraktHistoryRepository {
   suspend fun isWatched(tmdbId: Int): Result<TraktHistory, GeneralError>
 
   suspend fun addToHistory(traktId: Int): Result<Unit, GeneralError>
+
+  suspend fun removeFromHistory(traktId: Int): Result<Unit, GeneralError>
 }

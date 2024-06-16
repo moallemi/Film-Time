@@ -5,5 +5,5 @@ import io.filmtime.data.model.Result
 
 interface RemoveFromHistoryUseCase {
 
-  suspend operator fun invoke(id: String): Result<Boolean, GeneralError>
+  suspend operator fun invoke(id: Int): Result<Unit, GeneralError>
 }

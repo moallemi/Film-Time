@@ -34,7 +34,7 @@ fun TraktAddRemoveHistoryButton(
     modifier = modifier,
     onClick = {
       if (state.isWatched) {
-        viewModel.removeItemFromHistory(tmdbId)
+        viewModel.removeItemFromHistory()
       } else {
         viewModel.addItemToHistory()
       }

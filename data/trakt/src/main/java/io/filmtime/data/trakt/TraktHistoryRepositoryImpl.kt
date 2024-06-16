@@ -24,7 +24,9 @@ class TraktHistoryRepositoryImpl @Inject constructor(
       }
     }
 
-  override suspend fun addToHistory(traktId: Int): Result<Unit, GeneralError> {
-    return traktSyncRemoteSource.addToHistory(traktId)
-  }
+  override suspend fun addToHistory(traktId: Int): Result<Unit, GeneralError> =
+    traktSyncRemoteSource.addToHistory(traktId)
+
+  override suspend fun removeFromHistory(traktId: Int): Result<Unit, GeneralError> =
+    traktSyncRemoteSource.removeFromHistory(traktId)
 }

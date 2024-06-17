@@ -66,6 +66,8 @@ private fun ColumnScope.InfoItem(
     text = title,
   )
   Text(
+    modifier = Modifier
+      .padding(bottom = 8.dp),
     style = MaterialTheme.typography.bodySmall.copy(
       color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
     ),

@@ -4,9 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -23,16 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
 import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
 import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
@@ -45,6 +37,7 @@ import io.filmtime.feature.credits.components.CreditsRow
 import io.filmtime.feature.movie.detail.components.VideoDescription
 import io.filmtime.feature.movie.detail.components.VideoInfo
 import io.filmtime.feature.movie.detail.components.VideoThumbnailInfo
+import io.filmtime.feature.movie.detail.components.VideoThumbnailPoster
 import io.filmtime.feature.similar.SimilarVideosRow
 import io.filmtime.feature.trakt.buttons.addremovehistory.TraktAddRemoveHistoryButton
 
@@ -148,7 +141,9 @@ private fun MovieDetailContent(
   LazyColumn(
     verticalArrangement = Arrangement.spacedBy(16.dp),
   ) {
-    item {
+    item(
+      key = "header",
+    ) {
       FilmTimeTheme(
         darkTheme = true,
       ) {
@@ -157,30 +152,14 @@ private fun MovieDetailContent(
             .background(MaterialTheme.colorScheme.background)
             .height(boxHeight),
         ) {
-          AsyncImage(
+          VideoThumbnailPoster(
             modifier = Modifier
               .onGloballyPositioned {
                 imageHeight = it.size.height
-              }
-              .fillMaxWidth()
-              .aspectRatio(2 / 3f)
-              .drawWithCache {
-                val gradient = Brush.verticalGradient(
-                  colors = listOf(Color.Transparent, Color(0x99000000), Color(0xDD000000)),
-                  startY = imageHeight.toFloat() / 3,
-                  endY = imageHeight.toFloat(),
-                )
-                // Draw the image
-                onDrawWithContent {
-                  drawContent()
-                  drawRect(gradient, blendMode = BlendMode.Multiply)
-                }
               },
-            contentScale = ContentScale.Crop,
-            model = videoDetail.posterUrl,
-            contentDescription = "Poster Image",
+            posterUrl = videoDetail.posterUrl,
+            height = imageHeight,
           )
-
           VideoThumbnailInfo(
             modifier = Modifier
               .padding(16.dp)
@@ -194,18 +173,26 @@ private fun MovieDetailContent(
         }
       }
     }
-    item {
+    item(
+      key = "credits",
+    ) {
       credits()
     }
-    item {
+    item(
+      key = "similar",
+    ) {
       similar()
     }
-    item {
+    item(
+      key = "description",
+    ) {
       VideoDescription(
         videoDetail = videoDetail,
       )
     }
-    item {
+    item(
+      key = "info",
+    ) {
       VideoInfo(
         videoDetail = videoDetail,
       )

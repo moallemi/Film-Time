@@ -38,17 +38,14 @@ import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
 import io.filmtime.core.ui.common.componnents.ErrorContent
-import io.filmtime.core.ui.common.componnents.VideoSectionRow
-import io.filmtime.data.model.Person
 import io.filmtime.data.model.Preview
-import io.filmtime.data.model.PreviewCast
-import io.filmtime.data.model.PreviewCrew
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.credits.components.CreditsRow
 import io.filmtime.feature.movie.detail.components.VideoDescription
 import io.filmtime.feature.movie.detail.components.VideoInfo
 import io.filmtime.feature.movie.detail.components.VideoThumbnailInfo
+import io.filmtime.feature.similar.SimilarVideosRow
 import io.filmtime.feature.trakt.buttons.addremovehistory.TraktAddRemoveHistoryButton
 
 @Composable
@@ -60,9 +57,6 @@ fun MovieDetailScreen(
   onBackPressed: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
-  val creditState by viewModel.creditState.collectAsStateWithLifecycle()
-  val similarState by viewModel.similarState.collectAsStateWithLifecycle()
-  val videoDetail = state.videoDetail
   val navigateToPlayer by viewModel.navigateToPlayer.collectAsStateWithLifecycle(null)
 
   LaunchedEffect(key1 = navigateToPlayer) {
@@ -70,6 +64,25 @@ fun MovieDetailScreen(
       onStreamReady(streamUrl)
     }
   }
+
+  MovieDetailScreen(
+    state = state,
+    onRetry = viewModel::load,
+    onMovieClick = onMovieClick,
+    onAddBookmark = viewModel::addBookmark,
+    onRemoveBookmark = viewModel::removeBookmark,
+  )
+}
+
+@Composable
+fun MovieDetailScreen(
+  state: MovieDetailState,
+  onRetry: () -> Unit,
+  onMovieClick: (Int) -> Unit,
+  onAddBookmark: () -> Unit,
+  onRemoveBookmark: () -> Unit,
+) {
+  val videoDetail = state.videoDetail
 
   if (state.isLoading) {
     CircularProgressIndicator(
@@ -79,23 +92,26 @@ fun MovieDetailScreen(
     )
   } else if (state.error != null) {
     ErrorContent(
-      uiMessage = state.error!!,
-      onRetryClick = viewModel::load,
+      uiMessage = state.error,
+      onRetryClick = onRetry,
     )
   } else if (videoDetail != null) {
-    MovieDetailScreen(
+    MovieDetailContent(
       videoDetail = videoDetail,
       isBookmarked = state.isBookmarked,
-      creditState = creditState,
-      similarState = similarState,
-      onSimilarItemClick = onMovieClick,
-      onSimilarRetry = viewModel::loadSimilar,
-      onAddBookmark = viewModel::addBookmark,
-      onRemoveBookmark = viewModel::removeBookmark,
+      onAddBookmark = onAddBookmark,
+      onRemoveBookmark = onRemoveBookmark,
       credits = {
         CreditsRow(
           tmdbId = videoDetail.ids.tmdbId ?: 0,
           videoType = VideoType.Movie,
+        )
+      },
+      similar = {
+        SimilarVideosRow(
+          tmdbId = videoDetail.ids.tmdbId ?: 0,
+          videoType = VideoType.Movie,
+          onVideoClick = onMovieClick,
         )
       },
       traktHistoryButton = {
@@ -111,16 +127,13 @@ fun MovieDetailScreen(
 }
 
 @Composable
-private fun MovieDetailScreen(
+private fun MovieDetailContent(
   videoDetail: VideoDetail,
-  creditState: MovieDetailCreditState,
   isBookmarked: Boolean,
-  similarState: MovieDetailSimilarState,
-  onSimilarItemClick: (Int) -> Unit,
-  onSimilarRetry: () -> Unit,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
   credits: @Composable () -> Unit,
+  similar: @Composable () -> Unit,
   traktHistoryButton: @Composable RowScope.() -> Unit,
 ) {
   var imageHeight by remember { mutableIntStateOf(4000) }
@@ -185,18 +198,7 @@ private fun MovieDetailScreen(
       credits()
     }
     item {
-      VideoSectionRow(
-        isLoading = similarState.isLoading,
-        error = similarState.error,
-        title = "Similar",
-        items = similarState.videoItems,
-        onMovieClick = {
-          onSimilarItemClick(it)
-        },
-        onShowClick = {},
-        onSectionClick = null,
-        onRetryClick = onSimilarRetry,
-      )
+      similar()
     }
     item {
       VideoDescription(
@@ -215,23 +217,16 @@ private fun MovieDetailScreen(
 @Composable
 private fun MovieDetailScreenPreview() {
   PreviewFilmTimeTheme {
-    MovieDetailScreen(
+    MovieDetailContent(
       videoDetail = VideoDetail.Preview,
       isBookmarked = false,
-      creditState = MovieDetailCreditState(
-        credit = listOf(Person.PreviewCast, Person.PreviewCast, Person.PreviewCrew),
-        isLoading = false,
-        error = null,
-      ),
-      similarState = MovieDetailSimilarState(
-        videoItems = listOf(),
-      ),
-      onSimilarItemClick = {},
-      onSimilarRetry = {},
       onAddBookmark = {},
       onRemoveBookmark = {},
       credits = {
         Text("Credit goes here")
+      },
+      similar = {
+        Text("Similar goes here")
       },
       traktHistoryButton = {
         FilmTimeFilledTonalButton(

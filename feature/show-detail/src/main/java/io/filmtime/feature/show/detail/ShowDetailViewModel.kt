@@ -10,7 +10,7 @@ import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
 import io.filmtime.domain.tmdb.shows.GetShowCreditsUseCase
 import io.filmtime.domain.tmdb.shows.GetShowDetailsUseCase
-import io.filmtime.domain.tmdb.shows.GetSimilarUseCase
+import io.filmtime.domain.tmdb.shows.GetSimilarShowsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -22,7 +22,7 @@ class ShowDetailViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   private val getShowDetails: GetShowDetailsUseCase,
   private val getShowCreditsUseCase: GetShowCreditsUseCase,
-  private val getSimilarUseCase: GetSimilarUseCase,
+  private val getSimilarShowsUseCase: GetSimilarShowsUseCase,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
@@ -41,7 +41,7 @@ class ShowDetailViewModel @Inject constructor(
   }
   private fun loadSimilar() = viewModelScope.launch {
     _similarState.value = _similarState.value.copy(isLoading = true)
-    when (val result = getSimilarUseCase(videoId)) {
+    when (val result = getSimilarShowsUseCase(videoId)) {
       is Failure -> {
         when (result.error) {
           is GeneralError.ApiError -> {

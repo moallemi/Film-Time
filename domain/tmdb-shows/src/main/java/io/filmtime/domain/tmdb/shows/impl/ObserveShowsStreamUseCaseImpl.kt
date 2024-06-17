@@ -1,9 +1,10 @@
-package io.filmtime.domain.tmdb.shows
+package io.filmtime.domain.tmdb.shows.impl
 
 import androidx.paging.PagingData
 import io.filmtime.data.model.VideoListType
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.tmdb.shows.TmdbShowsRepository
+import io.filmtime.domain.tmdb.shows.ObserveShowsStreamUseCase
 import io.filmtime.domain.tmdb.shows.model.toShowListType
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

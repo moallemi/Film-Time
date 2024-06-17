@@ -7,12 +7,12 @@ import dagger.hilt.components.SingletonComponent
 import io.filmtime.domain.tmdb.movies.GetMovieCreditsUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
 import io.filmtime.domain.tmdb.movies.GetMoviesListUseCase
-import io.filmtime.domain.tmdb.movies.GetSimilarUseCase
+import io.filmtime.domain.tmdb.movies.GetSimilarMoviesUseCase
 import io.filmtime.domain.tmdb.movies.ObserveMoviesStreamUseCase
 import io.filmtime.domain.tmdb.movies.impl.GetMovieCreditsUseCaseImpl
 import io.filmtime.domain.tmdb.movies.impl.GetMovieDetailsUseCaseImpl
 import io.filmtime.domain.tmdb.movies.impl.GetMoviesListUseCaseImpl
-import io.filmtime.domain.tmdb.movies.impl.GetSimilarUseCaseImpl
+import io.filmtime.domain.tmdb.movies.impl.GetSimilarMoviesUseCaseImpl
 import io.filmtime.domain.tmdb.movies.impl.ObserveMoviesStreamUseCaseImpl
 
 @Module
@@ -32,5 +32,5 @@ internal abstract class TmdbMoviesUseCaseModule {
   abstract fun bindGetMovieCreditUseCase(impl: GetMovieCreditsUseCaseImpl): GetMovieCreditsUseCase
 
   @Binds
-  abstract fun bindGetSimilarUseCase(impl: GetSimilarUseCaseImpl): GetSimilarUseCase
+  abstract fun bindGetSimilarUseCase(impl: GetSimilarMoviesUseCaseImpl): GetSimilarMoviesUseCase
 }

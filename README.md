@@ -14,8 +14,9 @@ A modern, feature-rich Movie & TV Show tracking application showcasing Android d
 - **Kotlin** - First class and official programming language for Android development.
 - **Jetpack Compose** - Android’s modern toolkit for building native UI.
 - **Coroutines** - For asynchronous and more..
-- **Koin** - For dependency injection.
+- **Hilt** - For dependency injection.
 - **Retrofit** - A type-safe HTTP client for Android and Java.
+- **Room** - For caching most used data
 
 _And more!_
 

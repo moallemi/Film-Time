@@ -47,9 +47,4 @@ interface TmdbMoviesService {
   suspend fun getSimilar(
     @Path("movie_id") movieId: Int,
   ): NetworkResponse<TmdbVideoListResponse, TmdbErrorResponse>
-
-  @GET("search/movie")
-  suspend fun searchMovies(
-    @Query("query") query: String,
-  ): NetworkResponse<TmdbVideoListResponse, TmdbErrorResponse>
 }

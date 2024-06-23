@@ -18,6 +18,6 @@ interface BookmarksDao {
   @Delete
   suspend fun removeBookmark(bookmarkEntity: BookmarkEntity)
 
-  @Query("SELECT EXISTS(SELECT 1 FROM bookmarks WHERE tmdbId = :tmdbId AND videoType = :type)")
+  @Query("SELECT EXISTS(SELECT 1 FROM bookmarks WHERE tmdb_id = :tmdbId AND video_type = :type)")
   fun isBookmarked(tmdbId: Int, type: VideoType): Flow<Boolean>
 }

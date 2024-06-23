@@ -35,6 +35,7 @@ fun TmdbMovieDetailsResponse.toVideoDetail() =
     status = status,
     budget = budget,
     tagline = tagline,
+    networks = null,
   )
 
 fun Double?.toRatingColor() = when (this) {
@@ -66,7 +67,8 @@ fun TmdbShowDetailsResponse.toVideoDetail() =
     status = status,
     homePage = homepage,
     budget = null,
-    tagline = null,
+    tagline = tagline,
+    networks = networks?.mapNotNull { it.name },
   )
 
 fun TmdbVideoResultResponse.toVideoThumbnail() = VideoThumbnail(

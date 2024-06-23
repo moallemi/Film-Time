@@ -54,8 +54,14 @@ fun VideoThumbnailInfo(
         Text(text = videoDetail.genres.firstOrNull().orEmpty())
         Text(text = "\u2022")
         Text(text = videoDetail.year.toString())
-        Text(text = "\u2022")
-        Text(text = videoDetail.runtime.orEmpty())
+        videoDetail.runtime?.let { runtime ->
+          Text(text = "\u2022")
+          Text(text = runtime)
+        }
+        videoDetail.networks?.let { networks ->
+          Text(text = "\u2022")
+          Text(text = networks.firstOrNull().orEmpty())
+        }
       }
     }
     FilmTimeFilledButton(

@@ -19,6 +19,7 @@ data class VideoDetail(
   val status: String?,
   val voteAverage: Float = 0.0F,
   val voteColor: Long = 0,
+  val networks: List<String>?,
 ) {
   companion object
 }
@@ -45,6 +46,7 @@ val VideoDetail.Companion.PreviewMovie: VideoDetail
     homePage = "https://www.furiosa.com",
     status = "Released",
     tagline = "The Future Belongs to the Mad",
+    networks = listOf("Warner Bros."),
   )
 
 val VideoDetail.Companion.PreviewShow: VideoDetail
@@ -66,5 +68,6 @@ val VideoDetail.Companion.PreviewShow: VideoDetail
     status = "Released",
     budget = null,
     homePage = "https://www.witcher.com",
-    tagline = null,
+    tagline = "The Witcher",
+    networks = listOf("Netflix"),
   )

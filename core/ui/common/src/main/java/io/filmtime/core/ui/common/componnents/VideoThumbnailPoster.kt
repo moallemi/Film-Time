@@ -1,4 +1,4 @@
-package io.filmtime.feature.movie.detail.components
+package io.filmtime.core.ui.common.componnents
 
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth

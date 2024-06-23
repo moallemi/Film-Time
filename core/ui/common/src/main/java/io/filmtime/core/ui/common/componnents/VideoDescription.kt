@@ -1,4 +1,4 @@
-package io.filmtime.feature.movie.detail.components
+package io.filmtime.core.ui.common.componnents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,8 +12,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
-import io.filmtime.core.ui.common.componnents.ExpandableText
-import io.filmtime.data.model.Preview
+import io.filmtime.data.model.PreviewMovie
 import io.filmtime.data.model.VideoDetail
 
 @Composable
@@ -57,7 +56,7 @@ fun VideoDescription(
 private fun VideoAboutInfoPreview() {
   PreviewFilmTimeTheme {
     VideoDescription(
-      videoDetail = VideoDetail.Preview,
+      videoDetail = VideoDetail.PreviewMovie,
     )
   }
 }

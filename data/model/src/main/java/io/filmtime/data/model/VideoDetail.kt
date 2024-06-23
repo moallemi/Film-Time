@@ -19,11 +19,12 @@ data class VideoDetail(
   val status: String?,
   val voteAverage: Float = 0.0F,
   val voteColor: Long = 0,
+  val networks: List<String>?,
 ) {
   companion object
 }
 
-val VideoDetail.Companion.Preview: VideoDetail
+val VideoDetail.Companion.PreviewMovie: VideoDetail
   get() = VideoDetail(
     ids = VideoId(1, 1),
     title = "Furiosa: A Mad Max Saga",
@@ -45,4 +46,28 @@ val VideoDetail.Companion.Preview: VideoDetail
     homePage = "https://www.furiosa.com",
     status = "Released",
     tagline = "The Future Belongs to the Mad",
+    networks = listOf("Warner Bros."),
+  )
+
+val VideoDetail.Companion.PreviewShow: VideoDetail
+  get() = VideoDetail(
+    ids = VideoId(1, 1),
+    title = "The Witcher",
+    posterUrl = "",
+    coverUrl = "",
+    year = 2019,
+    genres = listOf("Action", "Adventure"),
+    originalLanguage = "en",
+    spokenLanguages = listOf("en"),
+    description = "Geralt of Rivia, a mutated monster-hunter for hire, journeys toward his destiny in a turbulent" +
+      " world where people often prove more wicked than beasts.",
+    runtime = "60 min",
+    releaseDate = "2019-12-20",
+    voteAverage = 8.5F,
+    voteColor = 0xFF00FF00,
+    status = "Released",
+    budget = null,
+    homePage = "https://www.witcher.com",
+    tagline = "The Witcher",
+    networks = listOf("Netflix"),
   )

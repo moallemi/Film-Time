@@ -1,4 +1,4 @@
-package io.filmtime.feature.movie.detail.components
+package io.filmtime.core.ui.common.componnents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,13 +18,11 @@ import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
 import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
-import io.filmtime.core.ui.common.componnents.BookmarkButton
-import io.filmtime.core.ui.common.componnents.ExpandableText
-import io.filmtime.data.model.Preview
+import io.filmtime.data.model.PreviewMovie
 import io.filmtime.data.model.VideoDetail
 
 @Composable
-internal fun VideoThumbnailInfo(
+fun VideoThumbnailInfo(
   videoDetail: VideoDetail,
   isBookmarked: Boolean,
   modifier: Modifier = Modifier,
@@ -56,8 +54,14 @@ internal fun VideoThumbnailInfo(
         Text(text = videoDetail.genres.firstOrNull().orEmpty())
         Text(text = "\u2022")
         Text(text = videoDetail.year.toString())
-        Text(text = "\u2022")
-        Text(text = videoDetail.runtime.orEmpty())
+        videoDetail.runtime?.let { runtime ->
+          Text(text = "\u2022")
+          Text(text = runtime)
+        }
+        videoDetail.networks?.let { networks ->
+          Text(text = "\u2022")
+          Text(text = networks.firstOrNull().orEmpty())
+        }
       }
     }
     FilmTimeFilledButton(
@@ -91,7 +95,7 @@ internal fun VideoThumbnailInfo(
 private fun MovieDetailScreenPreview() {
   PreviewFilmTimeTheme {
     VideoThumbnailInfo(
-      videoDetail = VideoDetail.Preview,
+      videoDetail = VideoDetail.PreviewMovie,
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},

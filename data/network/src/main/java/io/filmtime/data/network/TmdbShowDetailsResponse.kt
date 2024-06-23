@@ -40,7 +40,7 @@ data class TmdbShowDetailsResponse(
   @SerialName("next_episode_to_air")
   val nextEpisodeToAir: JsonElement? = null,
 
-  val networks: List<Network>? = null,
+  val networks: List<NetworkDto>? = null,
 
   @SerialName("number_of_episodes")
   val numberOfEpisodes: Long? = null,
@@ -64,7 +64,7 @@ data class TmdbShowDetailsResponse(
   val posterPath: String? = null,
 
   @SerialName("production_companies")
-  val productionCompanies: List<Network>? = null,
+  val productionCompanies: List<NetworkDto>? = null,
 
   @SerialName("production_countries")
   val productionCountries: List<ProductionCountry>? = null,
@@ -133,7 +133,7 @@ data class LastEpisodeToAir(
 )
 
 @Serializable
-data class Network(
+data class NetworkDto(
   val id: Long? = null,
 
   @SerialName("logo_path")

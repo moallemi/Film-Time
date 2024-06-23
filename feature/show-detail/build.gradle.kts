@@ -12,4 +12,7 @@ dependencies {
   implementation(project(":domain:tmdb-shows"))
 
   implementation(project(":domain:bookmarks"))
+
+  implementation(project(":feature:credits"))
+  implementation(project(":feature:similar"))
 }

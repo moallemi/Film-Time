@@ -8,7 +8,6 @@ import io.filmtime.data.network.TmdbMovieDetailsResponse
 import io.filmtime.data.network.TmdbShowDetailsResponse
 import io.filmtime.data.network.TmdbShowResultResponse
 import io.filmtime.data.network.TmdbVideoResultResponse
-import java.util.concurrent.TimeUnit
 
 internal val TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original/"
 
@@ -27,7 +26,7 @@ fun TmdbMovieDetailsResponse.toVideoDetail() =
     spokenLanguages = spokenLanguages?.map { it.englishName ?: "" }?.filter { it.isNotEmpty() }
       ?: listOf(),
     description = overview ?: "",
-    runtime = fromMinutesToHHmm(runtime ?: 0),
+    runtime = runtime?.toHoursAndMinutes(),
     releaseDate = releaseDate ?: "N/A",
     voteAverage = voteAverage?.div(10)?.toFloat() ?: 0.0F,
     voteColor = voteAverage.toRatingColor(),
@@ -55,12 +54,11 @@ fun TmdbShowDetailsResponse.toVideoDetail() =
     posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
     coverUrl = TMDB_BASE_IMAGE_URL.plus(backdropPath),
     year = firstAirDate?.take(4)?.toInt() ?: 0,
-    genres = genres?.mapNotNull { it.name } ?: listOf<String>(),
+    genres = genres?.mapNotNull { it.name } ?: listOf(),
     originalLanguage = originalLanguage,
-    spokenLanguages = spokenLanguages?.map { it.englishName ?: "" }?.filter { it.isNotEmpty() }
-      ?: listOf(),
+    spokenLanguages = spokenLanguages?.map { it.englishName ?: "" }?.filter { it.isNotEmpty() } ?: listOf(),
     description = overview ?: "",
-    runtime = episodeRunTime?.firstOrNull()?.let { fromMinutesToHHmm(it) } ?: "N/A",
+    runtime = episodeRunTime?.firstOrNull()?.toHoursAndMinutes(),
     releaseDate = firstAirDate ?: "N/A",
     voteAverage = voteAverage?.div(10)?.toFloat() ?: 0.0F,
     voteColor = voteAverage.toRatingColor(),
@@ -91,8 +89,14 @@ fun TmdbShowResultResponse.toVideoThumbnail() = VideoThumbnail(
   type = VideoType.Show,
 )
 
-fun fromMinutesToHHmm(minutes: Long): String {
-  val hours = TimeUnit.MINUTES.toHours(minutes)
-  val remainMinutes = minutes - TimeUnit.HOURS.toMinutes(hours)
-  return String.format("%02dh %02dm", hours, remainMinutes)
+internal fun Long.toHoursAndMinutes(): String {
+  // this is in minutes
+  val hours = this / 60
+  val remainingMinutes = this % 60
+
+  return when {
+    hours > 0 && remainingMinutes > 0 -> "${hours}h ${remainingMinutes}m"
+    hours > 0 -> "${hours}h"
+    else -> "${remainingMinutes}m"
+  }
 }

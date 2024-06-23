@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import io.filmtime.core.ui.common.componnents.BookmarkButton
 import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.LoadingCastSectionRow
 import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
@@ -80,6 +81,9 @@ fun ShowDetailScreen(
       similarState,
       onSimilarClick,
       onBackPressed,
+      state.isBookmarked,
+      onAddBookmark = viewModel::addBookmark,
+      onRemoveBookmark = viewModel::removeBookmark,
     )
   }
 }
@@ -92,6 +96,9 @@ fun ShowDetailContent(
   similarState: ShowDetailSimilarState,
   onSimilarItemClick: (Int) -> Unit,
   onBackPressed: () -> Unit,
+  isBookmarked: Boolean,
+  onAddBookmark: () -> Unit,
+  onRemoveBookmark: () -> Unit,
 ) {
   val scrollState = rememberScrollState()
   var sizeImage by remember { mutableStateOf(IntSize.Zero) }
@@ -187,6 +194,11 @@ fun ShowDetailContent(
     Text(
       modifier = Modifier.padding(horizontal = 16.dp),
       text = videoDetail.description,
+    )
+    BookmarkButton(
+      isBookmarked = isBookmarked,
+      onAddBookmark = onAddBookmark,
+      onRemoveBookmark = onRemoveBookmark,
     )
     Text(
       modifier = Modifier.padding(horizontal = 16.dp),

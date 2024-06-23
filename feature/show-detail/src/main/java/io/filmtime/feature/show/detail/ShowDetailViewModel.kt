@@ -8,11 +8,17 @@ import io.filmtime.core.ui.common.toUiMessage
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
+import io.filmtime.data.model.VideoType.Show
+import io.filmtime.domain.bookmarks.AddBookmarkUseCase
+import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
+import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
 import io.filmtime.domain.tmdb.shows.GetShowCreditsUseCase
 import io.filmtime.domain.tmdb.shows.GetShowDetailsUseCase
 import io.filmtime.domain.tmdb.shows.GetSimilarShowsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,6 +29,9 @@ class ShowDetailViewModel @Inject constructor(
   private val getShowDetails: GetShowDetailsUseCase,
   private val getShowCreditsUseCase: GetShowCreditsUseCase,
   private val getSimilarShowsUseCase: GetSimilarShowsUseCase,
+  private val addBookmark: AddBookmarkUseCase,
+  private val deleteBookmark: DeleteBookmarkUseCase,
+  private val observeBookmark: ObserveBookmarkUseCase,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
@@ -35,6 +44,7 @@ class ShowDetailViewModel @Inject constructor(
   val creditState = _creditState.asStateFlow()
 
   init {
+    observeBookmark()
     load()
     loadSimilar()
     loadCredits()
@@ -139,5 +149,23 @@ class ShowDetailViewModel @Inject constructor(
         }
       }
     }
+  }
+
+  private fun observeBookmark() = viewModelScope.launch {
+    observeBookmark(videoId, Show)
+      .onEach { isBookmarked ->
+        _state.update { state ->
+          state.copy(isBookmarked = isBookmarked)
+        }
+      }
+      .collect()
+  }
+
+  fun addBookmark() = viewModelScope.launch {
+    addBookmark(videoId, Show)
+  }
+
+  fun removeBookmark() = viewModelScope.launch {
+    deleteBookmark(videoId, Show)
   }
 }

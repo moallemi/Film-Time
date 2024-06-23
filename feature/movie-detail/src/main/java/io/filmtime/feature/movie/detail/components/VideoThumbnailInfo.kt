@@ -4,13 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons.Filled
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
@@ -22,9 +16,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
 import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
-import io.filmtime.core.designsystem.composable.FilmTimeOutlinedButton
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
+import io.filmtime.core.ui.common.componnents.BookmarkButton
 import io.filmtime.core.ui.common.componnents.ExpandableText
 import io.filmtime.data.model.Preview
 import io.filmtime.data.model.VideoDetail
@@ -89,42 +83,6 @@ internal fun VideoThumbnailInfo(
       text = videoDetail.description,
       minimizedMaxLines = 3,
     )
-  }
-}
-
-@Composable
-private fun BookmarkButton(
-  isBookmarked: Boolean,
-  onRemoveBookmark: () -> Unit,
-  onAddBookmark: () -> Unit,
-  modifier: Modifier = Modifier,
-) {
-  if (isBookmarked) {
-    FilmTimeOutlinedButton(
-      modifier = modifier,
-      onClick = onRemoveBookmark,
-    ) {
-      Icon(
-        Filled.Check,
-        contentDescription = "",
-        modifier = Modifier.size(20.dp),
-      )
-      Spacer(modifier = Modifier.size(8.dp))
-      Text("Bookmarked")
-    }
-  } else {
-    FilmTimeFilledTonalButton(
-      modifier = modifier,
-      onClick = onAddBookmark,
-    ) {
-      Icon(
-        Filled.Add,
-        contentDescription = "",
-        modifier = Modifier.size(20.dp),
-      )
-      Spacer(modifier = Modifier.size(8.dp))
-      Text("Bookmark")
-    }
   }
 }
 

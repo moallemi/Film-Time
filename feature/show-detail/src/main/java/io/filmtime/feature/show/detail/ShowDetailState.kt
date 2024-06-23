@@ -8,4 +8,5 @@ data class ShowDetailState(
   val videoDetail: VideoDetail? = null,
   val message: String? = null,
   val error: UiMessage? = null,
+  val isBookmarked: Boolean = false,
 )

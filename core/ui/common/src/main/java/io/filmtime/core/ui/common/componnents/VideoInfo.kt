@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
-import io.filmtime.data.model.Preview
+import io.filmtime.data.model.PreviewMovie
 import io.filmtime.data.model.VideoDetail
 
 @Composable
@@ -80,7 +80,7 @@ private fun ColumnScope.InfoItem(
 private fun VideoAboutInfoPreview() {
   PreviewFilmTimeTheme {
     VideoInfo(
-      videoDetail = VideoDetail.Preview,
+      videoDetail = VideoDetail.PreviewMovie,
     )
   }
 }

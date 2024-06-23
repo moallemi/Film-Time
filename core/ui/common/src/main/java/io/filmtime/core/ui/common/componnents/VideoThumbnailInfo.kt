@@ -18,7 +18,7 @@ import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
 import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
-import io.filmtime.data.model.Preview
+import io.filmtime.data.model.PreviewMovie
 import io.filmtime.data.model.VideoDetail
 
 @Composable
@@ -89,7 +89,7 @@ fun VideoThumbnailInfo(
 private fun MovieDetailScreenPreview() {
   PreviewFilmTimeTheme {
     VideoThumbnailInfo(
-      videoDetail = VideoDetail.Preview,
+      videoDetail = VideoDetail.PreviewMovie,
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},

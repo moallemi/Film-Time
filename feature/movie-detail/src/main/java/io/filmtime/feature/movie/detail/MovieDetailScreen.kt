@@ -34,7 +34,7 @@ import io.filmtime.core.ui.common.componnents.VideoDescription
 import io.filmtime.core.ui.common.componnents.VideoInfo
 import io.filmtime.core.ui.common.componnents.VideoThumbnailInfo
 import io.filmtime.core.ui.common.componnents.VideoThumbnailPoster
-import io.filmtime.data.model.Preview
+import io.filmtime.data.model.PreviewMovie
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.credits.components.CreditsRow
@@ -205,7 +205,7 @@ private fun MovieDetailContent(
 private fun MovieDetailScreenPreview() {
   PreviewFilmTimeTheme {
     MovieDetailContent(
-      videoDetail = VideoDetail.Preview,
+      videoDetail = VideoDetail.PreviewMovie,
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},

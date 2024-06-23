@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
-import io.filmtime.data.model.Preview
+import io.filmtime.data.model.PreviewMovie
 import io.filmtime.data.model.VideoDetail
 
 @Composable
@@ -56,7 +56,7 @@ fun VideoDescription(
 private fun VideoAboutInfoPreview() {
   PreviewFilmTimeTheme {
     VideoDescription(
-      videoDetail = VideoDetail.Preview,
+      videoDetail = VideoDetail.PreviewMovie,
     )
   }
 }

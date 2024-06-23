@@ -1,4 +1,4 @@
-package io.filmtime.feature.movie.detail.components
+package io.filmtime.core.ui.common.componnents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,13 +18,11 @@ import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
 import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
-import io.filmtime.core.ui.common.componnents.BookmarkButton
-import io.filmtime.core.ui.common.componnents.ExpandableText
 import io.filmtime.data.model.Preview
 import io.filmtime.data.model.VideoDetail
 
 @Composable
-internal fun VideoThumbnailInfo(
+fun VideoThumbnailInfo(
   videoDetail: VideoDetail,
   isBookmarked: Boolean,
   modifier: Modifier = Modifier,

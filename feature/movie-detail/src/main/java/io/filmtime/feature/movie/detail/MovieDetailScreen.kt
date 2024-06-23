@@ -30,14 +30,14 @@ import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
 import io.filmtime.core.ui.common.componnents.ErrorContent
+import io.filmtime.core.ui.common.componnents.VideoDescription
+import io.filmtime.core.ui.common.componnents.VideoInfo
+import io.filmtime.core.ui.common.componnents.VideoThumbnailInfo
+import io.filmtime.core.ui.common.componnents.VideoThumbnailPoster
 import io.filmtime.data.model.Preview
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.credits.components.CreditsRow
-import io.filmtime.feature.movie.detail.components.VideoDescription
-import io.filmtime.feature.movie.detail.components.VideoInfo
-import io.filmtime.feature.movie.detail.components.VideoThumbnailInfo
-import io.filmtime.feature.movie.detail.components.VideoThumbnailPoster
 import io.filmtime.feature.similar.SimilarVideosRow
 import io.filmtime.feature.trakt.buttons.addremovehistory.TraktAddRemoveHistoryButton
 

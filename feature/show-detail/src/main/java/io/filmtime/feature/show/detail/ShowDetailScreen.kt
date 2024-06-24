@@ -31,7 +31,9 @@ import io.filmtime.core.ui.common.componnents.VideoDescription
 import io.filmtime.core.ui.common.componnents.VideoInfo
 import io.filmtime.core.ui.common.componnents.VideoThumbnailInfo
 import io.filmtime.core.ui.common.componnents.VideoThumbnailPoster
+import io.filmtime.data.model.Preview
 import io.filmtime.data.model.PreviewShow
+import io.filmtime.data.model.Ratings
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.credits.components.CreditsRow
@@ -79,6 +81,7 @@ fun ShowDetailScreen(
   } else if (videoDetail != null) {
     ShowDetailContent(
       videoDetail = videoDetail,
+      ratings = state.ratings,
       isBookmarked = state.isBookmarked,
       onAddBookmark = onAddBookmark,
       onRemoveBookmark = onRemoveBookmark,
@@ -102,6 +105,7 @@ fun ShowDetailScreen(
 @Composable
 private fun ShowDetailContent(
   videoDetail: VideoDetail,
+  ratings: Ratings?,
   isBookmarked: Boolean,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
@@ -147,6 +151,7 @@ private fun ShowDetailContent(
             isBookmarked = isBookmarked,
             onAddBookmark = onAddBookmark,
             onRemoveBookmark = onRemoveBookmark,
+            ratings = ratings,
             traktHistoryButton = {
             },
           )
@@ -186,6 +191,7 @@ private fun ShowDetailScreenPreview() {
   PreviewFilmTimeTheme {
     ShowDetailContent(
       videoDetail = VideoDetail.PreviewShow,
+      ratings = Ratings.Preview,
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},

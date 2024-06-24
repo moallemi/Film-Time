@@ -5,14 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.core.ui.common.toUiMessage
-import io.filmtime.data.model.Result.Failure
-import io.filmtime.data.model.Result.Success
 import io.filmtime.data.model.VideoType.Movie
 import io.filmtime.domain.bookmarks.AddBookmarkUseCase
 import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
 import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
 import io.filmtime.domain.stream.GetStreamInfoUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
+import io.filmtime.domain.trakt.GetRatingsUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,37 +29,43 @@ class MovieDetailViewModel @Inject constructor(
   private val addBookmark: AddBookmarkUseCase,
   private val deleteBookmark: DeleteBookmarkUseCase,
   private val observeBookmark: ObserveBookmarkUseCase,
+  private val getRatings: GetRatingsUseCase,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
 
-  private val _state: MutableStateFlow<MovieDetailState> = MutableStateFlow(MovieDetailState())
+  private val _state = MutableStateFlow(MovieDetailState())
   val state = _state.asStateFlow()
 
   val navigateToPlayer = MutableSharedFlow<String?>()
 
   init {
-    load()
+    loadMovieDetail()
     observeBookmark()
   }
 
-  fun load() = viewModelScope.launch {
+  fun loadMovieDetail() = viewModelScope.launch {
     _state.value = _state.value.copy(isLoading = true, error = null)
 
-    getMovieDetail(videoId).collect {
-      when (val result = it) {
-        is Success -> {
-          _state.update { state ->
-            state.copy(videoDetail = result.data, isLoading = false, error = null)
-          }
-        }
-
-        is Failure -> {
-          _state.update { state ->
-            state.copy(error = result.error.toUiMessage(), isLoading = false)
-          }
-        }
+    getMovieDetail(videoId)
+      .collect { result ->
+        result.fold(
+          onSuccess = { data ->
+            _state.update { state -> state.copy(videoDetail = data, isLoading = false) }
+            loadRatings()
+          },
+          onFailure = { e -> _state.update { state -> state.copy(isLoading = false, error = e.toUiMessage()) } },
+        )
       }
+  }
+
+  private fun loadRatings() = viewModelScope.launch {
+    _state.value.videoDetail?.ids?.tmdbId?.let { tmdbId ->
+      getRatings(type = Movie, tmdbId = tmdbId)
+        .fold(
+          onSuccess = { ratings -> _state.update { state -> state.copy(ratings = ratings) } },
+          onFailure = { error -> _state.update { state -> state.copy(error = error.toUiMessage()) } },
+        )
     }
   }
 

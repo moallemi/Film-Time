@@ -15,6 +15,7 @@ dependencies {
   implementation(project(":domain:tmdb-movies"))
   implementation(project(":domain:stream"))
   implementation(project(":domain:bookmarks"))
+  implementation(project(":domain:trakt:trakt"))
 
   implementation(project(":feature:trakt-buttons"))
   implementation(project(":feature:credits"))

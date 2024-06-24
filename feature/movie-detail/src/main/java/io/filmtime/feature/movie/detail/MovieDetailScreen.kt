@@ -34,7 +34,9 @@ import io.filmtime.core.ui.common.componnents.VideoDescription
 import io.filmtime.core.ui.common.componnents.VideoInfo
 import io.filmtime.core.ui.common.componnents.VideoThumbnailInfo
 import io.filmtime.core.ui.common.componnents.VideoThumbnailPoster
+import io.filmtime.data.model.Preview
 import io.filmtime.data.model.PreviewMovie
+import io.filmtime.data.model.Ratings
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.credits.components.CreditsRow
@@ -60,7 +62,7 @@ fun MovieDetailScreen(
 
   MovieDetailScreen(
     state = state,
-    onRetry = viewModel::load,
+    onRetry = viewModel::loadMovieDetail,
     onMovieClick = onMovieClick,
     onAddBookmark = viewModel::addBookmark,
     onRemoveBookmark = viewModel::removeBookmark,
@@ -91,6 +93,7 @@ fun MovieDetailScreen(
   } else if (videoDetail != null) {
     MovieDetailContent(
       videoDetail = videoDetail,
+      ratings = state.ratings,
       isBookmarked = state.isBookmarked,
       onAddBookmark = onAddBookmark,
       onRemoveBookmark = onRemoveBookmark,
@@ -122,6 +125,7 @@ fun MovieDetailScreen(
 @Composable
 private fun MovieDetailContent(
   videoDetail: VideoDetail,
+  ratings: Ratings?,
   isBookmarked: Boolean,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
@@ -169,6 +173,7 @@ private fun MovieDetailContent(
             onAddBookmark = onAddBookmark,
             onRemoveBookmark = onRemoveBookmark,
             traktHistoryButton = traktHistoryButton,
+            ratings = ratings,
           )
         }
       }
@@ -215,6 +220,7 @@ private fun MovieDetailScreenPreview() {
       similar = {
         Text("Similar goes here")
       },
+      ratings = Ratings.Preview,
       traktHistoryButton = {
         FilmTimeFilledTonalButton(
           modifier = Modifier

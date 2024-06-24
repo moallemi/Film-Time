@@ -11,8 +11,7 @@ import io.filmtime.data.storage.trakt.TraktAuthLocalSource
 import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
-class TraktSyncRemoteSourceImpl
-@Inject constructor(
+internal class TraktSyncRemoteSourceImpl @Inject constructor(
   private val traktSyncService: TraktSyncService,
   private val traktAuthLocalSource: TraktAuthLocalSource,
 ) : TraktSyncRemoteSource {
@@ -31,7 +30,7 @@ class TraktSyncRemoteSourceImpl
     }
   }
 
-  override suspend fun getHistoryById(id: Int): Result<Boolean, GeneralError> {
+  override suspend fun getHistoryById(id: Int, traktMediaType: TraktMediaType): Result<Boolean, GeneralError> {
     // TODO: move check token in a function
     val tokens =
       traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
@@ -45,7 +44,13 @@ class TraktSyncRemoteSourceImpl
       is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
       is NetworkResponse.Success -> {
-        val watched = result.body?.any { it.movie.ids.trakt == id } ?: false
+        val watched = result.body?.any {
+          if (traktMediaType == TraktMediaType.Movie) {
+            it.movie?.ids?.trakt == id
+          } else {
+            it.show?.ids?.trakt == id
+          }
+        } ?: false
         Result.Success(watched)
       }
     }

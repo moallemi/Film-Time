@@ -1,5 +1,6 @@
 package io.filmtime.data.api.trakt
 
+import io.filmtime.data.api.trakt.model.toAccessToken
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.TraktTokens

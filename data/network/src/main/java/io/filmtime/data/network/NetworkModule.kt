@@ -13,6 +13,7 @@ import io.filmtime.data.network.interceptor.TmdbApiKeyInterceptor
 import io.filmtime.data.network.interceptor.TraktHeadersInterceptor
 import io.filmtime.data.network.trakt.TraktAuthService
 import io.filmtime.data.network.trakt.TraktSearchService
+import io.filmtime.data.network.trakt.TraktService
 import io.filmtime.data.network.trakt.TraktSyncService
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
@@ -125,6 +126,11 @@ object NetworkModule {
   fun provideTraktSync(@TraktNetwork retrofit: Retrofit): TraktSyncService {
     return retrofit.create(TraktSyncService::class.java)
   }
+
+  @Provides
+  @Singleton
+  fun provideTrakt(@TraktNetwork retrofit: Retrofit): TraktService =
+    retrofit.create(TraktService::class.java)
 
   @Provides
   @Singleton

@@ -18,12 +18,15 @@ import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
 import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
+import io.filmtime.data.model.Preview
 import io.filmtime.data.model.PreviewMovie
+import io.filmtime.data.model.Ratings
 import io.filmtime.data.model.VideoDetail
 
 @Composable
 fun VideoThumbnailInfo(
   videoDetail: VideoDetail,
+  ratings: Ratings?,
   isBookmarked: Boolean,
   modifier: Modifier = Modifier,
   onAddBookmark: () -> Unit,
@@ -87,6 +90,13 @@ fun VideoThumbnailInfo(
       text = videoDetail.description,
       minimizedMaxLines = 3,
     )
+
+    ratings?.let {
+      RatingsInfo(
+        modifier = Modifier.fillMaxWidth(),
+        ratings = ratings,
+      )
+    }
   }
 }
 
@@ -99,6 +109,7 @@ private fun MovieDetailScreenPreview() {
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},
+      ratings = Ratings.Preview,
       traktHistoryButton = {
         FilmTimeFilledTonalButton(
           modifier = Modifier

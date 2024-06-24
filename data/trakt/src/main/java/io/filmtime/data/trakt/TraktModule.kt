@@ -7,10 +7,11 @@ import dagger.hilt.components.SingletonComponent
 
 @InstallIn(SingletonComponent::class)
 @Module
-abstract class TraktModule {
+internal abstract class TraktModule {
 
   @Binds
-  abstract fun bindsTraktHistoryRepository(
-    impl: TraktHistoryRepositoryImpl,
-  ): TraktHistoryRepository
+  abstract fun bindsTraktHistoryRepository(impl: TraktHistoryRepositoryImpl): TraktHistoryRepository
+
+  @Binds
+  abstract fun bindsTraktRepository(impl: TraktRepositoryImpl): TraktRepository
 }

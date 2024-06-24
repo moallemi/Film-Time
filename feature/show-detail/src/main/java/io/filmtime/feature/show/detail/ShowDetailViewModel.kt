@@ -15,6 +15,7 @@ import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
 import io.filmtime.domain.tmdb.shows.GetShowCreditsUseCase
 import io.filmtime.domain.tmdb.shows.GetShowDetailsUseCase
 import io.filmtime.domain.tmdb.shows.GetSimilarShowsUseCase
+import io.filmtime.domain.trakt.GetRatingsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -32,6 +33,7 @@ class ShowDetailViewModel @Inject constructor(
   private val addBookmark: AddBookmarkUseCase,
   private val deleteBookmark: DeleteBookmarkUseCase,
   private val observeBookmark: ObserveBookmarkUseCase,
+  private val getRatings: GetRatingsUseCase,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
@@ -49,6 +51,7 @@ class ShowDetailViewModel @Inject constructor(
     loadSimilar()
     loadCredits()
   }
+
   private fun loadSimilar() = viewModelScope.launch {
     _similarState.value = _similarState.value.copy(isLoading = true)
     when (val result = getSimilarShowsUseCase(videoId)) {
@@ -135,19 +138,23 @@ class ShowDetailViewModel @Inject constructor(
   fun load() = viewModelScope.launch {
     _state.value = _state.value.copy(isLoading = true, error = null)
 
-    when (val result = getShowDetails(videoId)) {
-      is Success -> {
-        _state.value = _state.value.copy(videoDetail = result.data, isLoading = false)
-      }
+    getShowDetails(videoId)
+      .fold(
+        onSuccess = { data ->
+          _state.update { state -> state.copy(videoDetail = data, isLoading = false) }
+          loadRatings()
+        },
+        onFailure = { e -> _state.update { state -> state.copy(isLoading = false, error = e.toUiMessage()) } },
+      )
+  }
 
-      is Failure -> {
-        _state.update { state ->
-          state.copy(
-            error = result.error.toUiMessage(),
-            isLoading = false,
-          )
-        }
-      }
+  private fun loadRatings() = viewModelScope.launch {
+    _state.value.videoDetail?.ids?.tmdbId?.let { tmdbId ->
+      getRatings(type = Show, tmdbId = tmdbId)
+        .fold(
+          onSuccess = { ratings -> _state.update { state -> state.copy(ratings = ratings) } },
+          onFailure = { error -> _state.update { state -> state.copy(error = error.toUiMessage()) } },
+        )
     }
   }
 

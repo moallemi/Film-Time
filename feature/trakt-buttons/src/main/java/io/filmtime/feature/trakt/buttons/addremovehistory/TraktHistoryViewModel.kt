@@ -7,7 +7,7 @@ import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
 import io.filmtime.data.model.VideoType
 import io.filmtime.domain.trakt.history.AddToHistoryUseCase
-import io.filmtime.domain.trakt.history.IsMovieWatchedUseCase
+import io.filmtime.domain.trakt.history.IsVideoWatchedUseCase
 import io.filmtime.domain.trakt.history.RemoveFromHistoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class TraktHistoryViewModel @Inject constructor(
-  private val isMovieWatchedUseCase: IsMovieWatchedUseCase,
+  private val isVideoWatchedUseCase: IsVideoWatchedUseCase,
   private val addToHistory: AddToHistoryUseCase,
   private val removeFromHistory: RemoveFromHistoryUseCase,
 ) : ViewModel() {
@@ -28,7 +28,7 @@ internal class TraktHistoryViewModel @Inject constructor(
   fun checkIfIsWatched(videoType: VideoType, tmdbId: Int) = viewModelScope.launch {
     _state.update { state -> state.copy(isLoading = true) }
 
-    when (val result = isMovieWatchedUseCase(tmdbId)) {
+    when (val result = isVideoWatchedUseCase(tmdbId)) {
       is Success -> _state.update { state ->
         state.copy(isWatched = result.data.isWatched, isLoading = false, traktId = result.data.traktId)
       }

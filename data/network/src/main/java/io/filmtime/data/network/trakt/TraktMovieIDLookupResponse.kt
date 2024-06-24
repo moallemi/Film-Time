@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 data class TraktMovieIDLookupResponse(
   val type: String,
   val score: Long,
-  val movie: Movie,
+  val movie: Movie? = null,
+  val show: Show? = null,
 )
 
 @Serializable

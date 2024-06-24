@@ -3,14 +3,12 @@ package io.filmtime.data.api.trakt
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 
-enum class TmdbType {
-  MOVIE,
-  SHOW,
-//  EPISODE,
-//  PERSON,
+enum class TraktMediaType(val queryName: String) {
+  Movie("movie"),
+  Show("show"),
 }
 
 interface TraktSearchRemoteSource {
 
-  suspend fun getByTmdbId(id: Int, type: TmdbType? = null): Result<Int, GeneralError>
+  suspend fun getByTmdbId(id: Int, type: TraktMediaType): Result<Int, GeneralError>
 }

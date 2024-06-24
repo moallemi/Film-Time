@@ -22,7 +22,7 @@ interface TraktSyncService {
     @Path("id") id: Int,
     @Header("Authorization") accessToken: String,
     @Query("limit") limit: Int = 240,
-  ): NetworkResponse<List<HistoryMovie>, TraktErrorResponse>
+  ): NetworkResponse<List<TraktHistoryResponse>, TraktErrorResponse>
 
   @POST("sync/history")
   suspend fun addMovieToHistory(

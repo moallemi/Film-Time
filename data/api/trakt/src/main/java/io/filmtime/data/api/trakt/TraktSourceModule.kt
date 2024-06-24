@@ -7,20 +7,17 @@ import dagger.hilt.components.SingletonComponent
 
 @InstallIn(SingletonComponent::class)
 @Module
-abstract class TraktSourceModule {
+internal abstract class TraktSourceModule {
 
   @Binds
-  abstract fun bindsTraktAuthRemoteSource(
-    sourceImpl: TraktAuthRemoteSourceImpl,
-  ): TraktAuthRemoteSource
+  abstract fun bindsTraktAuthRemoteSource(impl: TraktAuthRemoteSourceImpl): TraktAuthRemoteSource
 
   @Binds
-  abstract fun bindsTraktSearchRemoteSource(
-    sourceImpl: TraktSearchRemoteSourceImpl,
-  ): TraktSearchRemoteSource
+  abstract fun bindsTraktSearchRemoteSource(impl: TraktSearchRemoteSourceImpl): TraktSearchRemoteSource
 
   @Binds
-  abstract fun bindsTraktSyncRemoteSource(
-    sourceImpl: TraktSyncRemoteSourceImpl,
-  ): TraktSyncRemoteSource
+  abstract fun bindsTraktSyncRemoteSource(impl: TraktSyncRemoteSourceImpl): TraktSyncRemoteSource
+
+  @Binds
+  abstract fun bindsTraktUserRemoteSource(impl: TraktRemoteSourceImpl): TraktRemoteSource
 }

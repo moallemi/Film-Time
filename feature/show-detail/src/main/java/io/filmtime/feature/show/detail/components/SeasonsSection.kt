@@ -37,7 +37,7 @@ internal fun SeasonsSection(
   modifier: Modifier = Modifier,
   onSeasonChange: (Int) -> Unit,
   error: UiMessage? = null,
-  onRetryClick: () -> Unit,
+  onRetryClick: (Int) -> Unit,
 ) {
   var selectedSeason by rememberSaveable { mutableIntStateOf(1) }
   val lazyListState = rememberLazyListState()
@@ -92,7 +92,7 @@ internal fun SeasonsSection(
     } else if (error != null) {
       ErrorContent(
         uiMessage = error,
-        onRetryClick = onRetryClick,
+        onRetryClick = { onRetryClick(selectedSeason) },
         showGraphicalError = false,
       )
     } else if (seasons.isNotEmpty()) {

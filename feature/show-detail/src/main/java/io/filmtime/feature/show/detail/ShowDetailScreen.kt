@@ -175,7 +175,7 @@ private fun ShowDetailContent(
         seasonsNumber = videoDetail.seasonsNumber ?: 0,
         error = seasonsState.error,
         onSeasonChange = onSeasonChange,
-        onRetryClick = { },
+        onRetryClick = onSeasonChange,
       )
     }
     item(

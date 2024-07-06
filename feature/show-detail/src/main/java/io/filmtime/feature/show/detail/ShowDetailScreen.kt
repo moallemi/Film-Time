@@ -31,12 +31,14 @@ import io.filmtime.core.ui.common.componnents.VideoDescription
 import io.filmtime.core.ui.common.componnents.VideoInfo
 import io.filmtime.core.ui.common.componnents.VideoThumbnailInfo
 import io.filmtime.core.ui.common.componnents.VideoThumbnailPoster
+import io.filmtime.data.model.EpisodeThumbnail
 import io.filmtime.data.model.Preview
 import io.filmtime.data.model.PreviewShow
 import io.filmtime.data.model.Ratings
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.credits.components.CreditsRow
+import io.filmtime.feature.show.detail.components.SeasonsSection
 import io.filmtime.feature.similar.SimilarVideosRow
 
 @Composable
@@ -85,6 +87,7 @@ fun ShowDetailScreen(
       isBookmarked = state.isBookmarked,
       onAddBookmark = onAddBookmark,
       onRemoveBookmark = onRemoveBookmark,
+      seasons = state.seasons,
       credits = {
         CreditsRow(
           tmdbId = videoDetail.ids.tmdbId ?: 0,
@@ -105,6 +108,7 @@ fun ShowDetailScreen(
 @Composable
 private fun ShowDetailContent(
   videoDetail: VideoDetail,
+  seasons: Map<Int, List<EpisodeThumbnail>>,
   ratings: Ratings?,
   isBookmarked: Boolean,
   onAddBookmark: () -> Unit,
@@ -159,6 +163,17 @@ private fun ShowDetailContent(
       }
     }
     item(
+      key = "seasons",
+    ) {
+      SeasonsSection(
+        isLoading = false,
+        seasons = seasons,
+        seasonsNumber = videoDetail.seasonsNumber ?: 0,
+        error = null,
+        onRetryClick = { },
+      )
+    }
+    item(
       key = "credits",
     ) {
       credits()
@@ -195,6 +210,11 @@ private fun ShowDetailScreenPreview() {
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},
+      seasons = mapOf(
+        1 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
+        2 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
+        3 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
+      ),
       credits = {
         Text("Credit goes here")
       },

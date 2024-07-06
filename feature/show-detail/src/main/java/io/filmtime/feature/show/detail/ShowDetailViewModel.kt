@@ -12,6 +12,7 @@ import io.filmtime.data.model.VideoType.Show
 import io.filmtime.domain.bookmarks.AddBookmarkUseCase
 import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
 import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
+import io.filmtime.domain.tmdb.shows.GetEpisodesBySeasonUseCase
 import io.filmtime.domain.tmdb.shows.GetShowCreditsUseCase
 import io.filmtime.domain.tmdb.shows.GetShowDetailsUseCase
 import io.filmtime.domain.tmdb.shows.GetSimilarShowsUseCase
@@ -34,6 +35,7 @@ class ShowDetailViewModel @Inject constructor(
   private val deleteBookmark: DeleteBookmarkUseCase,
   private val observeBookmark: ObserveBookmarkUseCase,
   private val getRatings: GetRatingsUseCase,
+  private val getEpisodesBySeason: GetEpisodesBySeasonUseCase,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
@@ -143,6 +145,7 @@ class ShowDetailViewModel @Inject constructor(
         onSuccess = { data ->
           _state.update { state -> state.copy(videoDetail = data, isLoading = false) }
           loadRatings()
+          loadEpisodesBySeason(seasonNumber = 1)
         },
         onFailure = { e -> _state.update { state -> state.copy(isLoading = false, error = e.toUiMessage()) } },
       )
@@ -153,6 +156,18 @@ class ShowDetailViewModel @Inject constructor(
       getRatings(type = Show, tmdbId = tmdbId)
         .fold(
           onSuccess = { ratings -> _state.update { state -> state.copy(ratings = ratings) } },
+          onFailure = { error -> _state.update { state -> state.copy(error = error.toUiMessage()) } },
+        )
+    }
+  }
+
+  private fun loadEpisodesBySeason(seasonNumber: Int) = viewModelScope.launch {
+    _state.value.videoDetail?.ids?.tmdbId?.let { tmdbId ->
+      getEpisodesBySeason(tmdbId, seasonNumber)
+        .fold(
+          onSuccess = { episodes ->
+            _state.update { state -> state.copy(seasons = state.seasons + (seasonNumber to episodes)) }
+          },
           onFailure = { error -> _state.update { state -> state.copy(error = error.toUiMessage()) } },
         )
     }

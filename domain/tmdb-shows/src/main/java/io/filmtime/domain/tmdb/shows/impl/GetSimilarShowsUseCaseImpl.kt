@@ -12,5 +12,5 @@ internal class GetSimilarShowsUseCaseImpl @Inject constructor(
 ) : GetSimilarShowsUseCase {
 
   override suspend fun invoke(movieId: Int): Result<List<VideoThumbnail>, GeneralError> =
-    tmdbMovieRepository.getSimilar(movieId)
+    tmdbMovieRepository.similar(movieId)
 }

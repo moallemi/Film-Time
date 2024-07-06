@@ -31,16 +31,18 @@ import io.filmtime.core.ui.common.componnents.VideoDescription
 import io.filmtime.core.ui.common.componnents.VideoInfo
 import io.filmtime.core.ui.common.componnents.VideoThumbnailInfo
 import io.filmtime.core.ui.common.componnents.VideoThumbnailPoster
+import io.filmtime.data.model.EpisodeThumbnail
 import io.filmtime.data.model.Preview
 import io.filmtime.data.model.PreviewShow
 import io.filmtime.data.model.Ratings
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.credits.components.CreditsRow
+import io.filmtime.feature.show.detail.components.SeasonsSection
 import io.filmtime.feature.similar.SimilarVideosRow
 
 @Composable
-fun ShowDetailScreen(
+internal fun ShowDetailScreen(
   viewModel: ShowDetailViewModel,
   onCastItemClick: (Long) -> Unit,
   onShowClick: (Int) -> Unit,
@@ -54,16 +56,18 @@ fun ShowDetailScreen(
     onShowClick = onShowClick,
     onAddBookmark = viewModel::addBookmark,
     onRemoveBookmark = viewModel::removeBookmark,
+    onSeasonChange = viewModel::changeSeason,
   )
 }
 
 @Composable
-fun ShowDetailScreen(
+private fun ShowDetailScreen(
   state: ShowDetailState,
   onRetry: () -> Unit,
   onShowClick: (Int) -> Unit,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
+  onSeasonChange: (Int) -> Unit,
 ) {
   val videoDetail = state.videoDetail
 
@@ -85,6 +89,8 @@ fun ShowDetailScreen(
       isBookmarked = state.isBookmarked,
       onAddBookmark = onAddBookmark,
       onRemoveBookmark = onRemoveBookmark,
+      seasonsState = state.seasonsState,
+      onSeasonChange = onSeasonChange,
       credits = {
         CreditsRow(
           tmdbId = videoDetail.ids.tmdbId ?: 0,
@@ -105,10 +111,12 @@ fun ShowDetailScreen(
 @Composable
 private fun ShowDetailContent(
   videoDetail: VideoDetail,
+  seasonsState: SeasonsState,
   ratings: Ratings?,
   isBookmarked: Boolean,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
+  onSeasonChange: (Int) -> Unit,
   credits: @Composable () -> Unit,
   similar: @Composable () -> Unit,
 ) {
@@ -159,6 +167,18 @@ private fun ShowDetailContent(
       }
     }
     item(
+      key = "seasons",
+    ) {
+      SeasonsSection(
+        isLoading = seasonsState.isLoading,
+        seasons = seasonsState.seasons,
+        seasonsNumber = videoDetail.seasonsNumber ?: 0,
+        error = seasonsState.error,
+        onSeasonChange = onSeasonChange,
+        onRetryClick = onSeasonChange,
+      )
+    }
+    item(
       key = "credits",
     ) {
       credits()
@@ -195,6 +215,14 @@ private fun ShowDetailScreenPreview() {
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},
+      seasonsState = SeasonsState(
+        seasons = mapOf(
+          1 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
+          2 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
+          3 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
+        ),
+      ),
+      onSeasonChange = {},
       credits = {
         Text("Credit goes here")
       },

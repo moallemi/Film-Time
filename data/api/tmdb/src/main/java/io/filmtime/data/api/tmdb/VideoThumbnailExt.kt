@@ -9,7 +9,7 @@ import io.filmtime.data.network.TmdbShowDetailsResponse
 import io.filmtime.data.network.TmdbShowResultResponse
 import io.filmtime.data.network.TmdbVideoResultResponse
 
-internal val TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original/"
+internal const val TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original/"
 
 fun TmdbMovieDetailsResponse.toVideoDetail() =
   VideoDetail(
@@ -35,6 +35,7 @@ fun TmdbMovieDetailsResponse.toVideoDetail() =
     budget = budget,
     tagline = tagline,
     networks = null,
+    seasonsNumber = null,
   )
 
 fun Double?.toRatingColor() = when (this) {
@@ -67,6 +68,7 @@ fun TmdbShowDetailsResponse.toVideoDetail() =
     budget = null,
     tagline = tagline,
     networks = networks?.mapNotNull { it.name },
+    seasonsNumber = numberOfSeasons,
   )
 
 fun TmdbVideoResultResponse.toVideoThumbnail() = VideoThumbnail(

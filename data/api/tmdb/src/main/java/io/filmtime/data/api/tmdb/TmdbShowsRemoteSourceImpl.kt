@@ -1,5 +1,6 @@
 package io.filmtime.data.api.tmdb
 
+import io.filmtime.data.model.EpisodeThumbnail
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Person
 import io.filmtime.data.model.Result
@@ -96,8 +97,26 @@ class TmdbShowsRemoteSourceImpl @Inject constructor(
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
     }
 
-  override suspend fun getSimilar(seriesId: Int): Result<List<VideoThumbnail>, GeneralError> =
-    getShowsList { tmdbShowsService.getSimilar(seriesId) }
+  override suspend fun episodesBySeason(showId: Int, seasonNumber: Int): Result<List<EpisodeThumbnail>, GeneralError> =
+    when (val response = tmdbShowsService.episodesBySeason(showId, seasonNumber)) {
+      is NetworkResponse.Success -> {
+        val episodes = response.body?.episodes?.map { it.toEpisodeThumbnail() }
+        Result.Success(episodes.orEmpty())
+      }
+
+      is NetworkResponse.ApiError -> Result.Failure(
+        GeneralError.ApiError(
+          response.body.statusMessage,
+          response.body.statusCode,
+        ),
+      )
+
+      is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
+      is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(response.error))
+    }
+
+  override suspend fun similar(showId: Int): Result<List<VideoThumbnail>, GeneralError> =
+    getShowsList { tmdbShowsService.getSimilar(showId) }
 
   private suspend fun getShowsList(
     apiCall: suspend () -> NetworkResponse<TmdbShowListResponse, TmdbErrorResponse>,

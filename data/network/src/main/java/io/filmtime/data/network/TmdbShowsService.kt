@@ -1,6 +1,7 @@
 package io.filmtime.data.network
 
 import io.filmtime.data.network.adapter.NetworkResponse
+import io.filmtime.data.network.model.TmdbSeasonResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -49,4 +50,10 @@ interface TmdbShowsService {
   suspend fun getSimilar(
     @Path("series_id") seriesId: Int,
   ): NetworkResponse<TmdbShowListResponse, TmdbErrorResponse>
+
+  @GET("tv/{series_id}/season/{season_number}")
+  suspend fun episodesBySeason(
+    @Path("series_id") seriesId: Int,
+    @Path("season_number") seasonNumber: Int,
+  ): NetworkResponse<TmdbSeasonResponse, TmdbErrorResponse>
 }

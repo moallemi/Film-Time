@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ShowDetailViewModel @Inject constructor(
+internal class ShowDetailViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   private val getShowDetails: GetShowDetailsUseCase,
   private val getShowCreditsUseCase: GetShowCreditsUseCase,
@@ -162,13 +162,38 @@ class ShowDetailViewModel @Inject constructor(
   }
 
   private fun loadEpisodesBySeason(seasonNumber: Int) = viewModelScope.launch {
+    _state.update { state ->
+      state.copy(
+        seasonsState = state.seasonsState.copy(
+          isLoading = true,
+          error = null,
+        ),
+      )
+    }
+
     _state.value.videoDetail?.ids?.tmdbId?.let { tmdbId ->
       getEpisodesBySeason(tmdbId, seasonNumber)
         .fold(
           onSuccess = { episodes ->
-            _state.update { state -> state.copy(seasons = state.seasons + (seasonNumber to episodes)) }
+            _state.update { state ->
+              state.copy(
+                seasonsState = state.seasonsState.copy(
+                  isLoading = false,
+                  seasons = state.seasonsState.seasons + (seasonNumber to episodes),
+                ),
+              )
+            }
           },
-          onFailure = { error -> _state.update { state -> state.copy(error = error.toUiMessage()) } },
+          onFailure = { error ->
+            _state.update { state ->
+              state.copy(
+                seasonsState = state.seasonsState.copy(
+                  isLoading = false,
+                  error = error.toUiMessage(),
+                ),
+              )
+            }
+          },
         )
     }
   }

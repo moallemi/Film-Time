@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,11 +63,21 @@ internal fun SeasonsSection(
     }
 
     if (isLoading) {
-      CircularProgressIndicator(
+      LazyRow(
         modifier = Modifier
-          .fillMaxWidth()
-          .wrapContentSize(),
-      )
+          .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+      ) {
+        items(2) { index ->
+          EpisodeThumbnailCard(
+            modifier = Modifier
+              .width(300.dp),
+            episodeThumbnail = EpisodeThumbnail.Preview,
+            placeHolderVisible = true,
+          )
+        }
+      }
     } else if (error != null) {
       ErrorContent(
         uiMessage = error,

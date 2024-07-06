@@ -42,7 +42,7 @@ import io.filmtime.feature.show.detail.components.SeasonsSection
 import io.filmtime.feature.similar.SimilarVideosRow
 
 @Composable
-fun ShowDetailScreen(
+internal fun ShowDetailScreen(
   viewModel: ShowDetailViewModel,
   onCastItemClick: (Long) -> Unit,
   onShowClick: (Int) -> Unit,
@@ -60,7 +60,7 @@ fun ShowDetailScreen(
 }
 
 @Composable
-fun ShowDetailScreen(
+private fun ShowDetailScreen(
   state: ShowDetailState,
   onRetry: () -> Unit,
   onShowClick: (Int) -> Unit,
@@ -87,7 +87,7 @@ fun ShowDetailScreen(
       isBookmarked = state.isBookmarked,
       onAddBookmark = onAddBookmark,
       onRemoveBookmark = onRemoveBookmark,
-      seasons = state.seasons,
+      seasonsState = state.seasonsState,
       credits = {
         CreditsRow(
           tmdbId = videoDetail.ids.tmdbId ?: 0,
@@ -108,7 +108,7 @@ fun ShowDetailScreen(
 @Composable
 private fun ShowDetailContent(
   videoDetail: VideoDetail,
-  seasons: Map<Int, List<EpisodeThumbnail>>,
+  seasonsState: SeasonsState,
   ratings: Ratings?,
   isBookmarked: Boolean,
   onAddBookmark: () -> Unit,
@@ -166,10 +166,10 @@ private fun ShowDetailContent(
       key = "seasons",
     ) {
       SeasonsSection(
-        isLoading = false,
-        seasons = seasons,
+        isLoading = seasonsState.isLoading,
+        seasons = seasonsState.seasons,
         seasonsNumber = videoDetail.seasonsNumber ?: 0,
-        error = null,
+        error = seasonsState.error,
         onRetryClick = { },
       )
     }
@@ -210,10 +210,12 @@ private fun ShowDetailScreenPreview() {
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},
-      seasons = mapOf(
-        1 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
-        2 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
-        3 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
+      seasonsState = SeasonsState(
+        seasons = mapOf(
+          1 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
+          2 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
+          3 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
+        ),
       ),
       credits = {
         Text("Credit goes here")

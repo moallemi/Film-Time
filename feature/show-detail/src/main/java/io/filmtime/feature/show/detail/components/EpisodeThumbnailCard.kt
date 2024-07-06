@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,6 +15,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
+import io.filmtime.core.ui.common.componnents.placeholder.PlaceholderHighlight
+import io.filmtime.core.ui.common.componnents.placeholder.fade
+import io.filmtime.core.ui.common.componnents.placeholder.placeholder
 import io.filmtime.data.model.EpisodeThumbnail
 import io.filmtime.data.model.Preview
 
@@ -21,46 +25,83 @@ import io.filmtime.data.model.Preview
 fun EpisodeThumbnailCard(
   modifier: Modifier = Modifier,
   episodeThumbnail: EpisodeThumbnail,
+  placeHolderVisible: Boolean = false,
 ) {
-  Card(
-    modifier = modifier,
-  ) {
-    AsyncImage(
-      modifier = Modifier
-        .fillMaxWidth()
-        .aspectRatio(16f / 9f),
-      model = episodeThumbnail.posterUrl,
-      contentDescription = episodeThumbnail.title,
-      contentScale = ContentScale.Crop,
-    )
-    Text(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 8.dp, bottom = 4.dp)
-        .padding(horizontal = 12.dp),
-      text = "Episode ${episodeThumbnail.episodeNumber}",
-      style = MaterialTheme.typography.labelMedium,
-    )
-
-    Text(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 12.dp),
-      text = episodeThumbnail.title,
-    )
-
-    Text(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 4.dp, bottom = 12.dp)
-        .padding(horizontal = 12.dp),
-      text = episodeThumbnail.description,
-      style = MaterialTheme.typography.bodySmall,
-      overflow = TextOverflow.Ellipsis,
-      minLines = 3,
-      maxLines = 3,
-    )
+  if (placeHolderVisible) {
+    ElevatedCard(
+      modifier = modifier,
+    ) {
+      CardContent(
+        episodeThumbnail = episodeThumbnail,
+        placeHolderVisible = placeHolderVisible,
+      )
+    }
+  } else {
+    Card(
+      modifier = modifier,
+    ) {
+      CardContent(
+        episodeThumbnail = episodeThumbnail,
+        placeHolderVisible = placeHolderVisible,
+      )
+    }
   }
+}
+
+@Composable
+private fun CardContent(
+  episodeThumbnail: EpisodeThumbnail,
+  placeHolderVisible: Boolean,
+) {
+  val placeholderHighlight = PlaceholderHighlight.fade()
+  AsyncImage(
+    modifier = Modifier
+      .fillMaxWidth()
+      .aspectRatio(16f / 9f)
+      .placeholder(
+        visible = placeHolderVisible,
+        highlight = placeholderHighlight,
+      ),
+    model = episodeThumbnail.posterUrl,
+    contentDescription = episodeThumbnail.title,
+    contentScale = ContentScale.Crop,
+  )
+  Text(
+    modifier = Modifier
+      .padding(top = 8.dp, bottom = 4.dp)
+      .padding(horizontal = 12.dp)
+      .placeholder(
+        visible = placeHolderVisible,
+        highlight = placeholderHighlight,
+      ),
+    text = "Episode ${episodeThumbnail.episodeNumber}",
+    style = MaterialTheme.typography.labelMedium,
+  )
+
+  Text(
+    modifier = Modifier
+      .padding(horizontal = 12.dp)
+      .placeholder(
+        visible = placeHolderVisible,
+        highlight = placeholderHighlight,
+      ),
+    text = episodeThumbnail.title,
+  )
+
+  Text(
+    modifier = Modifier
+      .padding(top = 4.dp, bottom = 12.dp)
+      .padding(horizontal = 12.dp)
+      .placeholder(
+        visible = placeHolderVisible,
+        highlight = placeholderHighlight,
+      ),
+    text = episodeThumbnail.description,
+    style = MaterialTheme.typography.bodySmall,
+    overflow = TextOverflow.Ellipsis,
+    minLines = 3,
+    maxLines = 3,
+  )
 }
 
 @ThemePreviews
@@ -69,6 +110,17 @@ private fun Preview() {
   PreviewFilmTimeTheme {
     EpisodeThumbnailCard(
       episodeThumbnail = EpisodeThumbnail.Preview,
+    )
+  }
+}
+
+@ThemePreviews
+@Composable
+private fun PreviewLoading() {
+  PreviewFilmTimeTheme {
+    EpisodeThumbnailCard(
+      episodeThumbnail = EpisodeThumbnail.Preview,
+      placeHolderVisible = true,
     )
   }
 }

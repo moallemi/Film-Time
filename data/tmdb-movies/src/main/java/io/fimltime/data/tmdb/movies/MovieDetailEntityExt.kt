@@ -25,6 +25,7 @@ fun MovieDetailEntity.toMovie(): VideoDetail {
     status = status,
     tagline = tagline,
     networks = null,
+    seasonsNumber = null,
   )
 }
 

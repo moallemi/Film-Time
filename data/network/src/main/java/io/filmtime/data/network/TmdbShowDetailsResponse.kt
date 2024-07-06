@@ -46,7 +46,7 @@ data class TmdbShowDetailsResponse(
   val numberOfEpisodes: Long? = null,
 
   @SerialName("number_of_seasons")
-  val numberOfSeasons: Long? = null,
+  val numberOfSeasons: Int? = null,
 
   @SerialName("origin_country")
   val originCountry: List<String>? = null,

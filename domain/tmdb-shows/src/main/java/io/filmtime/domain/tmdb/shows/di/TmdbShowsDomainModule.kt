@@ -4,12 +4,14 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.filmtime.domain.tmdb.shows.GetEpisodesBySeasonUseCase
 import io.filmtime.domain.tmdb.shows.GetShowCreditsUseCase
 import io.filmtime.domain.tmdb.shows.GetShowDetailsUseCase
 import io.filmtime.domain.tmdb.shows.GetShowsListUseCase
 import io.filmtime.domain.tmdb.shows.GetSimilarShowsUseCase
 import io.filmtime.domain.tmdb.shows.GetTrendingShowsUseCase
 import io.filmtime.domain.tmdb.shows.ObserveShowsStreamUseCase
+import io.filmtime.domain.tmdb.shows.impl.GetEpisodesBySeasonUseCaseImpl
 import io.filmtime.domain.tmdb.shows.impl.GetShowCreditsUseCaseImpl
 import io.filmtime.domain.tmdb.shows.impl.GetShowDetailsUseCaseImpl
 import io.filmtime.domain.tmdb.shows.impl.GetShowsListUseCaseImpl
@@ -38,4 +40,7 @@ internal abstract class TmdbShowsDomainModule {
 
   @Binds
   abstract fun bindGetSimilar(impl: GetSimilarShowsUseCaseImpl): GetSimilarShowsUseCase
+
+  @Binds
+  abstract fun bindGetShowsBySeason(impl: GetEpisodesBySeasonUseCaseImpl): GetEpisodesBySeasonUseCase
 }

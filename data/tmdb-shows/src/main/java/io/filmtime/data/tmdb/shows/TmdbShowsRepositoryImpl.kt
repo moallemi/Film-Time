@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import io.filmtime.data.api.tmdb.TmdbShowsRemoteSource
+import io.filmtime.data.model.EpisodeThumbnail
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Person
 import io.filmtime.data.model.Result
@@ -53,6 +54,9 @@ internal class TmdbShowsRepositoryImpl @Inject constructor(
   override suspend fun credits(movieId: Int): Result<List<Person>, GeneralError> =
     tmdbShowsRemoteSource.credits(movieId)
 
-  override suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError> =
-    tmdbShowsRemoteSource.getSimilar(movieId)
+  override suspend fun similar(movieId: Int): Result<List<VideoThumbnail>, GeneralError> =
+    tmdbShowsRemoteSource.similar(movieId)
+
+  override suspend fun episodesBySeason(showId: Int, seasonNumber: Int): Result<List<EpisodeThumbnail>, GeneralError> =
+    tmdbShowsRemoteSource.episodesBySeason(showId, seasonNumber)
 }

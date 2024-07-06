@@ -1,6 +1,7 @@
 package io.filmtime.data.tmdb.shows
 
 import androidx.paging.PagingData
+import io.filmtime.data.model.EpisodeThumbnail
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Person
 import io.filmtime.data.model.Result
@@ -26,7 +27,9 @@ interface TmdbShowsRepository {
 
   suspend fun credits(movieId: Int): Result<List<Person>, GeneralError>
 
-  suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError>
+  suspend fun similar(movieId: Int): Result<List<VideoThumbnail>, GeneralError>
+
+  suspend fun episodesBySeason(showId: Int, seasonNumber: Int): Result<List<EpisodeThumbnail>, GeneralError>
 }
 
 enum class ShowListType {

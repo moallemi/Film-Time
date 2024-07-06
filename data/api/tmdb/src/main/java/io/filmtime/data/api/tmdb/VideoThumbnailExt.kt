@@ -28,8 +28,6 @@ fun TmdbMovieDetailsResponse.toVideoDetail() =
     description = overview ?: "",
     runtime = runtime?.toHoursAndMinutes(),
     releaseDate = releaseDate ?: "N/A",
-    voteAverage = voteAverage?.div(10)?.toFloat() ?: 0.0F,
-    voteColor = voteAverage.toRatingColor(),
     homePage = homepage,
     status = status,
     budget = budget,
@@ -37,13 +35,6 @@ fun TmdbMovieDetailsResponse.toVideoDetail() =
     networks = null,
     seasonsNumber = null,
   )
-
-fun Double?.toRatingColor() = when (this) {
-  null -> 0xFFFFFFFF
-  in 0.0..0.33 -> 0xFFFF0000
-  in 0.34..0.66 -> 0xFFFFFF00
-  else -> 0xFF00FF00
-}
 
 fun TmdbShowDetailsResponse.toVideoDetail() =
   VideoDetail(
@@ -61,8 +52,6 @@ fun TmdbShowDetailsResponse.toVideoDetail() =
     description = overview ?: "",
     runtime = episodeRunTime?.firstOrNull()?.toHoursAndMinutes(),
     releaseDate = firstAirDate ?: "N/A",
-    voteAverage = voteAverage?.div(10)?.toFloat() ?: 0.0F,
-    voteColor = voteAverage.toRatingColor(),
     status = status,
     homePage = homepage,
     budget = null,

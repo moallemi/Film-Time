@@ -17,7 +17,6 @@ data class MovieDetailEntity(
   val originalLanguage: String?,
   val spokenLanguages: List<String>,
   val genres: List<String>,
-  val voteAverage: Float,
   val homePage: String?,
   val status: String?,
   val budget: Long?,

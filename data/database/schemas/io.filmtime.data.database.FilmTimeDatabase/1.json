@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e04695848338d7772d933df511e4f7ad",
+    "identityHash": "d380b09a3117df66ebfd80394d571c29",
     "entities": [
       {
         "tableName": "movie_detail",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tmdbId` INTEGER NOT NULL, `name` TEXT NOT NULL, `posterUrl` TEXT NOT NULL, `coverUrl` TEXT NOT NULL, `year` INTEGER NOT NULL, `description` TEXT NOT NULL, `releaseDate` TEXT NOT NULL, `runtime` TEXT, `originalLanguage` TEXT, `spokenLanguages` TEXT NOT NULL, `genres` TEXT NOT NULL, `voteAverage` REAL NOT NULL, `homePage` TEXT, `status` TEXT, `budget` INTEGER, `tagline` TEXT, PRIMARY KEY(`tmdbId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tmdbId` INTEGER NOT NULL, `name` TEXT NOT NULL, `posterUrl` TEXT NOT NULL, `coverUrl` TEXT NOT NULL, `year` INTEGER NOT NULL, `description` TEXT NOT NULL, `releaseDate` TEXT NOT NULL, `runtime` TEXT, `originalLanguage` TEXT, `spokenLanguages` TEXT NOT NULL, `genres` TEXT NOT NULL, `homePage` TEXT, `status` TEXT, `budget` INTEGER, `tagline` TEXT, PRIMARY KEY(`tmdbId`))",
         "fields": [
           {
             "fieldPath": "tmdbId",
@@ -75,12 +75,6 @@
             "notNull": true
           },
           {
-            "fieldPath": "voteAverage",
-            "columnName": "voteAverage",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
             "fieldPath": "homePage",
             "columnName": "homePage",
             "affinity": "TEXT",
@@ -145,7 +139,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e04695848338d7772d933df511e4f7ad')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd380b09a3117df66ebfd80394d571c29')"
     ]
   }
 }

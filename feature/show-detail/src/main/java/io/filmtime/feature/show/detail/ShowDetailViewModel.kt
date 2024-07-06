@@ -215,4 +215,10 @@ internal class ShowDetailViewModel @Inject constructor(
   fun removeBookmark() = viewModelScope.launch {
     deleteBookmark(videoId, Show)
   }
+
+  fun changeSeason(seasonNumber: Int) {
+    if (_state.value.seasonsState.seasons[seasonNumber] == null) {
+      loadEpisodesBySeason(seasonNumber)
+    }
+  }
 }

@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,6 +27,7 @@ import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.Select
 import io.filmtime.data.model.EpisodeThumbnail
 import io.filmtime.data.model.Preview
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun SeasonsSection(
@@ -32,10 +35,13 @@ internal fun SeasonsSection(
   seasons: Map<Int, List<EpisodeThumbnail>>,
   seasonsNumber: Int,
   modifier: Modifier = Modifier,
+  onSeasonChange: (Int) -> Unit,
   error: UiMessage? = null,
   onRetryClick: () -> Unit,
 ) {
-  var selectedSeason by remember { mutableIntStateOf(1) }
+  var selectedSeason by rememberSaveable { mutableIntStateOf(1) }
+  val lazyListState = rememberLazyListState()
+  val coroutineScope = rememberCoroutineScope()
 
   Column(
     modifier = modifier,
@@ -50,7 +56,11 @@ internal fun SeasonsSection(
         options = items,
         itemText = { "Season $it" },
         selectedItem = selectedSeason,
-        onSelect = { selectedSeason = it },
+        onSelect = {
+          selectedSeason = it
+          onSeasonChange(it)
+          coroutineScope.launch { lazyListState.animateScrollToItem(0) }
+        },
       )
     } else {
       Text(
@@ -66,6 +76,7 @@ internal fun SeasonsSection(
       LazyRow(
         modifier = Modifier
           .fillMaxWidth(),
+        state = lazyListState,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp),
       ) {
@@ -88,6 +99,7 @@ internal fun SeasonsSection(
       LazyRow(
         modifier = Modifier
           .fillMaxWidth(),
+        state = lazyListState,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp),
       ) {
@@ -114,6 +126,7 @@ private fun SeasonsSectionPreview() {
         seasons = mapOf(
           1 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
         ),
+        onSeasonChange = {},
         error = null,
         onRetryClick = {},
       )
@@ -128,6 +141,7 @@ private fun SeasonsSectionPreview() {
           2 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
           3 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
         ),
+        onSeasonChange = {},
         error = null,
         onRetryClick = {},
       )

@@ -56,6 +56,7 @@ internal fun ShowDetailScreen(
     onShowClick = onShowClick,
     onAddBookmark = viewModel::addBookmark,
     onRemoveBookmark = viewModel::removeBookmark,
+    onSeasonChange = viewModel::changeSeason,
   )
 }
 
@@ -66,6 +67,7 @@ private fun ShowDetailScreen(
   onShowClick: (Int) -> Unit,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
+  onSeasonChange: (Int) -> Unit,
 ) {
   val videoDetail = state.videoDetail
 
@@ -88,6 +90,7 @@ private fun ShowDetailScreen(
       onAddBookmark = onAddBookmark,
       onRemoveBookmark = onRemoveBookmark,
       seasonsState = state.seasonsState,
+      onSeasonChange = onSeasonChange,
       credits = {
         CreditsRow(
           tmdbId = videoDetail.ids.tmdbId ?: 0,
@@ -113,6 +116,7 @@ private fun ShowDetailContent(
   isBookmarked: Boolean,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
+  onSeasonChange: (Int) -> Unit,
   credits: @Composable () -> Unit,
   similar: @Composable () -> Unit,
 ) {
@@ -170,6 +174,7 @@ private fun ShowDetailContent(
         seasons = seasonsState.seasons,
         seasonsNumber = videoDetail.seasonsNumber ?: 0,
         error = seasonsState.error,
+        onSeasonChange = onSeasonChange,
         onRetryClick = { },
       )
     }
@@ -217,6 +222,7 @@ private fun ShowDetailScreenPreview() {
           3 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),
         ),
       ),
+      onSeasonChange = {},
       credits = {
         Text("Credit goes here")
       },

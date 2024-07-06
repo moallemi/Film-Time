@@ -5,12 +5,12 @@ import io.filmtime.data.model.Result
 import io.filmtime.data.model.TraktHistory
 import io.filmtime.data.model.VideoType.Movie
 import io.filmtime.data.trakt.TraktHistoryRepository
-import io.filmtime.domain.trakt.history.IsVideoWatchedUseCase
+import io.filmtime.domain.trakt.history.IsMovieWatchedUseCase
 import javax.inject.Inject
 
-internal class IsVideoWatchedUseCaseImpl @Inject constructor(
+internal class IsMovieWatchedUseCaseImpl @Inject constructor(
   private val traktHistoryRepository: TraktHistoryRepository,
-) : IsVideoWatchedUseCase {
+) : IsMovieWatchedUseCase {
 
   override suspend fun invoke(tmdbId: Int): Result<TraktHistory, GeneralError> =
     traktHistoryRepository.isWatched(tmdbId = tmdbId, type = Movie)

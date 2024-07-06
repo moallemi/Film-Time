@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.filmtime.domain.trakt.history.impl.AddToHistoryUseCaseImpl
 import io.filmtime.domain.trakt.history.impl.IsMovieWatchedUseCaseImpl
+import io.filmtime.domain.trakt.history.impl.IsShowWatchedUseCaseImpl
 import io.filmtime.domain.trakt.history.impl.RemoveFromHistoryUseCaseImpl
 
 @InstallIn(SingletonComponent::class)
@@ -20,4 +21,7 @@ internal abstract class TraktHistoryModule {
 
   @Binds
   internal abstract fun bindRemoveFromHistoryUseCase(impl: RemoveFromHistoryUseCaseImpl): RemoveFromHistoryUseCase
+
+  @Binds
+  internal abstract fun bindIsShowWatchedUseCase(impl: IsShowWatchedUseCaseImpl): IsShowWatchedUseCase
 }

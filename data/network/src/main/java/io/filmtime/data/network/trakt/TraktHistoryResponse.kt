@@ -13,4 +13,5 @@ data class TraktHistoryResponse(
   val type: String,
   val movie: Movie? = null,
   val show: Show? = null,
+  val episode: Episode? = null,
 )

@@ -36,6 +36,13 @@ data class Show(
 )
 
 @Serializable
+data class Episode(
+  val ids: HistoryIDS,
+  val season: Int,
+  val number: Int,
+)
+
+@Serializable
 data class Season(
   @SerialName("watched_at")
   val watchedAt: String? = null,

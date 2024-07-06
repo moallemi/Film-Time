@@ -7,6 +7,7 @@ data class EpisodeThumbnail(
   val description: String,
   val posterUrl: String,
   val airDate: String,
+  val isWatched: Boolean = false,
 ) {
   companion object
 }
@@ -20,4 +21,5 @@ val EpisodeThumbnail.Companion.Preview: EpisodeThumbnail
       " often prove more wicked than beasts.",
     posterUrl = "",
     airDate = "2021-01-01",
+    isWatched = true,
   )

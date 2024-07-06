@@ -12,6 +12,7 @@ import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
 import io.filmtime.domain.tmdb.shows.GetEpisodesBySeasonUseCase
 import io.filmtime.domain.tmdb.shows.GetShowDetailsUseCase
 import io.filmtime.domain.trakt.GetRatingsUseCase
+import io.filmtime.domain.trakt.history.IsShowWatchedUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -29,6 +30,7 @@ internal class ShowDetailViewModel @Inject constructor(
   private val observeBookmark: ObserveBookmarkUseCase,
   private val getRatings: GetRatingsUseCase,
   private val getEpisodesBySeason: GetEpisodesBySeasonUseCase,
+  private val isShowWatched: IsShowWatchedUseCase,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
@@ -75,14 +77,25 @@ internal class ShowDetailViewModel @Inject constructor(
     }
 
     _state.value.videoDetail?.ids?.tmdbId?.let { tmdbId ->
+      val traktHistory = isShowWatched(tmdbId = videoId, seasonNumber = seasonNumber)
+
       getEpisodesBySeason(tmdbId, seasonNumber)
         .fold(
           onSuccess = { episodes ->
+            val episodesWithHistory = episodes.map { episode ->
+              val traktInfo =
+                traktHistory.successValue()?.get(seasonNumber)?.find { it.episodeNumber == episode.episodeNumber }
+                  ?: return@map episode
+              episode.copy(
+                isWatched = traktInfo.isWatched,
+                ids = episode.ids.copy(traktId = traktInfo.traktId),
+              )
+            }
             _state.update { state ->
               state.copy(
                 seasonsState = state.seasonsState.copy(
                   isLoading = false,
-                  seasons = state.seasonsState.seasons + (seasonNumber to episodes),
+                  seasons = state.seasonsState.seasons + (seasonNumber to episodesWithHistory),
                 ),
               )
             }

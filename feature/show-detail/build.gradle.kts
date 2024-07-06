@@ -13,6 +13,7 @@ dependencies {
 
   implementation(project(":domain:bookmarks"))
   implementation(project(":domain:trakt:trakt"))
+  implementation(project(":domain:trakt:history"))
 
   implementation(project(":feature:credits"))
   implementation(project(":feature:similar"))

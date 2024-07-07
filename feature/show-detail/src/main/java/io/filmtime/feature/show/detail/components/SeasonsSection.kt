@@ -38,6 +38,8 @@ internal fun SeasonsSection(
   onSeasonChange: (Int) -> Unit,
   error: UiMessage? = null,
   onRetryClick: (Int) -> Unit,
+  addToHistory: (EpisodeThumbnail) -> Unit,
+  removeFromHistory: (EpisodeThumbnail) -> Unit,
 ) {
   var selectedSeason by rememberSaveable { mutableIntStateOf(1) }
   val lazyListState = rememberLazyListState()
@@ -86,6 +88,8 @@ internal fun SeasonsSection(
               .width(300.dp),
             episodeThumbnail = EpisodeThumbnail.Preview,
             placeHolderVisible = true,
+            addToHistory = {},
+            removeFromHistory = {},
           )
         }
       }
@@ -108,6 +112,9 @@ internal fun SeasonsSection(
             modifier = Modifier
               .width(300.dp),
             episodeThumbnail = item,
+            placeHolderVisible = item.isLoading,
+            addToHistory = addToHistory,
+            removeFromHistory = removeFromHistory,
           )
         }
       }
@@ -129,6 +136,8 @@ private fun SeasonsSectionPreview() {
         onSeasonChange = {},
         error = null,
         onRetryClick = {},
+        addToHistory = {},
+        removeFromHistory = {},
       )
 
       Spacer(modifier = Modifier.padding(16.dp))
@@ -144,6 +153,8 @@ private fun SeasonsSectionPreview() {
         onSeasonChange = {},
         error = null,
         onRetryClick = {},
+        addToHistory = {},
+        removeFromHistory = {},
       )
     }
   }

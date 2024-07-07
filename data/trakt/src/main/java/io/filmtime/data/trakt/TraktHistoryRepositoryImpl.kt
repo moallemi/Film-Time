@@ -37,9 +37,33 @@ internal class TraktHistoryRepositoryImpl @Inject constructor(
       is Result.Failure -> traktIdResult
     }
 
-  override suspend fun addToHistory(traktId: Int): Result<Unit, GeneralError> =
+  override suspend fun addMovieToHistory(traktId: Int): Result<Unit, GeneralError> =
     traktSyncRemoteSource.addToHistory(traktId)
 
-  override suspend fun removeFromHistory(traktId: Int): Result<Unit, GeneralError> =
-    traktSyncRemoteSource.removeFromHistory(traktId)
+  override suspend fun removeMovieFromHistory(traktId: Int): Result<Unit, GeneralError> =
+    traktSyncRemoteSource.removeMovieFromHistory(traktId)
+
+  override suspend fun addEpisodeToHistory(
+    tmdbId: Int,
+    seasonNumber: Int,
+    episodeNumber: Int,
+  ): Result<Unit, GeneralError> =
+    when (val traktIdResult = traktSearchRemoteSource.getByTmdbId(tmdbId, Show)) {
+      is Result.Success -> traktSyncRemoteSource.addEpisodeToHistory(traktIdResult.data, seasonNumber, episodeNumber)
+      is Result.Failure -> traktIdResult
+    }
+
+  override suspend fun removeEpisodeFromHistory(
+    tmdbId: Int,
+    seasonNumber: Int,
+    episodeNumber: Int,
+  ): Result<Unit, GeneralError> =
+    when (val traktIdResult = traktSearchRemoteSource.getByTmdbId(tmdbId, Show)) {
+      is Result.Success -> traktSyncRemoteSource.removeEpisodeFromHistory(
+        traktIdResult.data,
+        seasonNumber,
+        episodeNumber,
+      )
+      is Result.Failure -> traktIdResult
+    }
 }

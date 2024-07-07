@@ -10,6 +10,7 @@ fun TmdbEpisodeResponse.toEpisodeThumbnail() = EpisodeThumbnail(
     tmdbId = id,
   ),
   episodeNumber = episodeNumber,
+  seasonNumber = seasonNumber,
   title = name ?: "",
   description = overview ?: "",
   posterUrl = TMDB_BASE_IMAGE_URL.plus(stillPath),

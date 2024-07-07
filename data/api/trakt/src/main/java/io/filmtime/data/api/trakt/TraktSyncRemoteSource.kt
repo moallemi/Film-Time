@@ -15,4 +15,8 @@ interface TraktSyncRemoteSource {
   suspend fun addToHistory(id: Int): Result<Unit, GeneralError>
 
   suspend fun removeMovieFromHistory(id: Int): Result<Unit, GeneralError>
+
+  suspend fun addEpisodeToHistory(id: Int, seasonNumber: Int, episodeNumber: Int): Result<Unit, GeneralError>
+
+  suspend fun removeEpisodeFromHistory(id: Int, seasonNumber: Int, episodeNumber: Int): Result<Unit, GeneralError>
 }

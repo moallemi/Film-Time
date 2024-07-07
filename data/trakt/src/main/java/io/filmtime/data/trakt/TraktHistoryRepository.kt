@@ -14,4 +14,8 @@ interface TraktHistoryRepository {
   suspend fun addMovieToHistory(traktId: Int): Result<Unit, GeneralError>
 
   suspend fun removeMovieFromHistory(traktId: Int): Result<Unit, GeneralError>
+
+  suspend fun addEpisodeToHistory(tmdbId: Int, seasonNumber: Int, episodeNumber: Int): Result<Unit, GeneralError>
+
+  suspend fun removeEpisodeFromHistory(tmdbId: Int, seasonNumber: Int, episodeNumber: Int): Result<Unit, GeneralError>
 }

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SyncHistoryRequest(
   val movies: List<MovieHistory>? = null,
-  val shows: List<Show>? = null,
+  val shows: List<ShowHistory>? = null,
 )
 
 @Serializable
@@ -16,6 +16,25 @@ data class MovieHistory(
   val title: String? = null,
   val year: Long? = null,
   val ids: HistoryIDS,
+)
+
+@Serializable
+data class ShowHistory(
+  val ids: HistoryIDS,
+  val seasons: List<SeasonHistory>,
+)
+
+@Serializable
+data class SeasonHistory(
+  val number: Int,
+  val episodes: List<EpisodeHistory>,
+)
+
+@Serializable
+data class EpisodeHistory(
+  @SerialName("watched_at")
+  val watchedAt: String?,
+  val number: Int,
 )
 
 @Serializable

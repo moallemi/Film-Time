@@ -4,12 +4,17 @@ import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.TraktEpisodeHistory
 import io.filmtime.data.network.adapter.NetworkResponse
+import io.filmtime.data.network.trakt.EpisodeHistory
 import io.filmtime.data.network.trakt.HistoryIDS
 import io.filmtime.data.network.trakt.MovieHistory
+import io.filmtime.data.network.trakt.SeasonHistory
+import io.filmtime.data.network.trakt.ShowHistory
 import io.filmtime.data.network.trakt.SyncHistoryRequest
 import io.filmtime.data.network.trakt.TraktSyncService
 import io.filmtime.data.storage.trakt.TraktAuthLocalSource
 import kotlinx.coroutines.flow.firstOrNull
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 internal class TraktSyncRemoteSourceImpl @Inject constructor(
@@ -123,6 +128,82 @@ internal class TraktSyncRemoteSourceImpl @Inject constructor(
           MovieHistory(
             ids = HistoryIDS(
               trakt = id,
+            ),
+          ),
+        ),
+      ),
+    )
+    return when (result) {
+      is NetworkResponse.Success -> Result.Success(Unit)
+      is NetworkResponse.ApiError -> Result.Failure(GeneralError.ApiError(result.body.error, result.code))
+      is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
+      is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
+    }
+  }
+
+  override suspend fun addEpisodeToHistory(id: Int, seasonNumber: Int, episodeNumber: Int): Result<Unit, GeneralError> {
+    val tokens =
+      traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
+
+    val utcDateTime: Instant = Instant.now()
+    val isoFormatter: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
+
+    val result = traktSyncService.addMovieToHistory(
+      accessToken = "Bearer " + tokens.accessToken,
+      body = SyncHistoryRequest(
+        shows = listOf(
+          ShowHistory(
+            ids = HistoryIDS(
+              trakt = id,
+            ),
+            seasons = listOf(
+              SeasonHistory(
+                number = seasonNumber,
+                episodes = listOf(
+                  EpisodeHistory(
+                    number = episodeNumber,
+                    watchedAt = isoFormatter.format(utcDateTime),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    )
+    return when (result) {
+      is NetworkResponse.Success -> Result.Success(Unit)
+      is NetworkResponse.ApiError -> Result.Failure(GeneralError.ApiError(result.body.error, result.code))
+      is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
+      is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
+    }
+  }
+
+  override suspend fun removeEpisodeFromHistory(
+    id: Int,
+    seasonNumber: Int,
+    episodeNumber: Int,
+  ): Result<Unit, GeneralError> {
+    val tokens =
+      traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
+    val result = traktSyncService.removeMovieFromHistory(
+      accessToken = "Bearer " + tokens.accessToken,
+      body = SyncHistoryRequest(
+        shows = listOf(
+          ShowHistory(
+            ids = HistoryIDS(
+              trakt = id,
+            ),
+            seasons = listOf(
+              SeasonHistory(
+                number = seasonNumber,
+                episodes = listOf(
+                  EpisodeHistory(
+                    number = episodeNumber,
+                    watchedAt = null,
+                  ),
+                ),
+              ),
             ),
           ),
         ),

@@ -11,7 +11,7 @@ interface TraktHistoryRepository {
 
   suspend fun isShowWatched(tmdbId: Int, seasonNumber: Int): Result<Map<Int, List<TraktEpisodeHistory>>, GeneralError>
 
-  suspend fun addToHistory(traktId: Int): Result<Unit, GeneralError>
+  suspend fun addMovieToHistory(traktId: Int): Result<Unit, GeneralError>
 
-  suspend fun removeFromHistory(traktId: Int): Result<Unit, GeneralError>
+  suspend fun removeMovieFromHistory(traktId: Int): Result<Unit, GeneralError>
 }

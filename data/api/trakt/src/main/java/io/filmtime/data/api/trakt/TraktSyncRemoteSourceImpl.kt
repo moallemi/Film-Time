@@ -113,7 +113,7 @@ internal class TraktSyncRemoteSourceImpl @Inject constructor(
     }
   }
 
-  override suspend fun removeFromHistory(id: Int): Result<Unit, GeneralError> {
+  override suspend fun removeMovieFromHistory(id: Int): Result<Unit, GeneralError> {
     val tokens =
       traktAuthLocalSource.tokens.firstOrNull() ?: return Result.Failure(GeneralError.ApiError("Unauthorized", 401))
     val result = traktSyncService.removeMovieFromHistory(

@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.core.ui.common.toUiMessage
+import io.filmtime.data.model.EpisodeThumbnail
+import io.filmtime.data.model.Result.Failure
+import io.filmtime.data.model.Result.Success
 import io.filmtime.data.model.VideoType.Show
 import io.filmtime.domain.bookmarks.AddBookmarkUseCase
 import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
@@ -12,6 +15,9 @@ import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
 import io.filmtime.domain.tmdb.shows.GetEpisodesBySeasonUseCase
 import io.filmtime.domain.tmdb.shows.GetShowDetailsUseCase
 import io.filmtime.domain.trakt.GetRatingsUseCase
+import io.filmtime.domain.trakt.history.AddEpisodeToHistoryUseCase
+import io.filmtime.domain.trakt.history.IsShowWatchedUseCase
+import io.filmtime.domain.trakt.history.RemoveEpisodeFromHistoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -29,6 +35,9 @@ internal class ShowDetailViewModel @Inject constructor(
   private val observeBookmark: ObserveBookmarkUseCase,
   private val getRatings: GetRatingsUseCase,
   private val getEpisodesBySeason: GetEpisodesBySeasonUseCase,
+  private val isShowWatched: IsShowWatchedUseCase,
+  private val addToHistory: AddEpisodeToHistoryUseCase,
+  private val removeFromHistory: RemoveEpisodeFromHistoryUseCase,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
@@ -75,14 +84,25 @@ internal class ShowDetailViewModel @Inject constructor(
     }
 
     _state.value.videoDetail?.ids?.tmdbId?.let { tmdbId ->
+      val traktHistory = isShowWatched(tmdbId = videoId, seasonNumber = seasonNumber)
+
       getEpisodesBySeason(tmdbId, seasonNumber)
         .fold(
           onSuccess = { episodes ->
+            val episodesWithHistory = episodes.map { episode ->
+              val traktInfo =
+                traktHistory.successValue()?.get(seasonNumber)?.find { it.episodeNumber == episode.episodeNumber }
+                  ?: return@map episode
+              episode.copy(
+                isWatched = traktInfo.isWatched,
+                ids = episode.ids.copy(traktId = traktInfo.traktId),
+              )
+            }
             _state.update { state ->
               state.copy(
                 seasonsState = state.seasonsState.copy(
                   isLoading = false,
-                  seasons = state.seasonsState.seasons + (seasonNumber to episodes),
+                  seasons = state.seasonsState.seasons + (seasonNumber to episodesWithHistory),
                 ),
               )
             }
@@ -122,6 +142,122 @@ internal class ShowDetailViewModel @Inject constructor(
   fun changeSeason(seasonNumber: Int) {
     if (_state.value.seasonsState.seasons[seasonNumber] == null) {
       loadEpisodesBySeason(seasonNumber)
+    }
+  }
+
+  fun addEpisodeToHistory(episodeThumbnail: EpisodeThumbnail) = viewModelScope.launch {
+    _state.update { state ->
+      state.copy(
+        seasonsState = state.seasonsState.copy(
+          seasons = state.seasonsState.seasons.mapValues { seasons ->
+            seasons.value.map { episode ->
+              if (episode.episodeNumber == episodeThumbnail.episodeNumber) {
+                episode.copy(isLoading = true)
+              } else {
+                episode
+              }
+            }
+          },
+        ),
+      )
+    }
+
+    when (
+      addToHistory(
+        tmdbId = videoId,
+        seasonNumber = episodeThumbnail.seasonNumber,
+        episodeNumber = episodeThumbnail.episodeNumber,
+      )
+    ) {
+      is Success -> _state.update { state ->
+        state.copy(
+          seasonsState = state.seasonsState.copy(
+            seasons = state.seasonsState.seasons.mapValues { seasons ->
+              seasons.value.map { episode ->
+                if (episode.episodeNumber == episodeThumbnail.episodeNumber) {
+                  episode.copy(isLoading = false, isWatched = true)
+                } else {
+                  episode
+                }
+              }
+            },
+          ),
+        )
+      }
+
+      is Failure -> _state.update { state ->
+        state.copy(
+          seasonsState = state.seasonsState.copy(
+            seasons = state.seasonsState.seasons.mapValues { seasons ->
+              seasons.value.map { episode ->
+                if (episode.episodeNumber == episodeThumbnail.episodeNumber) {
+                  episode.copy(isLoading = false, isWatched = false)
+                } else {
+                  episode
+                }
+              }
+            },
+          ),
+        )
+      }
+    }
+  }
+
+  fun removeEpisodeFromHistory(episodeThumbnail: EpisodeThumbnail) = viewModelScope.launch {
+    _state.update { state ->
+      state.copy(
+        seasonsState = state.seasonsState.copy(
+          seasons = state.seasonsState.seasons.mapValues { seasons ->
+            seasons.value.map { episode ->
+              if (episode.episodeNumber == episodeThumbnail.episodeNumber) {
+                episode.copy(isLoading = true)
+              } else {
+                episode
+              }
+            }
+          },
+        ),
+      )
+    }
+
+    when (
+      removeFromHistory(
+        tmdbId = videoId,
+        seasonNumber = episodeThumbnail.seasonNumber,
+        episodeNumber = episodeThumbnail.episodeNumber,
+      )
+    ) {
+      is Success -> _state.update { state ->
+        state.copy(
+          seasonsState = state.seasonsState.copy(
+            seasons = state.seasonsState.seasons.mapValues { seasons ->
+              seasons.value.map { episode ->
+                if (episode.episodeNumber == episodeThumbnail.episodeNumber) {
+                  episode.copy(isLoading = false, isWatched = false)
+                } else {
+                  episode
+                }
+              }
+            },
+          ),
+        )
+      }
+
+      is Failure -> _state.update { state ->
+        state.copy(
+          seasonsState = state.seasonsState.copy(
+            seasons = state.seasonsState.seasons.mapValues { seasons ->
+              seasons.value.map { episode ->
+                if (episode.episodeNumber == episodeThumbnail.episodeNumber) {
+                  episode.copy(isLoading = false, isWatched = true)
+                } else {
+                  episode
+                }
+              }
+            },
+          ),
+        )
+      }
     }
   }
 }

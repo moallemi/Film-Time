@@ -57,6 +57,8 @@ internal fun ShowDetailScreen(
     onAddBookmark = viewModel::addBookmark,
     onRemoveBookmark = viewModel::removeBookmark,
     onSeasonChange = viewModel::changeSeason,
+    addToHistory = viewModel::addEpisodeToHistory,
+    removeFromHistory = viewModel::removeEpisodeFromHistory,
   )
 }
 
@@ -68,6 +70,8 @@ private fun ShowDetailScreen(
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
   onSeasonChange: (Int) -> Unit,
+  addToHistory: (EpisodeThumbnail) -> Unit,
+  removeFromHistory: (EpisodeThumbnail) -> Unit,
 ) {
   val videoDetail = state.videoDetail
 
@@ -91,6 +95,8 @@ private fun ShowDetailScreen(
       onRemoveBookmark = onRemoveBookmark,
       seasonsState = state.seasonsState,
       onSeasonChange = onSeasonChange,
+      addToHistory = addToHistory,
+      removeFromHistory = removeFromHistory,
       credits = {
         CreditsRow(
           tmdbId = videoDetail.ids.tmdbId ?: 0,
@@ -117,6 +123,8 @@ private fun ShowDetailContent(
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
   onSeasonChange: (Int) -> Unit,
+  addToHistory: (EpisodeThumbnail) -> Unit,
+  removeFromHistory: (EpisodeThumbnail) -> Unit,
   credits: @Composable () -> Unit,
   similar: @Composable () -> Unit,
 ) {
@@ -176,6 +184,8 @@ private fun ShowDetailContent(
         error = seasonsState.error,
         onSeasonChange = onSeasonChange,
         onRetryClick = onSeasonChange,
+        addToHistory = addToHistory,
+        removeFromHistory = removeFromHistory,
       )
     }
     item(
@@ -223,6 +233,8 @@ private fun ShowDetailScreenPreview() {
         ),
       ),
       onSeasonChange = {},
+      addToHistory = {},
+      removeFromHistory = {},
       credits = {
         Text("Credit goes here")
       },

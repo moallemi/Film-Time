@@ -6,9 +6,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
 import io.filmtime.data.model.VideoType
-import io.filmtime.domain.trakt.history.AddToHistoryUseCase
-import io.filmtime.domain.trakt.history.IsVideoWatchedUseCase
-import io.filmtime.domain.trakt.history.RemoveFromHistoryUseCase
+import io.filmtime.domain.trakt.history.AddMovieToHistoryUseCase
+import io.filmtime.domain.trakt.history.IsMovieWatchedUseCase
+import io.filmtime.domain.trakt.history.RemoveMovieFromHistoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -16,10 +16,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-internal class TraktHistoryViewModel @Inject constructor(
-  private val isVideoWatchedUseCase: IsVideoWatchedUseCase,
-  private val addToHistory: AddToHistoryUseCase,
-  private val removeFromHistory: RemoveFromHistoryUseCase,
+internal class TraktMovieHistoryViewModel @Inject constructor(
+  private val isMovieWatchedUseCase: IsMovieWatchedUseCase,
+  private val addToHistory: AddMovieToHistoryUseCase,
+  private val removeFromHistory: RemoveMovieFromHistoryUseCase,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(TraktAddRemoveUiState())
@@ -28,7 +28,7 @@ internal class TraktHistoryViewModel @Inject constructor(
   fun checkIfIsWatched(videoType: VideoType, tmdbId: Int) = viewModelScope.launch {
     _state.update { state -> state.copy(isLoading = true) }
 
-    when (val result = isVideoWatchedUseCase(tmdbId)) {
+    when (val result = isMovieWatchedUseCase(tmdbId)) {
       is Success -> _state.update { state ->
         state.copy(isWatched = result.data.isWatched, isLoading = false, traktId = result.data.traktId)
       }

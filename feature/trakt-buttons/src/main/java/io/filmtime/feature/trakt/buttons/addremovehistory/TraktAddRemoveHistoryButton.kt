@@ -22,7 +22,7 @@ fun TraktAddRemoveHistoryButton(
   videoType: VideoType,
   tmdbId: Int,
 ) {
-  val viewModel = hiltViewModel<TraktHistoryViewModel>()
+  val viewModel = hiltViewModel<TraktMovieHistoryViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   LaunchedEffect(videoType, tmdbId) {

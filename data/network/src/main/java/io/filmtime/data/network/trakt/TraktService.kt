@@ -15,4 +15,9 @@ interface TraktService {
     @Path("type") idType: String,
     @Path("id") id: Int,
   ): NetworkResponse<TraktExtendedRatingsResponse, TraktErrorResponse>
+
+  @GET("shows/{id}/seasons?extended=episodes")
+  suspend fun seasons(
+    @Path("id") traktId: Int,
+  ): NetworkResponse<List<TraktExtendedSeasonResponse>, TraktErrorResponse>
 }

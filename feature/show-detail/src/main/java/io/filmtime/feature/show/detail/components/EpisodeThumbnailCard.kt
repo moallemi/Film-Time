@@ -42,6 +42,7 @@ fun EpisodeThumbnailCard(
   modifier: Modifier = Modifier,
   episodeThumbnail: EpisodeThumbnail,
   placeHolderVisible: Boolean,
+  onClick: (EpisodeThumbnail) -> Unit,
   addToHistory: (EpisodeThumbnail) -> Unit,
   removeFromHistory: (EpisodeThumbnail) -> Unit,
 ) {
@@ -59,7 +60,7 @@ fun EpisodeThumbnailCard(
     Card(
       modifier = modifier
         .combinedClickable(
-          onClick = { /* Handle click */ },
+          onClick = { onClick(episodeThumbnail) },
           onLongClick = { expanded = true },
         ),
     ) {
@@ -171,6 +172,7 @@ private fun Preview() {
     EpisodeThumbnailCard(
       episodeThumbnail = EpisodeThumbnail.Preview,
       placeHolderVisible = false,
+      onClick = {},
       addToHistory = {},
       removeFromHistory = {},
     )
@@ -184,6 +186,7 @@ private fun PreviewLoading() {
     EpisodeThumbnailCard(
       episodeThumbnail = EpisodeThumbnail.Preview,
       placeHolderVisible = true,
+      onClick = {},
       addToHistory = {},
       removeFromHistory = {},
     )

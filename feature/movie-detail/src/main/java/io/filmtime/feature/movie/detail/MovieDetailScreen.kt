@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -25,6 +26,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
 import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
 import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
@@ -66,6 +68,8 @@ fun MovieDetailScreen(
     onMovieClick = onMovieClick,
     onAddBookmark = viewModel::addBookmark,
     onRemoveBookmark = viewModel::removeBookmark,
+    onPLayClick = {
+    },
   )
 }
 
@@ -76,6 +80,7 @@ fun MovieDetailScreen(
   onMovieClick: (Int) -> Unit,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
+  onPLayClick: () -> Unit,
 ) {
   val videoDetail = state.videoDetail
 
@@ -97,6 +102,15 @@ fun MovieDetailScreen(
       isBookmarked = state.isBookmarked,
       onAddBookmark = onAddBookmark,
       onRemoveBookmark = onRemoveBookmark,
+      primaryButton = {
+        FilmTimeFilledButton(
+          modifier = Modifier
+            .fillMaxWidth(),
+          onClick = onPLayClick,
+        ) {
+          Text("Play")
+        }
+      },
       credits = {
         CreditsRow(
           tmdbId = videoDetail.ids.tmdbId ?: 0,
@@ -129,6 +143,7 @@ private fun MovieDetailContent(
   isBookmarked: Boolean,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
+  primaryButton: @Composable () -> Unit,
   credits: @Composable () -> Unit,
   similar: @Composable () -> Unit,
   traktHistoryButton: @Composable RowScope.() -> Unit,
@@ -172,6 +187,7 @@ private fun MovieDetailContent(
             isBookmarked = isBookmarked,
             onAddBookmark = onAddBookmark,
             onRemoveBookmark = onRemoveBookmark,
+            primaryButton = primaryButton,
             traktHistoryButton = traktHistoryButton,
             ratings = ratings,
           )
@@ -214,6 +230,15 @@ private fun MovieDetailScreenPreview() {
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},
+      primaryButton = {
+        FilmTimeFilledButton(
+          modifier = Modifier
+            .fillMaxWidth(),
+          onClick = { },
+        ) {
+          Text("Play")
+        }
+      },
       credits = {
         Text("Credit goes here")
       },

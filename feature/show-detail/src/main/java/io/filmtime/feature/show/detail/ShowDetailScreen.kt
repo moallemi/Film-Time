@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -23,6 +24,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
 import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
@@ -59,6 +61,8 @@ internal fun ShowDetailScreen(
     onSeasonChange = viewModel::changeSeason,
     addToHistory = viewModel::addEpisodeToHistory,
     removeFromHistory = viewModel::removeEpisodeFromHistory,
+    onPrimaryButtonClick = {},
+    onEpisodeClick = {},
   )
 }
 
@@ -70,6 +74,8 @@ private fun ShowDetailScreen(
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
   onSeasonChange: (Int) -> Unit,
+  onPrimaryButtonClick: () -> Unit,
+  onEpisodeClick: (EpisodeThumbnail) -> Unit,
   addToHistory: (EpisodeThumbnail) -> Unit,
   removeFromHistory: (EpisodeThumbnail) -> Unit,
 ) {
@@ -96,7 +102,17 @@ private fun ShowDetailScreen(
       seasonsState = state.seasonsState,
       onSeasonChange = onSeasonChange,
       addToHistory = addToHistory,
+      onEpisodeClick = onEpisodeClick,
       removeFromHistory = removeFromHistory,
+      primaryButton = {
+        FilmTimeFilledButton(
+          modifier = Modifier
+            .fillMaxWidth(),
+          onClick = onPrimaryButtonClick,
+        ) {
+          Text("Play First Episode")
+        }
+      },
       credits = {
         CreditsRow(
           tmdbId = videoDetail.ids.tmdbId ?: 0,
@@ -123,8 +139,10 @@ private fun ShowDetailContent(
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
   onSeasonChange: (Int) -> Unit,
+  onEpisodeClick: (EpisodeThumbnail) -> Unit,
   addToHistory: (EpisodeThumbnail) -> Unit,
   removeFromHistory: (EpisodeThumbnail) -> Unit,
+  primaryButton: @Composable () -> Unit,
   credits: @Composable () -> Unit,
   similar: @Composable () -> Unit,
 ) {
@@ -168,6 +186,7 @@ private fun ShowDetailContent(
             onAddBookmark = onAddBookmark,
             onRemoveBookmark = onRemoveBookmark,
             ratings = ratings,
+            primaryButton = primaryButton,
             traktHistoryButton = {
             },
           )
@@ -184,6 +203,7 @@ private fun ShowDetailContent(
         error = seasonsState.error,
         onSeasonChange = onSeasonChange,
         onRetryClick = onSeasonChange,
+        onEpisodeClick = onEpisodeClick,
         addToHistory = addToHistory,
         removeFromHistory = removeFromHistory,
       )
@@ -233,8 +253,18 @@ private fun ShowDetailScreenPreview() {
         ),
       ),
       onSeasonChange = {},
+      onEpisodeClick = {},
       addToHistory = {},
       removeFromHistory = {},
+      primaryButton = {
+        FilmTimeFilledButton(
+          modifier = Modifier
+            .fillMaxWidth(),
+          onClick = { },
+        ) {
+          Text("Play First Episode")
+        }
+      },
       credits = {
         Text("Credit goes here")
       },

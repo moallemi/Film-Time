@@ -38,6 +38,7 @@ internal fun SeasonsSection(
   onSeasonChange: (Int) -> Unit,
   error: UiMessage? = null,
   onRetryClick: (Int) -> Unit,
+  onEpisodeClick: (EpisodeThumbnail) -> Unit,
   addToHistory: (EpisodeThumbnail) -> Unit,
   removeFromHistory: (EpisodeThumbnail) -> Unit,
 ) {
@@ -88,6 +89,7 @@ internal fun SeasonsSection(
               .width(300.dp),
             episodeThumbnail = EpisodeThumbnail.Preview,
             placeHolderVisible = true,
+            onClick = onEpisodeClick,
             addToHistory = {},
             removeFromHistory = {},
           )
@@ -113,6 +115,7 @@ internal fun SeasonsSection(
               .width(300.dp),
             episodeThumbnail = item,
             placeHolderVisible = item.isLoading,
+            onClick = onEpisodeClick,
             addToHistory = addToHistory,
             removeFromHistory = removeFromHistory,
           )
@@ -137,6 +140,7 @@ private fun SeasonsSectionPreview() {
         error = null,
         onRetryClick = {},
         addToHistory = {},
+        onEpisodeClick = {},
         removeFromHistory = {},
       )
 
@@ -153,6 +157,7 @@ private fun SeasonsSectionPreview() {
         onSeasonChange = {},
         error = null,
         onRetryClick = {},
+        onEpisodeClick = {},
         addToHistory = {},
         removeFromHistory = {},
       )

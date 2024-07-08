@@ -31,6 +31,7 @@ fun VideoThumbnailInfo(
   modifier: Modifier = Modifier,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
+  primaryButton: @Composable () -> Unit,
   traktHistoryButton: @Composable RowScope.() -> Unit,
 ) {
   Column(
@@ -67,13 +68,9 @@ fun VideoThumbnailInfo(
         }
       }
     }
-    FilmTimeFilledButton(
-      modifier = Modifier
-        .fillMaxWidth(),
-      onClick = {},
-    ) {
-      Text("Play")
-    }
+
+    primaryButton()
+
     Row(
       horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -86,6 +83,7 @@ fun VideoThumbnailInfo(
         onAddBookmark = onAddBookmark,
       )
     }
+
     ExpandableText(
       text = videoDetail.description,
       minimizedMaxLines = 3,
@@ -109,6 +107,15 @@ private fun MovieDetailScreenPreview() {
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},
+      primaryButton = {
+        FilmTimeFilledButton(
+          modifier = Modifier
+            .fillMaxWidth(),
+          onClick = { },
+        ) {
+          Text("Play")
+        }
+      },
       ratings = Ratings.Preview,
       traktHistoryButton = {
         FilmTimeFilledTonalButton(

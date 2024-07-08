@@ -1,15 +1,17 @@
 package io.filmtime.feature.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
@@ -28,14 +30,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
 import io.filmtime.data.model.SearchResult
 import io.filmtime.data.model.SearchResult.Person
 import io.filmtime.data.model.SearchResult.TvShow
@@ -109,60 +117,33 @@ fun SearchScreen(
           }
         },
       )
-      Column(
+      Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize(),
       ) {
         if (state.loading) {
-          Box(
-            modifier = Modifier.fillMaxHeight(),
-          ) {
-            CircularProgressIndicator()
-          }
+          CircularProgressIndicator()
         } else if (state.error != null) {
           Text(state.error!!)
         } else {
           if (state.hasResult == false) {
             Text("No result")
           } else {
-            MovieSearchListGrid(pagedList = state.data)
-//            when(searchType) {
-//              All -> TODO()
-//              Movie, Show -> MovieSearchListGrid(pagedList = state.data.map {  })
-//            }
-//            LazyColumn(
-//              modifier = Modifier
-//                .padding(16.dp),
-//            ) {
-//              items(state.data) { item ->
-//                Card(
-//                  modifier = Modifier
-//                    .fillMaxWidth()
-//                    .clickable {
-//                      when (item) {
-//                        is Person -> TODO()
-//                        is TvShow -> item.item.ids.tmdbId?.let { it1 -> onShowClick(it1) }
-//                        is Video -> item.item.ids.tmdbId?.let { it1 -> onMovieClick(it1) }
-//                      }
-//                    },
-//                ) {
-//                  when (item) {
-//                    is Person -> Text(item.name)
-//                    is TvShow, is Video -> Text(item.item.title)
-//                  }
-// //                  Row {
-// //                    AsyncImage(
-// //                      model = item.posterUrl,
-// //                      contentDescription = item.title,
-// //                      modifier = Modifier.size(80.dp),
-// //                      contentScale = ContentScale.Crop,
-// //                    )
-// //                    Spacer(modifier = Modifier.width(8.dp))
-// //                    Text(item.title)
-// //                  }
-//                }
-//                Spacer(modifier = Modifier.height(8.dp))
-//              }
-//            }
+            SearchListGrid(
+              pagedList = state.data,
+              onTap = { item ->
+                when (item) {
+                  is Person -> {}
+                  is TvShow -> {
+                    item.item.ids.tmdbId?.let(onShowClick)
+                  }
+
+                  is Video -> {
+                    item.item.ids.tmdbId?.let(onMovieClick)
+                  }
+                }
+              },
+            )
           }
         }
       }
@@ -172,9 +153,9 @@ fun SearchScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MovieSearchListGrid(
-  modifier: Modifier = Modifier,
+fun SearchListGrid(
   pagedList: List<SearchResult>,
+  onTap: ((SearchResult) -> Unit)?,
 ) {
   LazyVerticalGrid(
     columns = Adaptive(100.dp),
@@ -187,40 +168,64 @@ fun MovieSearchListGrid(
       pagedList.count(),
 //      key = { index -> pagedList[index]?.ids?.tmdbId ?: index },
     ) { index ->
-      val videoThumbnail = pagedList[index]
-      SearchThumbnailCardContent(videoThumbnail = videoThumbnail)
+      val item = pagedList[index]
+      SearchThumbnailCardContent(item = item, onTap = onTap)
     }
   }
 }
 
 @Composable
 private fun SearchThumbnailCardContent(
-  videoThumbnail: SearchResult,
+  item: SearchResult,
+  onTap: ((SearchResult) -> Unit)? = null,
 ) {
-  when (videoThumbnail) {
+  when (item) {
     is Person -> Column(
+      modifier = Modifier
+        .fillMaxSize()
+        .wrapContentHeight()
+        .clickable {
+          onTap?.invoke(item)
+        }
+        .padding(horizontal = 6.dp),
       verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally,
     ) {
       AsyncImage(
-        model = videoThumbnail.imageUrl,
-        contentDescription = videoThumbnail.name,
-        modifier = Modifier.clip(CircleShape),
-        contentScale = ContentScale.FillWidth,
+        modifier = Modifier
+          .size(100.dp)
+          .clip(CircleShape) // clip to the circle shape
+          .border(1.dp, Color.Transparent, CircleShape),
+        contentScale = ContentScale.Crop,
+        model = item.imageUrl,
+        contentDescription = item.name,
+        alignment = Alignment.Center,
       )
-      Text(videoThumbnail.name)
+      Text(
+        text = item.name,
+        style = TextStyle(
+          fontWeight = FontWeight.Light,
+          fontSize = 16.sp,
+          color = Color.Black,
+        ),
+        modifier = Modifier.padding(vertical = 4.dp),
+      )
     }
-    is TvShow -> AsyncImage(
-      model = videoThumbnail.item.posterUrl,
-      contentDescription = videoThumbnail.item.title,
-      modifier = Modifier.fillMaxSize(),
-      contentScale = ContentScale.Crop,
+
+    is TvShow -> VideoThumbnailCard(
+      imageUrl = item.item.posterUrl,
+      title = item.item.title,
+      onClick = {
+        onTap?.invoke(item)
+      },
     )
 
-    is Video -> AsyncImage(
-      model = videoThumbnail.item.posterUrl,
-      contentDescription = videoThumbnail.item.title,
-      modifier = Modifier.fillMaxSize(),
-      contentScale = ContentScale.Crop,
+    is Video -> VideoThumbnailCard(
+      imageUrl = item.item.posterUrl,
+      title = item.item.title,
+      onClick = {
+        onTap?.invoke(item)
+      },
     )
   }
 }

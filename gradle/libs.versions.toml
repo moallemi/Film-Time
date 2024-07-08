@@ -20,6 +20,7 @@ room = "2.6.1"
 ksp = "2.0.0-1.0.23"
 retrofit = "2.10.0"
 lifecycle = "2.8.2"
+paging-compose-android = "3.3.0"
 google-play-publish = "3.10.1"
 advanced-gradle-build-version = "3.0.0"
 

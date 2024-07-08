@@ -1,22 +1,21 @@
 package io.filmtime.feature.search
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,25 +25,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import io.filmtime.data.model.VideoType.Movie
-import io.filmtime.data.model.VideoType.Show
+import io.filmtime.data.model.SearchResult
+import io.filmtime.data.model.SearchResult.Person
+import io.filmtime.data.model.SearchResult.TvShow
+import io.filmtime.data.model.SearchResult.Video
+import io.filmtime.data.model.SearchType
 import io.filmtime.feature.search.components.SearchTypeChip
-
-enum class SearchType {
-  All,
-  Movie,
-  Show,
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +52,8 @@ fun SearchScreen(
   var text by remember { mutableStateOf("") }
   var active by remember { mutableStateOf(false) }
   var searchType by remember { mutableStateOf(SearchType.All) }
-  val history = remember { mutableStateListOf<String>() }
+  val keyboardController = LocalSoftwareKeyboardController.current
+  val focusManager = LocalFocusManager.current
 
   val viewModel = hiltViewModel<SearchViewModel>()
   val state by viewModel.state.collectAsState()
@@ -70,11 +68,12 @@ fun SearchScreen(
         onQueryChange = { text = it },
         onSearch = {
           active = false
-          history.add(it)
+          keyboardController?.hide()
+          focusManager.clearFocus()
           viewModel.search(it, searchType)
         },
-        active = active,
-        onActiveChange = { active = it },
+        active = false,
+        onActiveChange = {},
         placeholder = { Text("Search") },
         leadingIcon = {
           Icon(Icons.Rounded.Search, contentDescription = "search")
@@ -93,62 +92,135 @@ fun SearchScreen(
             )
           }
         },
-      ) {
-        history.forEach {
-          Text(it)
-        }
-      }
+        content = {},
+      )
     },
   ) {
     Column(
       modifier = Modifier.padding(it),
+      verticalArrangement = Arrangement.Top,
     ) {
-      SearchTypeChip(selectedSearchType = searchType, onChange = { type -> searchType = type })
+      SearchTypeChip(
+        selectedSearchType = searchType,
+        onChange = { type ->
+          searchType = type
+          if (text.isNotEmpty()) {
+            viewModel.search(text, type)
+          }
+        },
+      )
       Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
       ) {
         if (state.loading) {
-          CircularProgressIndicator()
+          Box(
+            modifier = Modifier.fillMaxHeight(),
+          ) {
+            CircularProgressIndicator()
+          }
+        } else if (state.error != null) {
+          Text(state.error!!)
         } else {
           if (state.hasResult == false) {
             Text("No result")
           } else {
-            LazyColumn(
-              modifier = Modifier
-                .padding(16.dp),
-            ) {
-              items(state.data) { item ->
-                Card(
-                  modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                      item.ids.tmdbId?.let { id ->
-                        when (item.type) {
-                          Movie -> onMovieClick(id)
-                          Show -> onShowClick(id)
-                        }
-                      }
-                    },
-                ) {
-                  Row {
-                    AsyncImage(
-                      model = item.posterUrl,
-                      contentDescription = item.title,
-                      modifier = Modifier.size(80.dp),
-                      contentScale = ContentScale.Crop,
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(item.title)
-                  }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-              }
-            }
+            MovieSearchListGrid(pagedList = state.data)
+//            when(searchType) {
+//              All -> TODO()
+//              Movie, Show -> MovieSearchListGrid(pagedList = state.data.map {  })
+//            }
+//            LazyColumn(
+//              modifier = Modifier
+//                .padding(16.dp),
+//            ) {
+//              items(state.data) { item ->
+//                Card(
+//                  modifier = Modifier
+//                    .fillMaxWidth()
+//                    .clickable {
+//                      when (item) {
+//                        is Person -> TODO()
+//                        is TvShow -> item.item.ids.tmdbId?.let { it1 -> onShowClick(it1) }
+//                        is Video -> item.item.ids.tmdbId?.let { it1 -> onMovieClick(it1) }
+//                      }
+//                    },
+//                ) {
+//                  when (item) {
+//                    is Person -> Text(item.name)
+//                    is TvShow, is Video -> Text(item.item.title)
+//                  }
+// //                  Row {
+// //                    AsyncImage(
+// //                      model = item.posterUrl,
+// //                      contentDescription = item.title,
+// //                      modifier = Modifier.size(80.dp),
+// //                      contentScale = ContentScale.Crop,
+// //                    )
+// //                    Spacer(modifier = Modifier.width(8.dp))
+// //                    Text(item.title)
+// //                  }
+//                }
+//                Spacer(modifier = Modifier.height(8.dp))
+//              }
+//            }
           }
         }
       }
     }
+  }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun MovieSearchListGrid(
+  modifier: Modifier = Modifier,
+  pagedList: List<SearchResult>,
+) {
+  LazyVerticalGrid(
+    columns = Adaptive(100.dp),
+    modifier = Modifier,
+    contentPadding = PaddingValues(16.dp),
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+    verticalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    items(
+      pagedList.count(),
+//      key = { index -> pagedList[index]?.ids?.tmdbId ?: index },
+    ) { index ->
+      val videoThumbnail = pagedList[index]
+      SearchThumbnailCardContent(videoThumbnail = videoThumbnail)
+    }
+  }
+}
+
+@Composable
+private fun SearchThumbnailCardContent(
+  videoThumbnail: SearchResult,
+) {
+  when (videoThumbnail) {
+    is Person -> Column(
+      verticalArrangement = Arrangement.Center,
+    ) {
+      AsyncImage(
+        model = videoThumbnail.imageUrl,
+        contentDescription = videoThumbnail.name,
+        modifier = Modifier.clip(CircleShape),
+        contentScale = ContentScale.FillWidth,
+      )
+      Text(videoThumbnail.name)
+    }
+    is TvShow -> AsyncImage(
+      model = videoThumbnail.item.posterUrl,
+      contentDescription = videoThumbnail.item.title,
+      modifier = Modifier.fillMaxSize(),
+      contentScale = ContentScale.Crop,
+    )
+
+    is Video -> AsyncImage(
+      model = videoThumbnail.item.posterUrl,
+      contentDescription = videoThumbnail.item.title,
+      modifier = Modifier.fillMaxSize(),
+      contentScale = ContentScale.Crop,
+    )
   }
 }

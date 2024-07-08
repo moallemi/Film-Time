@@ -5,7 +5,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
-import io.fimltime.data.tmdb.movies.TmdbMovieRepository
+import io.filmtime.data.model.SearchType
+import io.filmtime.domain.tmdb.search.SearchTmdbUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class SearchViewModel @Inject constructor(
-  private val tmdbMovieRepository: TmdbMovieRepository,
+  private val tmdbSearchUseCase: SearchTmdbUseCase,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(SearchUiState())
@@ -24,11 +25,13 @@ internal class SearchViewModel @Inject constructor(
     _state.update { it.copy(loading = true) }
 
     viewModelScope.launch {
-      val data = tmdbMovieRepository.searchMovies(text)
+      val data = tmdbSearchUseCase(text, type)
       when (data) {
-        is Failure -> TODO()
+        is Failure -> {
+          _state.update { it.copy(error = data.error.toString(), loading = false) }
+        }
         is Success -> _state.update {
-          it.copy(loading = false, data = data.data, hasResult = data.data.isNotEmpty())
+          it.copy(loading = false, data = data.data, hasResult = data.data.isNotEmpty(), error = null)
         }
       }
     }

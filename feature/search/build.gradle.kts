@@ -9,7 +9,6 @@ android {
 
 dependencies {
   implementation(project(":data:model"))
-  implementation(project(":domain:tmdb-shows"))
-  implementation(project(":domain:tmdb-movies"))
-  implementation(project(":data:tmdb-movies"))
+  implementation(project(":domain:tmdb-search"))
+  implementation(libs.androidx.paging.compose.android)
 }

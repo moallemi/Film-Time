@@ -124,7 +124,63 @@ data class PersonSearchResult(
 ) : NetworkSearchResult {
   override val mediaType: MediaType
     get() = Person
+
+  @SerialName("profile_path")
+  val profilePath: String? = null
+
+  @SerialName("original_name")
+  val originalName: String? = null
+  val adult: Boolean? = null
+  val popularity: Double? = null
+  val gender: Long? = null
+
+  @SerialName("known_for_department")
+  val knownForDepartment: String? = null
+
+  @SerialName("known_for")
+  val knownFor: List<KnownFor>? = null
 }
+
+@Serializable
+data class KnownFor(
+  @SerialName("backdrop_path")
+  val backdropPath: String,
+
+  val id: Long,
+  val title: String,
+
+  @SerialName("original_title")
+  val originalTitle: String,
+
+  val overview: String,
+
+  @SerialName("poster_path")
+  val posterPath: String,
+
+  @SerialName("media_type")
+  val mediaType: String,
+
+  val adult: Boolean,
+
+  @SerialName("original_language")
+  val originalLanguage: String,
+
+  @SerialName("genre_ids")
+  val genreIDS: List<Long>,
+
+  val popularity: Double,
+
+  @SerialName("release_date")
+  val releaseDate: String,
+
+  val video: Boolean,
+
+  @SerialName("vote_average")
+  val voteAverage: Double,
+
+  @SerialName("vote_count")
+  val voteCount: Long,
+)
 
 internal class SearchResultSerializer : KSerializer<NetworkSearchResult> {
 

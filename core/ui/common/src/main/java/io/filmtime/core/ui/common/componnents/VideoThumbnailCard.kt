@@ -34,6 +34,21 @@ fun VideoThumbnailCard(
 }
 
 @Composable
+fun VideoThumbnailCard(
+  modifier: Modifier = Modifier,
+  imageUrl: String,
+  title: String?,
+  onClick: () -> Unit,
+) {
+  Card(
+    onClick = onClick,
+    modifier = modifier,
+  ) {
+    VideoThumbnailCardContent(imageUrl = imageUrl, title = title)
+  }
+}
+
+@Composable
 private fun VideoThumbnailCardContent(
   videoThumbnail: VideoThumbnail,
 ) {
@@ -72,4 +87,17 @@ private fun VideoThumbnailCardPreview() {
       onClick = {},
     )
   }
+}
+
+@Composable
+private fun VideoThumbnailCardContent(
+  imageUrl: String,
+  title: String?,
+) {
+  AsyncImage(
+    model = imageUrl,
+    contentDescription = title,
+    modifier = Modifier.fillMaxSize(),
+    contentScale = ContentScale.Crop,
+  )
 }

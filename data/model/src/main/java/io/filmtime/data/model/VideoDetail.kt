@@ -19,6 +19,7 @@ data class VideoDetail(
   val status: String?,
   val networks: List<String>?,
   val seasonsNumber: Int?,
+  val collectionId: Long?,
 ) {
   companion object
 }
@@ -45,6 +46,7 @@ val VideoDetail.Companion.PreviewMovie: VideoDetail
     tagline = "The Future Belongs to the Mad",
     networks = listOf("Warner Bros."),
     seasonsNumber = null,
+    collectionId = null,
   )
 
 val VideoDetail.Companion.PreviewShow: VideoDetail
@@ -67,4 +69,5 @@ val VideoDetail.Companion.PreviewShow: VideoDetail
     tagline = "The Witcher",
     networks = listOf("Netflix"),
     seasonsNumber = 2,
+    collectionId = null,
   )

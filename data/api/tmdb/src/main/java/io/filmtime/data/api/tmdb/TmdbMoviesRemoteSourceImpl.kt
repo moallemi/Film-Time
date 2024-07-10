@@ -1,10 +1,12 @@
 package io.filmtime.data.api.tmdb
 
 import io.filmtime.data.model.GeneralError
+import io.filmtime.data.model.MovieCollection
 import io.filmtime.data.model.Person
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
+import io.filmtime.data.network.TmdbCollectionService
 import io.filmtime.data.network.TmdbErrorResponse
 import io.filmtime.data.network.TmdbMoviesService
 import io.filmtime.data.network.TmdbVideoListResponse
@@ -13,6 +15,7 @@ import javax.inject.Inject
 
 internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
   private val tmdbMoviesService: TmdbMoviesService,
+  private val tmdbCollectionService: TmdbCollectionService,
 ) : TmdbMoviesRemoteSource {
 
   override suspend fun trendingMovies(page: Int): Result<List<VideoThumbnail>, GeneralError> =
@@ -75,6 +78,25 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
       tmdbMoviesService.getSimilar(
         movieId = movieId,
       )
+    }
+
+  override suspend fun getCollection(collectionId: Int): Result<MovieCollection, GeneralError> =
+    when (val result = tmdbCollectionService.getCollection(collectionId)) {
+      is NetworkResponse.Success -> {
+        val collectionResponse = result.body
+        if (collectionResponse == null) {
+          Result.Failure(GeneralError.UnknownError(Throwable("Video collection response is null")))
+        } else {
+          Result.Success(collectionResponse.toCollection())
+        }
+      }
+      is NetworkResponse.ApiError -> {
+        val errorResponse = result.body
+        Result.Failure(GeneralError.ApiError(errorResponse.statusMessage, errorResponse.statusCode))
+      }
+
+      is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
+      is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
     }
 
   override suspend fun upcomingMovies(

@@ -6,12 +6,12 @@ import androidx.paging.PagingData
 import io.filmtime.data.api.tmdb.TmdbMoviesRemoteSource
 import io.filmtime.data.database.dao.MovieDetailDao
 import io.filmtime.data.model.GeneralError
+import io.filmtime.data.model.MovieCollection
 import io.filmtime.data.model.Person
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -21,15 +21,15 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
 ) : TmdbMovieRepository {
 
   override suspend fun getMovieDetails(movieId: Int): Flow<Result<VideoDetail, GeneralError>> = flow {
-    val localData = movieDao.getMovieByTmdbId(movieId).firstOrNull()
-    if (localData != null) {
-      emit(Result.Success(localData.toMovie()))
-      // TODO: invalidate cache later
-      fetchMovieDetailsFromNetwork(movieId)
-    } else {
-      val apiResult = fetchMovieDetailsFromNetwork(movieId)
-      emit(apiResult)
-    }
+//    val localData = movieDao.getMovieByTmdbId(movieId).firstOrNull()
+//    if (localData != null) {
+//      emit(Result.Success(localData.toMovie()))
+//      // TODO: invalidate cache later
+//      fetchMovieDetailsFromNetwork(movieId)
+//    } else {
+    val apiResult = fetchMovieDetailsFromNetwork(movieId)
+    emit(apiResult)
+//    }
   }
 
   private suspend fun fetchMovieDetailsFromNetwork(movieId: Int): Result<VideoDetail, GeneralError> {
@@ -76,4 +76,7 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
 
   override suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError> =
     tmdbMoviesRemoteSource.getSimilar(movieId)
+
+  override suspend fun getCollection(collectionId: Int): Result<MovieCollection, GeneralError> =
+    tmdbMoviesRemoteSource.getCollection(collectionId)
 }

@@ -2,6 +2,7 @@ package io.fimltime.data.tmdb.movies
 
 import androidx.paging.PagingData
 import io.filmtime.data.model.GeneralError
+import io.filmtime.data.model.MovieCollection
 import io.filmtime.data.model.Person
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
@@ -27,6 +28,8 @@ interface TmdbMovieRepository {
   suspend fun credits(movieId: Int): Result<List<Person>, GeneralError>
 
   suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError>
+
+  suspend fun getCollection(collectionId: Int): Result<MovieCollection, GeneralError>
 }
 
 enum class MovieListType {

@@ -137,4 +137,9 @@ object NetworkModule {
   fun providesNetworkCallAdapterFactory(): CallAdapter.Factory {
     return NetworkCallAdapterFactory()
   }
+
+  @Provides
+  @Singleton
+  fun providesCollectionService(retrofit: Retrofit): TmdbCollectionService =
+    retrofit.create(TmdbCollectionService::class.java)
 }

@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
@@ -31,9 +32,11 @@ import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
 import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
+import io.filmtime.core.ui.common.R
 import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.VideoDescription
 import io.filmtime.core.ui.common.componnents.VideoInfo
+import io.filmtime.core.ui.common.componnents.VideoSectionRow
 import io.filmtime.core.ui.common.componnents.VideoThumbnailInfo
 import io.filmtime.core.ui.common.componnents.VideoThumbnailPoster
 import io.filmtime.data.model.Preview
@@ -117,6 +120,24 @@ fun MovieDetailScreen(
           videoType = VideoType.Movie,
         )
       },
+      collections = {
+        state.collection?.let { collections ->
+          VideoSectionRow(
+            isLoading = state.isCollectionLoading,
+            error = state.error,
+            title = stringResource(R.string.core_ui_movie_collection),
+            items = collections.parts,
+            onMovieClick = { id ->
+              // / Disable onClick when show is present
+              if (id != videoDetail.ids.tmdbId) {
+                onMovieClick(id)
+              }
+            },
+            onShowClick = {},
+            onSectionClick = null,
+          )
+        }
+      },
       similar = {
         SimilarVideosRow(
           tmdbId = videoDetail.ids.tmdbId ?: 0,
@@ -146,6 +167,7 @@ private fun MovieDetailContent(
   primaryButton: @Composable () -> Unit,
   credits: @Composable () -> Unit,
   similar: @Composable () -> Unit,
+  collections: @Composable () -> Unit,
   traktHistoryButton: @Composable RowScope.() -> Unit,
 ) {
   var imageHeight by remember { mutableIntStateOf(4000) }
@@ -198,6 +220,11 @@ private fun MovieDetailContent(
       key = "credits",
     ) {
       credits()
+    }
+    item(
+      key = "belongs_to",
+    ) {
+      collections()
     }
     item(
       key = "similar",
@@ -254,6 +281,9 @@ private fun MovieDetailScreenPreview() {
         ) {
           Text("Add to history")
         }
+      },
+      collections = {
+        Text("Collections goes here")
       },
     )
   }

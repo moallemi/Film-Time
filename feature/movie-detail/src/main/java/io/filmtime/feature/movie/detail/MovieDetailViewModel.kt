@@ -10,6 +10,7 @@ import io.filmtime.domain.bookmarks.AddBookmarkUseCase
 import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
 import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
 import io.filmtime.domain.stream.GetStreamInfoUseCase
+import io.filmtime.domain.tmdb.movies.GetMovieCollectionUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
 import io.filmtime.domain.trakt.GetRatingsUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,6 +31,7 @@ class MovieDetailViewModel @Inject constructor(
   private val deleteBookmark: DeleteBookmarkUseCase,
   private val observeBookmark: ObserveBookmarkUseCase,
   private val getRatings: GetRatingsUseCase,
+  private val getCollection: GetMovieCollectionUseCase,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
@@ -51,8 +53,17 @@ class MovieDetailViewModel @Inject constructor(
       .collect { result ->
         result.fold(
           onSuccess = { data ->
-            _state.update { state -> state.copy(videoDetail = data, isLoading = false) }
+            _state.update { state ->
+              state.copy(
+                videoDetail = data,
+                isLoading = false,
+                hasCollection = data.collectionId != null,
+              )
+            }
             loadRatings()
+            data.collectionId?.let { id ->
+              loadCollection(id.toInt())
+            }
           },
           onFailure = { e -> _state.update { state -> state.copy(isLoading = false, error = e.toUiMessage()) } },
         )
@@ -77,6 +88,25 @@ class MovieDetailViewModel @Inject constructor(
         navigateToPlayer.emit(streamInfo.url)
       }
       .collect()
+  }
+
+  private fun loadCollection(collectionId: Int) = viewModelScope.launch {
+    _state.value = _state.value.copy(isCollectionLoading = true)
+    getCollection(collectionId)
+      .fold(
+        onSuccess = { collections ->
+          _state.update {
+            it.copy(
+              isCollectionLoading = false,
+              hasCollection = collections.parts.isNotEmpty(),
+              collection = collections,
+            )
+          }
+        },
+        onFailure = { error ->
+          _state.update { state -> state.copy(error = error.toUiMessage()) }
+        },
+      )
   }
 
   private fun observeBookmark() = viewModelScope.launch {

@@ -21,7 +21,7 @@ data class CollectionResponse(
 @Serializable
 data class Part(
   @SerialName("backdrop_path")
-  val backdropPath: String,
+  val backdropPath: String? = null,
 
   val id: Long,
   val title: String,

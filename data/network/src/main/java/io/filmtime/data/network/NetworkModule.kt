@@ -12,6 +12,7 @@ import io.filmtime.data.network.annotation.TraktOkHttp
 import io.filmtime.data.network.interceptor.TmdbApiKeyInterceptor
 import io.filmtime.data.network.interceptor.TraktHeadersInterceptor
 import io.filmtime.data.network.trakt.TraktAuthService
+import io.filmtime.data.network.trakt.TraktPersonService
 import io.filmtime.data.network.trakt.TraktSearchService
 import io.filmtime.data.network.trakt.TraktService
 import io.filmtime.data.network.trakt.TraktSyncService
@@ -131,6 +132,11 @@ object NetworkModule {
   @Singleton
   fun provideTrakt(@TraktNetwork retrofit: Retrofit): TraktService =
     retrofit.create(TraktService::class.java)
+
+  @Provides
+  @Singleton
+  fun providesPersonService(@TraktNetwork retrofit: Retrofit): TraktPersonService =
+    retrofit.create(TraktPersonService::class.java)
 
   @Provides
   @Singleton

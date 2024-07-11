@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import io.filmtime.core.ui.common.componnents.VideoThumbnailCard
+import io.filmtime.core.ui.common.componnents.VideoSearchCard
 import io.filmtime.data.model.SearchResult
 import io.filmtime.data.model.SearchResult.Person
 import io.filmtime.data.model.SearchResult.TvShow
@@ -212,7 +212,7 @@ private fun SearchThumbnailCardContent(
       )
     }
 
-    is TvShow -> VideoThumbnailCard(
+    is TvShow -> VideoSearchCard(
       imageUrl = item.item.posterUrl,
       title = item.item.title,
       onClick = {
@@ -220,7 +220,7 @@ private fun SearchThumbnailCardContent(
       },
     )
 
-    is Video -> VideoThumbnailCard(
+    is Video -> VideoSearchCard(
       imageUrl = item.item.posterUrl,
       title = item.item.title,
       onClick = {

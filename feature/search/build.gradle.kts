@@ -10,5 +10,4 @@ android {
 dependencies {
   implementation(project(":data:model"))
   implementation(project(":domain:tmdb-search"))
-  implementation(libs.androidx.paging.compose.android)
 }

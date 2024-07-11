@@ -13,63 +13,43 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
-import io.filmtime.core.designsystem.theme.ThemePreviews
-import io.filmtime.data.model.VideoId
-import io.filmtime.data.model.VideoThumbnail
-import io.filmtime.data.model.VideoType.Show
 
 @Composable
-fun VideoThumbnailCard(
+fun VideoSearchCard(
   modifier: Modifier = Modifier,
-  videoThumbnail: VideoThumbnail,
+  imageUrl: String,
+  title: String,
   onClick: () -> Unit,
 ) {
   Card(
     onClick = onClick,
     modifier = modifier,
   ) {
-    VideoThumbnailCardContent(videoThumbnail = videoThumbnail)
+    VideoSearchCardContent(imageUrl = imageUrl, title = title)
   }
 }
 
 @Composable
-private fun VideoThumbnailCardContent(
-  videoThumbnail: VideoThumbnail,
+private fun VideoSearchCardContent(
+  imageUrl: String,
+  title: String,
 ) {
   Box(
     modifier = Modifier.fillMaxSize(),
   ) {
     Text(
+      text = title,
       modifier = Modifier
         .align(Alignment.Center)
         .padding(8.dp),
-      text = videoThumbnail.title,
       style = MaterialTheme.typography.bodySmall,
       textAlign = TextAlign.Center,
     )
     AsyncImage(
-      model = videoThumbnail.posterUrl,
-      contentDescription = videoThumbnail.title,
+      model = imageUrl,
+      contentDescription = title,
       modifier = Modifier.fillMaxSize(),
       contentScale = ContentScale.Crop,
-    )
-  }
-}
-
-@ThemePreviews
-@Composable
-private fun VideoThumbnailCardPreview() {
-  PreviewFilmTimeTheme {
-    VideoThumbnailCard(
-      videoThumbnail = VideoThumbnail(
-        ids = VideoId(traktId = null, tmdbId = null),
-        title = "Dark Matter",
-        posterUrl = "",
-        year = 2001,
-        type = Show,
-      ),
-      onClick = {},
     )
   }
 }

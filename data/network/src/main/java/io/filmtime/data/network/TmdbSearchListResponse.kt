@@ -137,50 +137,9 @@ data class PersonSearchResult(
   @SerialName("known_for_department")
   val knownForDepartment: String? = null
 
-  @SerialName("known_for")
-  val knownFor: List<KnownFor>? = null
+//  @SerialName("known_for")
+//  val knownFor: List<KnownFor>? = null
 }
-
-@Serializable
-data class KnownFor(
-  @SerialName("backdrop_path")
-  val backdropPath: String,
-
-  val id: Long,
-  val title: String,
-
-  @SerialName("original_title")
-  val originalTitle: String,
-
-  val overview: String,
-
-  @SerialName("poster_path")
-  val posterPath: String,
-
-  @SerialName("media_type")
-  val mediaType: String,
-
-  val adult: Boolean,
-
-  @SerialName("original_language")
-  val originalLanguage: String,
-
-  @SerialName("genre_ids")
-  val genreIDS: List<Long>,
-
-  val popularity: Double,
-
-  @SerialName("release_date")
-  val releaseDate: String,
-
-  val video: Boolean,
-
-  @SerialName("vote_average")
-  val voteAverage: Double,
-
-  @SerialName("vote_count")
-  val voteCount: Long,
-)
 
 internal class SearchResultSerializer : KSerializer<NetworkSearchResult> {
 
@@ -199,7 +158,9 @@ internal class SearchResultSerializer : KSerializer<NetworkSearchResult> {
     return when (val itemType = jsonElement.jsonObject["media_type"]?.jsonPrimitive?.content) {
       "movie" -> json.decodeFromJsonElement(MovieSearchResult.serializer(), jsonElement)
       "tv" -> json.decodeFromJsonElement(TvShowSearchResult.serializer(), jsonElement)
-      "person" -> json.decodeFromJsonElement(PersonSearchResult.serializer(), jsonElement)
+      "person" -> throw SerializationException(
+        "Unknown itemType: $itemType",
+      ) // json.decodeFromJsonElement(PersonSearchResult.serializer(), jsonElement)
       else -> throw SerializationException("Unknown itemType: $itemType")
     }
   }

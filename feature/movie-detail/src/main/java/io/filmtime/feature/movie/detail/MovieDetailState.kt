@@ -9,7 +9,6 @@ import io.filmtime.data.model.VideoDetail
 data class MovieDetailState(
   val isLoading: Boolean = false,
   val isBookmarked: Boolean = false,
-  val hasCollection: Boolean = false,
   val isCollectionLoading: Boolean = false,
   val collection: MovieCollection? = null,
   val videoDetail: VideoDetail? = null,

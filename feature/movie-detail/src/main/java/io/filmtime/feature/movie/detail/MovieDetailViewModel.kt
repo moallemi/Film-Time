@@ -57,13 +57,10 @@ class MovieDetailViewModel @Inject constructor(
               state.copy(
                 videoDetail = data,
                 isLoading = false,
-                hasCollection = data.collectionId != null,
               )
             }
             loadRatings()
-            data.collectionId?.let { id ->
-              loadCollection(id.toInt())
-            }
+            loadCollection(data.collectionId?.toInt())
           },
           onFailure = { e -> _state.update { state -> state.copy(isLoading = false, error = e.toUiMessage()) } },
         )
@@ -90,7 +87,8 @@ class MovieDetailViewModel @Inject constructor(
       .collect()
   }
 
-  private fun loadCollection(collectionId: Int) = viewModelScope.launch {
+  private fun loadCollection(collectionId: Int?) = viewModelScope.launch {
+    if (collectionId == null) return@launch
     _state.value = _state.value.copy(isCollectionLoading = true)
     getCollection(collectionId)
       .fold(
@@ -98,7 +96,6 @@ class MovieDetailViewModel @Inject constructor(
           _state.update {
             it.copy(
               isCollectionLoading = false,
-              hasCollection = collections.parts.isNotEmpty(),
               collection = collections,
             )
           }

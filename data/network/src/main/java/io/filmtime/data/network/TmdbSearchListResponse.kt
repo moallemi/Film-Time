@@ -158,9 +158,7 @@ internal class SearchResultSerializer : KSerializer<NetworkSearchResult> {
     return when (val itemType = jsonElement.jsonObject["media_type"]?.jsonPrimitive?.content) {
       "movie" -> json.decodeFromJsonElement(MovieSearchResult.serializer(), jsonElement)
       "tv" -> json.decodeFromJsonElement(TvShowSearchResult.serializer(), jsonElement)
-      "person" -> throw SerializationException(
-        "Unknown itemType: $itemType",
-      ) // json.decodeFromJsonElement(PersonSearchResult.serializer(), jsonElement)
+      "person" -> json.decodeFromJsonElement(PersonSearchResult.serializer(), jsonElement)
       else -> throw SerializationException("Unknown itemType: $itemType")
     }
   }

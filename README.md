@@ -2,6 +2,11 @@
 
 A modern, feature-rich Movie & TV Show tracking application showcasing Android development best practices using Jetpack Compose and Kotlin.
 
+| Home                             | Movies                             | Detail                             | Trakt                             |
+|----------------------------------|------------------------------------|------------------------------------|-----------------------------------|
+| ![Home](.github/assets/home.png) | ![Movies](.github/assets/movies.png) | ![Detail](.github/assets/detail.png) | ![Trakt](.github/assets/trakt.png) |
+
+
 ## Features 🌟
 - **Browse** popular, top-rated, and upcoming movies & TV shows.
 - **Search** for your favorite movies & shows.

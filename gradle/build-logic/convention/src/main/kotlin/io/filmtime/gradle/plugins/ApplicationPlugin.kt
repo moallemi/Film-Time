@@ -24,6 +24,37 @@ class ApplicationPlugin : Plugin<Project> {
         defaultConfig {
           targetSdk = 34
         }
+
+        signingConfigs {
+          getByName("debug") {
+            storeFile = rootProject.file("release/filmtime-debug.jks")
+            storePassword = "keystorepassword"
+            keyAlias = "filmtime"
+            keyPassword = "aliaspassword"
+          }
+
+          create("release") {
+            if (rootProject.file("release/filmtime-release.jks").exists()) {
+              storeFile = rootProject.file("release/filmtime-release.jks")
+              storePassword = properties["FILM_TIME_RELEASE_KEYSTORE_PASSWORD"]?.toString() ?: ""
+              keyAlias = "key0"
+              keyPassword = properties["FILM_TIME_RELEASE_KEY_PASSWORD"]?.toString() ?: ""
+            }
+          }
+        }
+
+        buildTypes {
+          debug {
+            signingConfig = signingConfigs.findByName("debug")
+          }
+
+          release {
+            signingConfig = signingConfigs.findByName("release")
+            isShrinkResources = false
+            isMinifyEnabled = false
+            proguardFiles("proguard-rules.pro")
+          }
+        }
       }
 
       dependencies {

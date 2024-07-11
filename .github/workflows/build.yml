@@ -13,7 +13,9 @@ jobs:
     timeout-minutes: 60
 
     env:
-      ORG_GRADLE_PROJECT_FILM_TIME_TMDB_API_KEY: ${{ secrets.ORG_GRADLE_PROJECT_FILM_TIME_TMDB_API_KEY }}
+      ORG_GRADLE_PROJECT_FILM_TIME_TMDB_API_KEY: ${{ secrets.FILM_TIME_TMDB_API_KEY }}
+      ORG_GRADLE_PROJECT_FILM_TIME_RELEASE_KEYSTORE_PASSWORD: ${{ secrets.FILM_TIME_RELEASE_KEYSTORE_PASSWORD }}
+      ORG_GRADLE_PROJECT_FILM_TIME_RELEASE_KEY_PASSWORD: ${{ secrets.FILM_TIME_RELEASE_KEY_PASSWORD }}
 
     steps:
     - name: Checkout
@@ -35,8 +37,17 @@ jobs:
     - name: Check build-logic
       run: ./gradlew check -p ./gradle/build-logic
 
+    - name: Decrypt secrets
+      run: ./release/decrypt-secrets.sh
+      env:
+        ENCRYPT_KEY: ${{ secrets.FILM_TIME_CI_ENCRYPT_KEY }}
+
     - name: Check code style with Spotless
       run: ./gradlew spotlessCheck --no-configuration-cache
 
     - name: Build with Gradle
       run: ./gradlew build
+
+    - name: Clean secrets
+      if: always()
+      run: ./release/clean-secrets.sh

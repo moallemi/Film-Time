@@ -34,6 +34,7 @@ fun TmdbMovieDetailsResponse.toVideoDetail() =
     tagline = tagline,
     networks = null,
     seasonsNumber = null,
+    collectionId = belongsToCollection?.id,
   )
 
 fun TmdbShowDetailsResponse.toVideoDetail() =
@@ -58,6 +59,7 @@ fun TmdbShowDetailsResponse.toVideoDetail() =
     tagline = tagline,
     networks = networks?.mapNotNull { it.name },
     seasonsNumber = numberOfSeasons,
+    collectionId = null,
   )
 
 fun TmdbVideoResultResponse.toVideoThumbnail() = VideoThumbnail(

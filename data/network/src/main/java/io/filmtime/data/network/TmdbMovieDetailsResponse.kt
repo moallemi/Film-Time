@@ -2,7 +2,6 @@ package io.filmtime.data.network
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class TmdbMovieDetailsResponse(
@@ -12,7 +11,7 @@ data class TmdbMovieDetailsResponse(
   val backdropPath: String? = null,
 
   @SerialName("belongs_to_collection")
-  val belongsToCollection: JsonElement? = null,
+  val belongsToCollection: BelongsToCollection? = null,
 
   val budget: Long? = null,
   val genres: List<Genre>? = null,
@@ -97,4 +96,16 @@ data class SpokenLanguage(
   val iso639_1: String? = null,
 
   val name: String? = null,
+)
+
+@Serializable
+data class BelongsToCollection(
+  val id: Long,
+  val name: String,
+
+  @SerialName("poster_path")
+  val posterPath: String,
+
+  @SerialName("backdrop_path")
+  val backdropPath: String,
 )

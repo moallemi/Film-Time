@@ -8,6 +8,7 @@ plugins {
   alias(libs.plugins.room) apply false
   alias(libs.plugins.compose) apply false
   alias(libs.plugins.hilt.android) apply false
+  alias(libs.plugins.advanced.gradle.build.version) apply false
 
   alias(libs.plugins.spotless)
 }

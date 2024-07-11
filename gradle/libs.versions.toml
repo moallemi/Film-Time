@@ -81,6 +81,7 @@ spotless = "com.diffplug.spotless:6.20.0"
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
+advanced-gradle-build-version = "me.moallemi.advanced-build-version:3.0.0"
 
 [bundles]
 

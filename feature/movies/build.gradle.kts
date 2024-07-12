@@ -10,5 +10,4 @@ android {
 dependencies {
   implementation(project(":data:model"))
   implementation(project(":domain:tmdb-movies"))
-  implementation(project(":core:ui:common"))
 }

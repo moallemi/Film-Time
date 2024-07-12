@@ -10,7 +10,6 @@ android {
 dependencies {
 
   implementation(project(":data:model"))
-  implementation(project(":core:ui:common"))
 
   implementation(project(":domain:tmdb-movies"))
   implementation(project(":domain:stream"))

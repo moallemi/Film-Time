@@ -41,7 +41,7 @@ android {
 dependencies {
 
   implementation(project(":data:model"))
-  implementation(project(":core:ui:common"))
+  implementation(project(":core:ui:navigation"))
 
   implementation(project(":feature:movie-detail"))
   implementation(project(":feature:show-detail"))
@@ -54,6 +54,7 @@ dependencies {
   implementation(project(":feature:video-thumbnail-grid"))
 
   implementation(project(":core:libs:logger"))
+  implementation(project(":core:libs:tracker"))
 
   implementation(libs.activity.compose)
   implementation(libs.material3)

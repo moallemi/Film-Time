@@ -1,9 +1,9 @@
 package io.filmtime.feature.home
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import io.filmtime.core.ui.common.DestinationRoute
+import io.filmtime.core.ui.navigation.DestinationRoute
+import io.filmtime.core.ui.navigation.composable
 
 val GRAPH_HOME_ROUTE = DestinationRoute("home_graph_route")
 private const val ROUTE_HOME_SCREEN = "home"
@@ -21,6 +21,7 @@ fun NavGraphBuilder.homeGraph(
   ) {
     composable(
       route = "${GRAPH_HOME_ROUTE.route}/$ROUTE_HOME_SCREEN",
+      screenName = "Home",
     ) {
       HomeScreen(
         onMovieClick = { onMovieClick(GRAPH_HOME_ROUTE, it) },

@@ -4,9 +4,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import io.filmtime.core.ui.common.DestinationRoute
+import io.filmtime.core.ui.navigation.DestinationRoute
+import io.filmtime.core.ui.navigation.composable
 
 fun NavGraphBuilder.showDetailScreen(
   rootRoute: DestinationRoute,
@@ -17,6 +17,7 @@ fun NavGraphBuilder.showDetailScreen(
 ) {
   composable(
     route = "${rootRoute.route}/show_detail/{video_id}",
+    screenName = "Show Detail",
     arguments = listOf(
       navArgument("video_id") {
         type = NavType.IntType

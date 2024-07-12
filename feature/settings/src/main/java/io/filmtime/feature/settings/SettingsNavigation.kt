@@ -1,9 +1,9 @@
 package io.filmtime.feature.settings
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import io.filmtime.core.ui.common.DestinationRoute
+import io.filmtime.core.ui.navigation.DestinationRoute
+import io.filmtime.core.ui.navigation.composable
 
 val GRAPH_SETTINGS_ROUTE = DestinationRoute("settings_graph_route")
 private const val ROUTE_SETTINGS_SCREEN = "settings"
@@ -18,6 +18,7 @@ fun NavGraphBuilder.settingsGraph(
   ) {
     composable(
       route = "${GRAPH_SETTINGS_ROUTE.route}/$ROUTE_SETTINGS_SCREEN",
+      screenName = "Settings",
     ) {
       SettingsScreen(
         onTraktLoginClick = { onTraktLoginClick() },

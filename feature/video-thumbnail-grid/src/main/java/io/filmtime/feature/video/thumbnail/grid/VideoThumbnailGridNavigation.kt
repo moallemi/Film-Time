@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import io.filmtime.core.ui.common.DestinationRoute
+import io.filmtime.core.ui.navigation.DestinationRoute
 import io.filmtime.data.model.VideoListType
 import io.filmtime.data.model.VideoType
 

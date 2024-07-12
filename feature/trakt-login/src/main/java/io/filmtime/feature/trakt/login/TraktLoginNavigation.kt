@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import io.filmtime.core.browser.openUrl
-import io.filmtime.core.ui.common.DestinationRoute
+import io.filmtime.core.ui.navigation.DestinationRoute
 
 fun NavGraphBuilder.traktLoginScreen(
   rootRoute: DestinationRoute,

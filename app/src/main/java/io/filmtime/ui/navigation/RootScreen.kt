@@ -1,6 +1,6 @@
 package io.filmtime.ui.navigation
 
-import io.filmtime.core.ui.common.DestinationRoute
+import io.filmtime.core.ui.navigation.DestinationRoute
 import io.filmtime.feature.home.GRAPH_HOME_ROUTE
 import io.filmtime.feature.movies.GRAPH_MOVIES_ROUTE
 import io.filmtime.feature.settings.GRAPH_SETTINGS_ROUTE

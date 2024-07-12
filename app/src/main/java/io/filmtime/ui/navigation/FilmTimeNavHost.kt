@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import io.filmtime.core.ui.common.DestinationRoute
+import io.filmtime.core.ui.navigation.DestinationRoute
 import io.filmtime.data.model.VideoListType
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.home.GRAPH_HOME_ROUTE

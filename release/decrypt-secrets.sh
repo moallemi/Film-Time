@@ -24,6 +24,8 @@ decrypt() {
 if [[ ! -z "$ENCRYPT_KEY" ]]; then
   # Decrypt Release key
   decrypt ${ENCRYPT_KEY} release/filmtime-release.gpg release/filmtime-release.jks
+  # Decrypt Google Services key
+  decrypt ${ENCRYPT_KEY} release/google-services.gpg app/google-services.json
 else
   echo "ENCRYPT_KEY is empty"
 fi

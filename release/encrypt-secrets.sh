@@ -24,6 +24,8 @@ encrypt() {
 if [[ ! -z "$ENCRYPT_KEY" ]]; then
   # Encrypt Release key
   encrypt ${ENCRYPT_KEY} release/filmtime-release.jks release/filmtime-release.gpg
+  # Encrypt Google Services key
+  encrypt ${ENCRYPT_KEY} app/google-services.json release/google-services.gpg
 else
   echo "ENCRYPT_KEY is empty"
 fi

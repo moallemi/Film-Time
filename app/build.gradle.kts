@@ -42,6 +42,7 @@ dependencies {
 
   implementation(project(":data:model"))
   implementation(project(":core:ui:common"))
+
   implementation(project(":feature:movie-detail"))
   implementation(project(":feature:show-detail"))
   implementation(project(":feature:home"))
@@ -52,8 +53,15 @@ dependencies {
   implementation(project(":feature:trakt-login"))
   implementation(project(":feature:video-thumbnail-grid"))
 
+  implementation(project(":core:libs:logger"))
+
   implementation(libs.activity.compose)
   implementation(libs.material3)
   implementation(libs.lifecycle.viewmodel.compose.runtime)
   implementation(libs.androidx.hilt.navigation.compose)
+}
+
+if (file("google-services.json").exists()) {
+  apply(plugin = libs.plugins.google.services.get().pluginId)
+  apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
 }

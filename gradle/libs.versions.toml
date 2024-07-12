@@ -37,6 +37,8 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+firebase-bom = "com.google.firebase:firebase-bom:33.1.2"
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -82,6 +84,8 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
 advanced-gradle-build-version = "me.moallemi.advanced-build-version:3.0.0"
+google-services = "com.google.gms.google-services:4.4.2"
+firebase-crashlytics = "com.google.firebase.crashlytics:3.0.2"
 
 [bundles]
 

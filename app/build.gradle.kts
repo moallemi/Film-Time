@@ -54,6 +54,7 @@ dependencies {
   implementation(project(":feature:video-thumbnail-grid"))
 
   implementation(project(":core:libs:logger"))
+  implementation(project(":core:libs:tracker"))
 
   implementation(libs.activity.compose)
   implementation(libs.material3)

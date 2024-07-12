@@ -59,6 +59,7 @@ class ApplicationPlugin : Plugin<Project> {
 
       dependencies {
         add("implementation", project(":core:design-system"))
+        add("implementation", project(":core:resources"))
       }
     }
   }

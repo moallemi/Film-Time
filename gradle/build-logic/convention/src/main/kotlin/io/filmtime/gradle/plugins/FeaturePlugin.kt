@@ -17,6 +17,7 @@ class FeaturePlugin : Plugin<Project> {
       dependencies {
         add("implementation", project(":data:model"))
         add("implementation", project(":core:ui:common"))
+        add("implementation", project(":core:resources"))
         add("implementation", project(":core:ui:navigation"))
         add("implementation", project(":core:design-system"))
 

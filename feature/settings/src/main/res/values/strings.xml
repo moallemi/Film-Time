@@ -8,4 +8,5 @@
     <string name="feature_settings_trakt_sign_out_title">Sign Out Trakt?</string>
     <string name="feature_settings_trakt_sign_out_message">Are you sure you want to sign out from Trakt?</string>
     <string name="feature_settings_cancel">Cancel</string>
+    <string name="feature_settings_version_build">Version %1$s - Build %2$d</string>
 </resources>

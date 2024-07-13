@@ -2,6 +2,8 @@ package io.filmtime.gradle.plugins
 
 import com.android.build.api.dsl.ApplicationExtension
 import io.filmtime.gradle.configureFlavors
+import io.filmtime.gradle.configureGooglePlayPublish
+import io.filmtime.gradle.configureGooglePlayPublishFlavors
 import io.filmtime.gradle.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -27,6 +29,8 @@ class ApplicationPlugin : Plugin<Project> {
         }
 
         configureFlavors(this)
+
+        configureGooglePlayPublishFlavors(this)
 
         signingConfigs {
           getByName("debug") {
@@ -64,6 +68,8 @@ class ApplicationPlugin : Plugin<Project> {
         add("implementation", project(":core:design-system"))
         add("implementation", project(":core:resources"))
       }
+
+      configureGooglePlayPublish()
     }
   }
 }

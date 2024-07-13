@@ -20,6 +20,7 @@ room = "2.6.1"
 ksp = "2.0.0-1.0.23"
 retrofit = "2.10.0"
 lifecycle = "2.8.2"
+google-play-publish = "3.10.1"
 
 [libraries]
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3-exoplayer" }
@@ -72,6 +73,7 @@ kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-pl
 compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+google-play-publish-gradlePlugin = { group = "com.github.triplet.gradle", name = "play-publisher", version.ref = "google-play-publish" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
@@ -87,6 +89,7 @@ room = { id = "androidx.room", version.ref = "room" }
 advanced-gradle-build-version = "me.moallemi.advanced-build-version:3.0.0"
 google-services = "com.google.gms.google-services:4.4.2"
 firebase-crashlytics = "com.google.firebase.crashlytics:3.0.2"
+google-play-publish = {id = "com.github.triplet.play", version.ref = "google-play-publish"}
 
 [bundles]
 

@@ -1,6 +1,6 @@
 package io.filmtime.gradle
 
-import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.ApplicationExtension
 import com.github.triplet.gradle.play.PlayPublisherExtension
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
@@ -24,7 +24,7 @@ internal fun Project.configureGooglePlayPublish() {
 }
 
 internal fun Project.configureGooglePlayPublishFlavors(
-  commonExtension: CommonExtension<*, *, *, *, *, *>,
+  applicationExtension: ApplicationExtension,
 ) {
   if (!file("../release/google-play-publish.json").exists()) {
     return
@@ -34,12 +34,16 @@ internal fun Project.configureGooglePlayPublishFlavors(
     apply("com.github.triplet.play")
   }
 
-  commonExtension.apply {
+  val versionCode = applicationExtension.defaultConfig.versionCode
+  val versionName = applicationExtension.defaultConfig.versionName
+
+  applicationExtension.apply {
     (this as ExtensionAware)
       .extensions
       .configure<NamedDomainObjectContainer<PlayPublisherExtension>>("playConfigs") {
         register("googlePlayRelease") {
           enabled.set(true)
+          releaseName.set("$versionCode ($versionName)")
           track.set("internal")
         }
       }

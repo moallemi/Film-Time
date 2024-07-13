@@ -1,6 +1,7 @@
 package io.filmtime.gradle.plugins
 
 import com.android.build.api.dsl.ApplicationExtension
+import io.filmtime.gradle.configureFlavors
 import io.filmtime.gradle.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -24,6 +25,8 @@ class ApplicationPlugin : Plugin<Project> {
         defaultConfig {
           targetSdk = 34
         }
+
+        configureFlavors(this)
 
         signingConfigs {
           getByName("debug") {

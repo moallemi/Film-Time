@@ -1,6 +1,7 @@
 package io.filmtime.gradle.plugins
 
 import com.android.build.gradle.LibraryExtension
+import io.filmtime.gradle.configureFlavors
 import io.filmtime.gradle.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -19,6 +20,7 @@ class LibraryPlugin : Plugin<Project> {
       extensions.configure<LibraryExtension> {
         configureKotlinAndroid()
         defaultConfig.targetSdk = 34
+        configureFlavors(this)
       }
 
       dependencies {

@@ -21,6 +21,7 @@ ksp = "2.0.0-1.0.23"
 retrofit = "2.10.0"
 lifecycle = "2.8.2"
 google-play-publish = "3.10.1"
+advanced-gradle-build-version = "3.0.0"
 
 [libraries]
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3-exoplayer" }
@@ -53,7 +54,7 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
-androidx-browser = { group = "androidx.browser", name = "browser", version="1.8.0" }
+androidx-browser = { group = "androidx.browser", name = "browser", version = "1.8.0" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "retrofit" }
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
@@ -74,6 +75,7 @@ compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 google-play-publish-gradlePlugin = { group = "com.github.triplet.gradle", name = "play-publisher", version.ref = "google-play-publish" }
+advanced-gradle-build-version-gradlePlugin = { group = "me.moallemi.gradle", name = "advanced-build-version", version.ref = "advanced-gradle-build-version" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
@@ -86,10 +88,10 @@ spotless = "com.diffplug.spotless:6.20.0"
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
-advanced-gradle-build-version = "me.moallemi.advanced-build-version:3.0.0"
+advanced-gradle-build-version = { id = "me.moallemi.advanced-build-version", version.ref = "advanced-gradle-build-version" }
 google-services = "com.google.gms.google-services:4.4.2"
 firebase-crashlytics = "com.google.firebase.crashlytics:3.0.2"
-google-play-publish = {id = "com.github.triplet.play", version.ref = "google-play-publish"}
+google-play-publish = { id = "com.github.triplet.play", version.ref = "google-play-publish" }
 
 [bundles]
 

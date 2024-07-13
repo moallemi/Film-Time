@@ -5,6 +5,7 @@ import io.filmtime.gradle.configureFlavors
 import io.filmtime.gradle.configureGooglePlayPublish
 import io.filmtime.gradle.configureGooglePlayPublishFlavors
 import io.filmtime.gradle.configureKotlinAndroid
+import io.filmtime.gradle.configureVersionCode
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -19,6 +20,8 @@ class ApplicationPlugin : Plugin<Project> {
 
         apply("io.filmtime.gradle.android.application.compose")
         apply("io.filmtime.gradle.android.hilt")
+
+        apply("me.moallemi.advanced-build-version")
       }
 
       extensions.configure<ApplicationExtension> {
@@ -27,6 +30,8 @@ class ApplicationPlugin : Plugin<Project> {
         defaultConfig {
           targetSdk = 34
         }
+
+        configureVersionCode(this)
 
         configureFlavors(this)
 

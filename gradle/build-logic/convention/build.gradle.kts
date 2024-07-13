@@ -24,6 +24,7 @@ dependencies {
   compileOnly(libs.room.gradlePlugin)
   compileOnly(libs.compose.gradlePlugin)
   compileOnly(libs.google.play.publish.gradlePlugin)
+  compileOnly(libs.advanced.gradle.build.version.gradlePlugin)
 }
 
 tasks {

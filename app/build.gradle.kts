@@ -1,25 +1,5 @@
-import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
-
 plugins {
   id("io.filmtime.gradle.android.application")
-  alias(libs.plugins.advanced.gradle.build.version)
-}
-
-advancedVersioning {
-  nameOptions {
-    versionMajor(1)
-    versionMinor(0)
-    versionPatch(0)
-  }
-
-  codeOptions {
-    versionCodeType(GIT_COMMIT_COUNT)
-  }
-
-  outputOptions {
-    renameOutput(false)
-    nameFormat("FilmTime-\${flavorName}-\${buildType}-\${versionName}-\${versionCode}")
-  }
 }
 
 android {
@@ -27,8 +7,6 @@ android {
 
   defaultConfig {
     applicationId = "io.filmtime"
-    versionCode = advancedVersioning.versionCode
-    versionName = advancedVersioning.versionName
   }
 
   packaging {

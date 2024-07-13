@@ -1,6 +1,5 @@
 package io.filmtime.data.api.trakt.model
 
-import android.icu.text.NumberFormat
 import io.filmtime.data.model.RatingInfo
 import io.filmtime.data.model.Ratings
 import io.filmtime.data.network.trakt.TraktExtendedRatingsResponse
@@ -56,7 +55,13 @@ private fun Double.formatted(): String {
   return String.format(Locale.ENGLISH, "%.1f", this)
 }
 
-private val numberFormat = NumberFormat.getNumberInstance(Locale.ENGLISH)
 private fun Long.formatted(): String {
-  return numberFormat.format(this)
+  val thousand = this / 1000
+  val million = this / 1_000_000
+
+  return when {
+    million >= 1.0 -> "${million}m"
+    thousand >= 1.0 -> "${thousand}k"
+    else -> this.toString()
+  }
 }

@@ -19,3 +19,6 @@ rm -f release/filmtime-release.jks
 
 # Delete Google Services key
 rm -f app/google-services.json
+
+# Delete Google Play key
+rm -f release/google-play-publish.json

@@ -60,7 +60,7 @@ app uses:
 
 You can find information about how to gain access [here](docs/API-Keys.md).
 
-Add this to your system environment variables:
+Add this to your `~/.gradle/gradle.properties` file:
 
 ```shell
 # Get this from TMDb

@@ -1,6 +1,10 @@
-# Film Time  📺🎬
+# Film Time  📺🎬 (Under Development)
 
 A modern, feature-rich Movie & TV Show tracking application showcasing Android development best practices using Jetpack Compose and Kotlin.
+
+<a href="https://play.google.com/store/apps/details?id=io.filmtime" target="_blank">
+<img src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png" width=240 />
+</a>
 
 | Home                             | Movies                             | Detail                             | Trakt                             |
 |----------------------------------|------------------------------------|------------------------------------|-----------------------------------|

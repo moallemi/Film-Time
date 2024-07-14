@@ -30,8 +30,6 @@ interface TmdbMovieRepository {
   suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError>
 
   suspend fun getCollection(collectionId: Int): Result<MovieCollection, GeneralError>
-  
-  suspend fun searchMovies(query: String): Result<List<VideoThumbnail>, GeneralError>
 }
 
 enum class MovieListType {

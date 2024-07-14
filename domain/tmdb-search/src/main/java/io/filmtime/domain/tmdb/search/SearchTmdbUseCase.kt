@@ -1,10 +1,10 @@
 package io.filmtime.domain.tmdb.search
 
-import io.filmtime.data.model.GeneralError
-import io.filmtime.data.model.Result
+import androidx.paging.PagingData
 import io.filmtime.data.model.SearchResult
 import io.filmtime.data.model.SearchType
+import kotlinx.coroutines.flow.Flow
 
 interface SearchTmdbUseCase {
-  suspend operator fun invoke(query: String, type: SearchType): Result<List<SearchResult>, GeneralError>
+  operator fun invoke(query: String, type: SearchType): Flow<PagingData<SearchResult>>
 }

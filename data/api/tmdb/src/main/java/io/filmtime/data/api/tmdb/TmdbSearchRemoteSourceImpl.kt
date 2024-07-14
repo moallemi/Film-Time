@@ -13,8 +13,8 @@ import javax.inject.Inject
 class TmdbSearchRemoteSourceImpl @Inject constructor(
   private val tmdbSearchService: TmdbSearchService,
 ) : TmdbSearchRemoteSource {
-  override suspend fun searchMovies(query: String): Result<List<SearchResult.Video>, GeneralError> =
-    when (val result = tmdbSearchService.searchMovies(query)) {
+  override suspend fun searchMovies(page: Int, query: String): Result<List<SearchResult.Video>, GeneralError> =
+    when (val result = tmdbSearchService.searchMovies(page, query)) {
       is NetworkResponse.Success -> {
         val videoListResponse = result.body?.results ?: emptyList()
         Result.Success(
@@ -33,8 +33,8 @@ class TmdbSearchRemoteSourceImpl @Inject constructor(
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
     }
 
-  override suspend fun searchTvShows(query: String): Result<List<SearchResult.TvShow>, GeneralError> =
-    when (val result = tmdbSearchService.searchTvShows(query)) {
+  override suspend fun searchTvShows(page: Int, query: String): Result<List<SearchResult.TvShow>, GeneralError> =
+    when (val result = tmdbSearchService.searchTvShows(page, query)) {
       is NetworkResponse.Success -> {
         val videoListResponse = result.body?.results ?: emptyList()
         Result.Success(
@@ -53,8 +53,8 @@ class TmdbSearchRemoteSourceImpl @Inject constructor(
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
     }
 
-  override suspend fun searchAll(query: String): Result<List<SearchResult>, GeneralError> =
-    when (val result = tmdbSearchService.searchMulti(query)) {
+  override suspend fun searchAll(page: Int, query: String): Result<List<SearchResult>, GeneralError> =
+    when (val result = tmdbSearchService.searchMulti(page, query)) {
       is NetworkResponse.Success -> {
         val videoListResponse = result.body?.results ?: emptyList()
         val mappedData: List<SearchResult> = videoListResponse.map {

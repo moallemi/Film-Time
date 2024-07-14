@@ -8,16 +8,19 @@ interface TmdbSearchService {
 
   @GET("search/tv")
   suspend fun searchTvShows(
+    @Query("page") page: Int,
     @Query("query") query: String,
   ): NetworkResponse<TmdbShowListResponse, TmdbErrorResponse>
 
   @GET("search/movie")
   suspend fun searchMovies(
+    @Query("page") page: Int,
     @Query("query") query: String,
   ): NetworkResponse<TmdbVideoListResponse, TmdbErrorResponse>
 
   @GET("search/multi")
   suspend fun searchMulti(
+    @Query("page") page: Int,
     @Query("query") query: String,
   ): NetworkResponse<TmdbSearchListResponse, TmdbErrorResponse>
 }

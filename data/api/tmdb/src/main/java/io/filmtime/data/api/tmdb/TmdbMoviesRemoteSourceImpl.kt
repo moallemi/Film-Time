@@ -16,6 +16,7 @@ import javax.inject.Inject
 internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
   private val tmdbMoviesService: TmdbMoviesService,
   private val tmdbCollectionService: TmdbCollectionService,
+  private val tmdbSearchRemoteSource: TmdbSearchRemoteSource,
 ) : TmdbMoviesRemoteSource {
 
   override suspend fun trendingMovies(page: Int): Result<List<VideoThumbnail>, GeneralError> =
@@ -97,11 +98,6 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
 
       is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
-    }
-
-  override suspend fun searchMovie(query: String): Result<List<VideoThumbnail>, GeneralError> =
-    getMovieList {
-      tmdbMoviesService.searchMovies(query)
     }
 
   override suspend fun upcomingMovies(

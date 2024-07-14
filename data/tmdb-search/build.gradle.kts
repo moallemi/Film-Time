@@ -9,4 +9,6 @@ android {
 dependencies {
 
   implementation(project(":data:api:tmdb"))
+
+  api(libs.paging.runtime)
 }

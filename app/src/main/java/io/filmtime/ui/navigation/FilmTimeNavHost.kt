@@ -132,7 +132,7 @@ private fun NavGraphBuilder.showDetailScreen(
     rootRoute = rootRoute,
     onStreamReady = navController::navigateToPlayer,
     onCastItemClick = { _, _ -> },
-    onSimilarClick = navController::navigateToMovieDetail,
+    onSimilarClick = navController::navigateToShowDetail,
     onBack = navController::popBackStack,
   )
 }

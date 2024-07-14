@@ -146,6 +146,11 @@ object NetworkModule {
 
   @Provides
   @Singleton
+  fun providesDiscoverService(retrofit: Retrofit): TmdbDiscoverService =
+    retrofit.create(TmdbDiscoverService::class.java)
+
+  @Provides
+  @Singleton
   fun providesCollectionService(retrofit: Retrofit): TmdbCollectionService =
     retrofit.create(TmdbCollectionService::class.java)
 }

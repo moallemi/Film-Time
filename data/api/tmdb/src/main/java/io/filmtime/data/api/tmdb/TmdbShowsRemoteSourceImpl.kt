@@ -6,6 +6,7 @@ import io.filmtime.data.model.Person
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
+import io.filmtime.data.network.TmdbDiscoverService
 import io.filmtime.data.network.TmdbErrorResponse
 import io.filmtime.data.network.TmdbShowListResponse
 import io.filmtime.data.network.TmdbShowsService
@@ -14,6 +15,7 @@ import javax.inject.Inject
 
 class TmdbShowsRemoteSourceImpl @Inject constructor(
   private val tmdbShowsService: TmdbShowsService,
+  private val tmdbDiscoverService: TmdbDiscoverService,
 ) : TmdbShowsRemoteSource {
 
   override suspend fun showDetails(showId: Int): Result<VideoDetail, GeneralError> =
@@ -113,6 +115,11 @@ class TmdbShowsRemoteSourceImpl @Inject constructor(
 
       is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(response.error))
+    }
+
+  override suspend fun getByGenres(genresId: List<String>): Result<List<VideoThumbnail>, GeneralError> =
+    getShowsList {
+      tmdbDiscoverService.getShows(genresId)
     }
 
   override suspend fun similar(showId: Int): Result<List<VideoThumbnail>, GeneralError> =

@@ -7,6 +7,7 @@ import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.network.TmdbCollectionService
+import io.filmtime.data.network.TmdbDiscoverService
 import io.filmtime.data.network.TmdbErrorResponse
 import io.filmtime.data.network.TmdbMoviesService
 import io.filmtime.data.network.TmdbVideoListResponse
@@ -16,6 +17,7 @@ import javax.inject.Inject
 internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
   private val tmdbMoviesService: TmdbMoviesService,
   private val tmdbCollectionService: TmdbCollectionService,
+  private val tmdbDiscoverService: TmdbDiscoverService,
   private val tmdbSearchRemoteSource: TmdbSearchRemoteSource,
 ) : TmdbMoviesRemoteSource {
 
@@ -98,6 +100,11 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
 
       is NetworkResponse.NetworkError -> Result.Failure(GeneralError.NetworkError)
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
+    }
+
+  override suspend fun getByGenres(genresId: List<String>): Result<List<VideoThumbnail>, GeneralError> =
+    getMovieList {
+      tmdbDiscoverService.getMovies(genresId)
     }
 
   override suspend fun upcomingMovies(

@@ -3,7 +3,6 @@ package io.filmtime.data.tmdb.search
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import io.filmtime.data.api.tmdb.TmdbMoviesRemoteSource
 import io.filmtime.data.api.tmdb.TmdbSearchRemoteSource
 import io.filmtime.data.model.SearchResult
 import io.filmtime.data.model.SearchType
@@ -17,7 +16,7 @@ internal class TmdbSearchRepositoryImpl @Inject constructor(
   override fun streamSearch(searchType: SearchType, query: String): Flow<PagingData<SearchResult>> =
     Pager(
       config = PagingConfig(
-        pageSize = TmdbMoviesRemoteSource.PAGE_SIZE,
+        pageSize = TmdbSearchRemoteSource.PAGE_SIZE,
         enablePlaceholders = false,
       ),
       pagingSourceFactory = {

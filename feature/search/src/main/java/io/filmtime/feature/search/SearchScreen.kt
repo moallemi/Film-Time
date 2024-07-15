@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import io.filmtime.core.ui.common.componnents.PersonSearchCard
@@ -92,9 +94,10 @@ fun SearchScreen(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize(),
       ) {
-        val result = viewModel.state.collectAsLazyPagingItems()
+        val items = viewModel.state.collectAsLazyPagingItems()
+
         SearchListGrid(
-          pagedList = result,
+          pagedList = items,
           onTap = { item ->
             when (item) {
               is Person -> {
@@ -110,31 +113,9 @@ fun SearchScreen(
             }
           },
         )
-//        if (state.loading) {
-//          CircularProgressIndicator()
-//        } else if (state.error != null) {
-//          Text(state.error!!)
-//        } else {
-//          if (state.hasResult == false) {
-//            Text("No result")
-//          } else {
-//            SearchListGrid(
-//              pagedList = state.data,
-//              onTap = { item ->
-//                when (item) {
-//                  is Person -> {}
-//                  is TvShow -> {
-//                    item.item.ids.tmdbId?.let(onShowClick)
-//                  }
-//
-//                  is Video -> {
-//                    item.item.ids.tmdbId?.let(onMovieClick)
-//                  }
-//                }
-//              },
-//            )
-//          }
-//        }
+        if (items.loadState.refresh is LoadState.Loading) {
+          CircularProgressIndicator()
+        }
       }
     }
   }
@@ -157,14 +138,16 @@ fun SearchListGrid(
       pagedList.itemCount,
     ) { index ->
       val item = pagedList[index]
-      SearchThumbnailCardContent(
-        modifier = Modifier
-          .animateItemPlacement()
-          .fillMaxWidth()
-          .aspectRatio(2 / 3f),
-        item = item!!,
-        onTap = onTap,
-      )
+      item?.let {
+        SearchThumbnailCardContent(
+          modifier = Modifier
+            .animateItemPlacement()
+            .fillMaxWidth()
+            .aspectRatio(2 / 3f),
+          item = item,
+          onTap = onTap,
+        )
+      }
     }
   }
 }

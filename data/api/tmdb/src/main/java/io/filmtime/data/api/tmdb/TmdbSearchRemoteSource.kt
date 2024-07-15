@@ -13,4 +13,8 @@ interface TmdbSearchRemoteSource {
   suspend fun searchTvShows(page: Int, query: String): Result<List<TvShow>, GeneralError>
 
   suspend fun searchAll(page: Int, query: String): Result<List<SearchResult>, GeneralError>
+
+  companion object {
+    const val PAGE_SIZE = 20 // TMDB API default page size
+  }
 }

@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
@@ -32,7 +31,6 @@ import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
 import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
-import io.filmtime.core.ui.common.R
 import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.VideoDescription
 import io.filmtime.core.ui.common.componnents.VideoInfo
@@ -125,7 +123,7 @@ fun MovieDetailScreen(
           VideoSectionRow(
             isLoading = state.isCollectionLoading,
             error = state.error,
-            title = stringResource(R.string.core_ui_movie_collection),
+            title = collections.name,
             items = collections.parts,
             onMovieClick = { id ->
               // / Disable onClick when show is present

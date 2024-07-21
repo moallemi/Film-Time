@@ -15,6 +15,7 @@ import io.filmtime.feature.movie.detail.navigateToMovieDetail
 import io.filmtime.feature.movies.moviesGraph
 import io.filmtime.feature.player.navigateToPlayer
 import io.filmtime.feature.player.playerScreen
+import io.filmtime.feature.search.searchGraph
 import io.filmtime.feature.settings.settingsGraph
 import io.filmtime.feature.show.detail.navigateToShowDetail
 import io.filmtime.feature.show.detail.showDetailScreen
@@ -87,6 +88,15 @@ fun FilmTimeNavHost(
         videoThumbnailGridScreen(rootRoute, navController)
         showDetailScreen(rootRoute = rootRoute, navController)
         playerScreen(rootRoute = rootRoute)
+      },
+    )
+
+    searchGraph(
+      onMovieClick = navController::navigateToMovieDetail,
+      onShowClick = navController::navigateToShowDetail,
+      nestedGraphs = { rootRoute ->
+        movieDetailScreen(rootRoute, navController)
+        showDetailScreen(rootRoute, navController)
       },
     )
 

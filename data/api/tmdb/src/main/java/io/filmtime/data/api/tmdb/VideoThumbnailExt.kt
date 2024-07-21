@@ -1,13 +1,17 @@
 package io.filmtime.data.api.tmdb
 
+import io.filmtime.data.model.SearchResult.Person
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoId
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.model.VideoType
+import io.filmtime.data.network.MovieSearchResult
+import io.filmtime.data.network.PersonSearchResult
 import io.filmtime.data.network.TmdbMovieDetailsResponse
 import io.filmtime.data.network.TmdbShowDetailsResponse
 import io.filmtime.data.network.TmdbShowResultResponse
 import io.filmtime.data.network.TmdbVideoResultResponse
+import io.filmtime.data.network.TvShowSearchResult
 
 internal const val TMDB_BASE_IMAGE_URL = "https://image.tmdb.org/t/p/original/"
 
@@ -93,3 +97,32 @@ internal fun Long.toHoursAndMinutes(): String {
     else -> "${remainingMinutes}m"
   }
 }
+
+fun TvShowSearchResult.toVideoThumbnail() = VideoThumbnail(
+  ids = VideoId(traktId = null, tmdbId = id),
+  title = title.orEmpty(),
+  posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
+  year = if (releaseDate?.isNotEmpty() == true) {
+    releaseDate!!.take(4).toInt()
+  } else {
+    0
+  },
+  type = VideoType.Show,
+)
+
+fun MovieSearchResult.toVideoThumbnail() = VideoThumbnail(
+  ids = VideoId(traktId = null, tmdbId = id),
+  title = title.orEmpty(),
+  posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
+  year = if (releaseDate?.isNotEmpty() == true) {
+    releaseDate!!.take(4).toInt()
+  } else {
+    0
+  },
+  type = VideoType.Movie,
+)
+
+fun PersonSearchResult.toPerson(): Person = Person(
+  name = name,
+  imageUrl = TMDB_BASE_IMAGE_URL.plus(profilePath),
+)

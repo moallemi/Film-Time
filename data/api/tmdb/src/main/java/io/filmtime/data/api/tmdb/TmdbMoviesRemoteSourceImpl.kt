@@ -16,6 +16,7 @@ import javax.inject.Inject
 internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
   private val tmdbMoviesService: TmdbMoviesService,
   private val tmdbCollectionService: TmdbCollectionService,
+  private val tmdbSearchRemoteSource: TmdbSearchRemoteSource,
 ) : TmdbMoviesRemoteSource {
 
   override suspend fun trendingMovies(page: Int): Result<List<VideoThumbnail>, GeneralError> =

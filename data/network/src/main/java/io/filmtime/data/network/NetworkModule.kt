@@ -134,6 +134,12 @@ object NetworkModule {
 
   @Provides
   @Singleton
+  fun providesTmdbSearchService(retrofit: Retrofit): TmdbSearchService {
+    return retrofit.create(TmdbSearchService::class.java)
+  }
+
+  @Provides
+  @Singleton
   fun providesNetworkCallAdapterFactory(): CallAdapter.Factory {
     return NetworkCallAdapterFactory()
   }

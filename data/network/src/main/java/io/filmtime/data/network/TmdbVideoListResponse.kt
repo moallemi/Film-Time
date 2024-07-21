@@ -63,4 +63,7 @@ enum class MediaType(val value: String) {
 
   @SerialName("tv")
   TV("tv"),
+
+  @SerialName("person")
+  Person("person"),
 }

@@ -2,6 +2,7 @@ package io.filmtime.data.api.tmdb
 
 import io.filmtime.data.model.SearchResult.Person
 import io.filmtime.data.model.VideoDetail
+import io.filmtime.data.model.VideoGenre
 import io.filmtime.data.model.VideoId
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.model.VideoType
@@ -25,7 +26,7 @@ fun TmdbMovieDetailsResponse.toVideoDetail() =
     posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
     coverUrl = TMDB_BASE_IMAGE_URL.plus(backdropPath),
     year = releaseDate?.takeIf { it.isNotEmpty() }?.take(4)?.toInt() ?: 0,
-    genres = genres?.mapNotNull { it.name } ?: listOf<String>(),
+    genres = genres?.map { VideoGenre(it.id!!, it.name!!) } ?: listOf(),
     originalLanguage = originalLanguage,
     spokenLanguages = spokenLanguages?.map { it.englishName ?: "" }?.filter { it.isNotEmpty() }
       ?: listOf(),
@@ -51,7 +52,7 @@ fun TmdbShowDetailsResponse.toVideoDetail() =
     posterUrl = TMDB_BASE_IMAGE_URL.plus(posterPath),
     coverUrl = TMDB_BASE_IMAGE_URL.plus(backdropPath),
     year = firstAirDate?.take(4)?.toInt() ?: 0,
-    genres = genres?.mapNotNull { it.name } ?: listOf(),
+    genres = genres?.map { VideoGenre(it.id!!, it.name!!) } ?: listOf(),
     originalLanguage = originalLanguage,
     spokenLanguages = spokenLanguages?.map { it.englishName ?: "" }?.filter { it.isNotEmpty() } ?: listOf(),
     description = overview ?: "",

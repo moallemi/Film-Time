@@ -13,6 +13,7 @@ fun NavGraphBuilder.showDetailScreen(
   onStreamReady: (DestinationRoute, streamUrl: String) -> Unit,
   onCastItemClick: (DestinationRoute, castId: Long) -> Unit,
   onSimilarClick: (DestinationRoute, tmdbId: Int) -> Unit,
+  onGenreClick: (DestinationRoute, genreId: Long) -> Unit,
   onBack: () -> Unit,
 ) {
   composable(
@@ -28,6 +29,7 @@ fun NavGraphBuilder.showDetailScreen(
       viewModel = hiltViewModel(),
       onCastItemClick = { onCastItemClick(rootRoute, it) },
       onShowClick = { onSimilarClick(rootRoute, it) },
+      onGenreClick = { onGenreClick(rootRoute, it.id) },
       onBackPressed = onBack,
     )
   }

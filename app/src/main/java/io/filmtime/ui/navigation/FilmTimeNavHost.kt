@@ -130,6 +130,7 @@ private fun NavGraphBuilder.movieDetailScreen(
     onStreamReady = navController::navigateToPlayer,
     onCastItemClick = { _, _ -> },
     onMovieClick = navController::navigateToMovieDetail,
+    onGenreClick = { _, _ -> },
     onBack = navController::popBackStack,
   )
 }
@@ -144,6 +145,7 @@ private fun NavGraphBuilder.showDetailScreen(
     onCastItemClick = { _, _ -> },
     onSimilarClick = navController::navigateToShowDetail,
     onBack = navController::popBackStack,
+    onGenreClick = { _, _ -> },
   )
 }
 

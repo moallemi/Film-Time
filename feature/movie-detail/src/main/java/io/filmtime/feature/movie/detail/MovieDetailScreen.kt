@@ -41,6 +41,7 @@ import io.filmtime.data.model.Preview
 import io.filmtime.data.model.PreviewMovie
 import io.filmtime.data.model.Ratings
 import io.filmtime.data.model.VideoDetail
+import io.filmtime.data.model.VideoGenre
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.credits.components.CreditsRow
 import io.filmtime.feature.similar.SimilarVideosRow
@@ -52,6 +53,7 @@ fun MovieDetailScreen(
   onStreamReady: (String) -> Unit,
   onCastItemClick: (Long) -> Unit,
   onMovieClick: (Int) -> Unit,
+  onGenreClick: (VideoGenre) -> Unit,
   onBackPressed: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
@@ -69,6 +71,7 @@ fun MovieDetailScreen(
     onMovieClick = onMovieClick,
     onAddBookmark = viewModel::addBookmark,
     onRemoveBookmark = viewModel::removeBookmark,
+    onGenreClick = onGenreClick,
     onPLayClick = {
     },
   )
@@ -82,6 +85,7 @@ fun MovieDetailScreen(
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
   onPLayClick: () -> Unit,
+  onGenreClick: (VideoGenre) -> Unit,
 ) {
   val videoDetail = state.videoDetail
 
@@ -103,6 +107,7 @@ fun MovieDetailScreen(
       isBookmarked = state.isBookmarked,
       onAddBookmark = onAddBookmark,
       onRemoveBookmark = onRemoveBookmark,
+      onGenreClick = onGenreClick,
       primaryButton = {
         FilmTimeFilledButton(
           modifier = Modifier
@@ -162,6 +167,7 @@ private fun MovieDetailContent(
   isBookmarked: Boolean,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
+  onGenreClick: (VideoGenre) -> Unit,
   primaryButton: @Composable () -> Unit,
   credits: @Composable () -> Unit,
   similar: @Composable () -> Unit,
@@ -241,6 +247,7 @@ private fun MovieDetailContent(
     ) {
       VideoInfo(
         videoDetail = videoDetail,
+        onGenreClick = onGenreClick,
       )
     }
   }
@@ -255,6 +262,7 @@ private fun MovieDetailScreenPreview() {
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},
+      onGenreClick = {},
       primaryButton = {
         FilmTimeFilledButton(
           modifier = Modifier

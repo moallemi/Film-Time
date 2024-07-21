@@ -6,7 +6,7 @@ data class VideoDetail(
   val posterUrl: String,
   val coverUrl: String,
   val year: Int,
-  val genres: List<String>,
+  val genres: List<VideoGenre>,
   val originalLanguage: String?,
   val spokenLanguages: List<String>,
   val description: String,
@@ -31,7 +31,7 @@ val VideoDetail.Companion.PreviewMovie: VideoDetail
     posterUrl = "",
     coverUrl = "",
     year = 2024,
-    genres = listOf("Action", "Adventure"),
+    genres = listOf(VideoGenre(1L, "Action"), VideoGenre(2, "Adventure")),
     originalLanguage = "en",
     spokenLanguages = listOf("en"),
     description = "Snatched from the Green Place of Many Mothers, young Furiosa falls into the hands of a great biker" +
@@ -56,7 +56,7 @@ val VideoDetail.Companion.PreviewShow: VideoDetail
     posterUrl = "",
     coverUrl = "",
     year = 2019,
-    genres = listOf("Action", "Adventure"),
+    genres = listOf(VideoGenre(1L, "Action"), VideoGenre(2, "Adventure")),
     originalLanguage = "en",
     spokenLanguages = listOf("en"),
     description = "Geralt of Rivia, a mutated monster-hunter for hire, journeys toward his destiny in a turbulent" +

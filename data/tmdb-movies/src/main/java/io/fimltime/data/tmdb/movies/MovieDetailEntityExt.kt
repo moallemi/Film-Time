@@ -11,7 +11,7 @@ fun MovieDetailEntity.toMovie(): VideoDetail {
     posterUrl = posterUrl,
     coverUrl = coverUrl,
     year = year,
-    genres = genres,
+    genres = listOf(), // TODO: change it later to compatible with local data model
     description = description,
     releaseDate = releaseDate,
     isWatched = null,
@@ -39,7 +39,7 @@ fun VideoDetail.toEntity(): MovieDetailEntity {
     year = year,
     originalLanguage = originalLanguage,
     runtime = runtime,
-    genres = genres,
+    genres = listOf(), // TODO: change it later to compatible with local data model
     spokenLanguages = spokenLanguages,
     homePage = homePage,
     status = status,

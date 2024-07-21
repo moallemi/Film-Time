@@ -55,7 +55,7 @@ fun VideoThumbnailInfo(
           color = MaterialTheme.colorScheme.onSurface,
         ),
       ) {
-        Text(text = videoDetail.genres.firstOrNull().orEmpty())
+        Text(text = videoDetail.genres.first().name)
         Text(text = "\u2022")
         Text(text = videoDetail.year.toString())
         videoDetail.runtime?.let { runtime ->

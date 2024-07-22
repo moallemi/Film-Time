@@ -49,7 +49,7 @@ internal fun ShowDetailScreen(
   viewModel: ShowDetailViewModel,
   onCastItemClick: (Long) -> Unit,
   onShowClick: (Int) -> Unit,
-  onGenreClick: (VideoGenre) -> Unit,
+  onGenreClick: (VideoGenre, VideoType) -> Unit,
   onBackPressed: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
@@ -76,7 +76,7 @@ private fun ShowDetailScreen(
   onShowClick: (Int) -> Unit,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
-  onGenreClick: (VideoGenre) -> Unit,
+  onGenreClick: (VideoGenre, VideoType) -> Unit,
   onSeasonChange: (Int) -> Unit,
   onPrimaryButtonClick: () -> Unit,
   onEpisodeClick: (EpisodeThumbnail) -> Unit,
@@ -142,7 +142,7 @@ private fun ShowDetailContent(
   ratings: Ratings?,
   isBookmarked: Boolean,
   onAddBookmark: () -> Unit,
-  onGenreClick: (VideoGenre) -> Unit,
+  onGenreClick: (VideoGenre, VideoType) -> Unit,
   onRemoveBookmark: () -> Unit,
   onSeasonChange: (Int) -> Unit,
   onEpisodeClick: (EpisodeThumbnail) -> Unit,
@@ -236,7 +236,7 @@ private fun ShowDetailContent(
     ) {
       VideoInfo(
         videoDetail = videoDetail,
-        onGenreClick = onGenreClick,
+        onGenreClick = { onGenreClick(it, VideoType.Show) },
       )
     }
   }
@@ -252,7 +252,7 @@ private fun ShowDetailScreenPreview() {
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},
-      onGenreClick = {},
+      onGenreClick = { _, _ -> },
       seasonsState = SeasonsState(
         seasons = mapOf(
           1 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),

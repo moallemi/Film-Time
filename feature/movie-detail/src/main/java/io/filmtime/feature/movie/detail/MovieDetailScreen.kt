@@ -53,7 +53,7 @@ fun MovieDetailScreen(
   onStreamReady: (String) -> Unit,
   onCastItemClick: (Long) -> Unit,
   onMovieClick: (Int) -> Unit,
-  onGenreClick: (VideoGenre) -> Unit,
+  onGenreClick: (VideoGenre, VideoType) -> Unit,
   onBackPressed: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
@@ -85,7 +85,7 @@ fun MovieDetailScreen(
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
   onPLayClick: () -> Unit,
-  onGenreClick: (VideoGenre) -> Unit,
+  onGenreClick: (VideoGenre, VideoType) -> Unit,
 ) {
   val videoDetail = state.videoDetail
 
@@ -167,7 +167,7 @@ private fun MovieDetailContent(
   isBookmarked: Boolean,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
-  onGenreClick: (VideoGenre) -> Unit,
+  onGenreClick: (VideoGenre, VideoType) -> Unit,
   primaryButton: @Composable () -> Unit,
   credits: @Composable () -> Unit,
   similar: @Composable () -> Unit,
@@ -247,7 +247,7 @@ private fun MovieDetailContent(
     ) {
       VideoInfo(
         videoDetail = videoDetail,
-        onGenreClick = onGenreClick,
+        onGenreClick = { onGenreClick(it, VideoType.Movie) },
       )
     }
   }
@@ -262,7 +262,7 @@ private fun MovieDetailScreenPreview() {
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},
-      onGenreClick = {},
+      onGenreClick = { _, _ -> },
       primaryButton = {
         FilmTimeFilledButton(
           modifier = Modifier

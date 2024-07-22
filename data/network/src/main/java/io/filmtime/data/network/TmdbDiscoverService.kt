@@ -8,11 +8,13 @@ interface TmdbDiscoverService {
 
   @GET("discover/movie")
   suspend fun getMovies(
-    @Query("with_genres") genres: List<String>,
+    @Query("page") page: Int?,
+    @Query("with_genres") genres: List<String>?,
   ): NetworkResponse<TmdbVideoListResponse, TmdbErrorResponse>
 
   @GET("discover/tv")
   suspend fun getShows(
-    @Query("with_genres") genres: List<String>,
+    @Query("page") page: Int?,
+    @Query("with_genres") genres: List<String>?,
   ): NetworkResponse<TmdbShowListResponse, TmdbErrorResponse>
 }

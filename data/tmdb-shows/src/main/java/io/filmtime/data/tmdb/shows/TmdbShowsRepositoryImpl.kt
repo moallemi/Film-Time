@@ -51,6 +51,20 @@ internal class TmdbShowsRepositoryImpl @Inject constructor(
       },
     ).flow
 
+  override fun showsByGenre(genreId: Long): Flow<PagingData<VideoThumbnail>> =
+    Pager(
+      config = PagingConfig(
+        pageSize = TmdbShowsRemoteSource.PAGE_SIZE,
+        enablePlaceholders = false,
+      ),
+      pagingSourceFactory = {
+        ShowsByGenrePagingSource(
+          tmdbShowsRemoteSource = tmdbShowsRemoteSource,
+          genreId = genreId,
+        )
+      },
+    ).flow
+
   override suspend fun credits(movieId: Int): Result<List<Person>, GeneralError> =
     tmdbShowsRemoteSource.credits(movieId)
 

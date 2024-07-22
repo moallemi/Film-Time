@@ -7,13 +7,14 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import io.filmtime.core.ui.navigation.DestinationRoute
 import io.filmtime.core.ui.navigation.composable
+import io.filmtime.data.model.VideoType
 
 fun NavGraphBuilder.showDetailScreen(
   rootRoute: DestinationRoute,
   onStreamReady: (DestinationRoute, streamUrl: String) -> Unit,
   onCastItemClick: (DestinationRoute, castId: Long) -> Unit,
   onSimilarClick: (DestinationRoute, tmdbId: Int) -> Unit,
-  onGenreClick: (DestinationRoute, genreId: Long) -> Unit,
+  onGenreClick: (DestinationRoute, genreId: Long, type: VideoType) -> Unit,
   onBack: () -> Unit,
 ) {
   composable(
@@ -29,7 +30,7 @@ fun NavGraphBuilder.showDetailScreen(
       viewModel = hiltViewModel(),
       onCastItemClick = { onCastItemClick(rootRoute, it) },
       onShowClick = { onSimilarClick(rootRoute, it) },
-      onGenreClick = { onGenreClick(rootRoute, it.id) },
+      onGenreClick = { genre, type -> onGenreClick(rootRoute, genre.id, type) },
       onBackPressed = onBack,
     )
   }

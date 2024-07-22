@@ -150,7 +150,7 @@ private fun NavGraphBuilder.showDetailScreen(
     onCastItemClick = { _, _ -> },
     onSimilarClick = navController::navigateToShowDetail,
     onBack = navController::popBackStack,
-    onGenreClick = { _, _ -> },
+    onGenreClick = navController::navigateVideoGridByGenre,
   )
 }
 

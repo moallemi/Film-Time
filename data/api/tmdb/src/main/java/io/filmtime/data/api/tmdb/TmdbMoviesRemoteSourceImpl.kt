@@ -102,9 +102,9 @@ internal class TmdbMoviesRemoteSourceImpl @Inject constructor(
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))
     }
 
-  override suspend fun getByGenres(genresId: List<String>): Result<List<VideoThumbnail>, GeneralError> =
+  override suspend fun getByGenres(page: Int, genresId: List<Long>): Result<List<VideoThumbnail>, GeneralError> =
     getMovieList {
-      tmdbDiscoverService.getMovies(genresId)
+      tmdbDiscoverService.getMovies(page, genresId.map { it.toString() })
     }
 
   override suspend fun upcomingMovies(

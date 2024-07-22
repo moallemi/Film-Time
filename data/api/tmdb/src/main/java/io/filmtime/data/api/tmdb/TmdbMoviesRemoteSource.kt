@@ -37,7 +37,7 @@ interface TmdbMoviesRemoteSource {
 
   suspend fun getCollection(collectionId: Int): Result<MovieCollection, GeneralError>
 
-  suspend fun getByGenres(genresId: List<String>): Result<List<VideoThumbnail>, GeneralError>
+  suspend fun getByGenres(page: Int, genresId: List<Long>): Result<List<VideoThumbnail>, GeneralError>
 
   companion object {
     const val PAGE_SIZE = 20 // TMDB API default page size

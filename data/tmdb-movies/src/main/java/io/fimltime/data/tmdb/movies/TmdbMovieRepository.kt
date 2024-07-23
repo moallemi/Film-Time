@@ -25,6 +25,8 @@ interface TmdbMovieRepository {
 
   fun moviesStream(movieListType: MovieListType): Flow<PagingData<VideoThumbnail>>
 
+  fun moviesByGenre(genreId: Long): Flow<PagingData<VideoThumbnail>>
+
   suspend fun credits(movieId: Int): Result<List<Person>, GeneralError>
 
   suspend fun getSimilar(movieId: Int): Result<List<VideoThumbnail>, GeneralError>

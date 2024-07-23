@@ -25,6 +25,8 @@ interface TmdbShowsRepository {
 
   fun showsStream(type: ShowListType): Flow<PagingData<VideoThumbnail>>
 
+  fun showsByGenre(genreId: Long): Flow<PagingData<VideoThumbnail>>
+
   suspend fun credits(movieId: Int): Result<List<Person>, GeneralError>
 
   suspend fun similar(movieId: Int): Result<List<VideoThumbnail>, GeneralError>

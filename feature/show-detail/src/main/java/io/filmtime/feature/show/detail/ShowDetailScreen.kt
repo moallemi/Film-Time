@@ -38,6 +38,7 @@ import io.filmtime.data.model.Preview
 import io.filmtime.data.model.PreviewShow
 import io.filmtime.data.model.Ratings
 import io.filmtime.data.model.VideoDetail
+import io.filmtime.data.model.VideoGenre
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.credits.components.CreditsRow
 import io.filmtime.feature.show.detail.components.SeasonsSection
@@ -48,6 +49,7 @@ internal fun ShowDetailScreen(
   viewModel: ShowDetailViewModel,
   onCastItemClick: (Long) -> Unit,
   onShowClick: (Int) -> Unit,
+  onGenreClick: (VideoGenre, VideoType) -> Unit,
   onBackPressed: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
@@ -61,6 +63,7 @@ internal fun ShowDetailScreen(
     onSeasonChange = viewModel::changeSeason,
     addToHistory = viewModel::addEpisodeToHistory,
     removeFromHistory = viewModel::removeEpisodeFromHistory,
+    onGenreClick = onGenreClick,
     onPrimaryButtonClick = {},
     onEpisodeClick = {},
   )
@@ -73,6 +76,7 @@ private fun ShowDetailScreen(
   onShowClick: (Int) -> Unit,
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
+  onGenreClick: (VideoGenre, VideoType) -> Unit,
   onSeasonChange: (Int) -> Unit,
   onPrimaryButtonClick: () -> Unit,
   onEpisodeClick: (EpisodeThumbnail) -> Unit,
@@ -98,6 +102,7 @@ private fun ShowDetailScreen(
       ratings = state.ratings,
       isBookmarked = state.isBookmarked,
       onAddBookmark = onAddBookmark,
+      onGenreClick = onGenreClick,
       onRemoveBookmark = onRemoveBookmark,
       seasonsState = state.seasonsState,
       onSeasonChange = onSeasonChange,
@@ -137,6 +142,7 @@ private fun ShowDetailContent(
   ratings: Ratings?,
   isBookmarked: Boolean,
   onAddBookmark: () -> Unit,
+  onGenreClick: (VideoGenre, VideoType) -> Unit,
   onRemoveBookmark: () -> Unit,
   onSeasonChange: (Int) -> Unit,
   onEpisodeClick: (EpisodeThumbnail) -> Unit,
@@ -230,6 +236,7 @@ private fun ShowDetailContent(
     ) {
       VideoInfo(
         videoDetail = videoDetail,
+        onGenreClick = { onGenreClick(it, VideoType.Show) },
       )
     }
   }
@@ -245,6 +252,7 @@ private fun ShowDetailScreenPreview() {
       isBookmarked = false,
       onAddBookmark = {},
       onRemoveBookmark = {},
+      onGenreClick = { _, _ -> },
       seasonsState = SeasonsState(
         seasons = mapOf(
           1 to listOf(EpisodeThumbnail.Preview, EpisodeThumbnail.Preview),

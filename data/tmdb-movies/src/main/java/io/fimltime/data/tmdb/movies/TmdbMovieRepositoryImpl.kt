@@ -38,6 +38,7 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
         movieDao.storeMovie(result.data.toEntity())
         result
       }
+
       is Result.Failure -> result
     }
   }
@@ -67,6 +68,20 @@ internal class TmdbMovieRepositoryImpl @Inject constructor(
         MoviesPagingSource(
           tmdbMoviesRemoteSource = tmdbMoviesRemoteSource,
           movieListType = movieListType,
+        )
+      },
+    ).flow
+
+  override fun moviesByGenre(genreId: Long): Flow<PagingData<VideoThumbnail>> =
+    Pager(
+      config = PagingConfig(
+        pageSize = TmdbMoviesRemoteSource.PAGE_SIZE,
+        enablePlaceholders = false,
+      ),
+      pagingSourceFactory = {
+        MoviesByGenrePagingSource(
+          tmdbMoviesRemoteSource = tmdbMoviesRemoteSource,
+          genreId = genreId,
         )
       },
     ).flow

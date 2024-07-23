@@ -12,4 +12,5 @@ dependencies {
   implementation(project(":core:design-system"))
 
   implementation(libs.lottie)
+  implementation(libs.paging.compose)
 }

@@ -22,6 +22,8 @@ import io.filmtime.feature.show.detail.showDetailScreen
 import io.filmtime.feature.shows.showsGraph
 import io.filmtime.feature.trakt.login.navigateToTraktLogin
 import io.filmtime.feature.trakt.login.traktLoginScreen
+import io.filmtime.feature.video.thumbnail.grid.genre.navigateVideoGridByGenre
+import io.filmtime.feature.video.thumbnail.grid.genre.videoThumbnailGridGenreScreen
 import io.filmtime.feature.video.thumbnail.grid.navigateToVideoThumbnailGridScreen
 import io.filmtime.feature.video.thumbnail.grid.videoThumbnailGridScreen
 
@@ -57,6 +59,7 @@ fun FilmTimeNavHost(
         movieDetailScreen(rootRoute, navController)
         showDetailScreen(rootRoute, navController)
         playerScreen(rootRoute)
+        genreGridScreen(rootRoute, navController)
       },
     )
 
@@ -72,6 +75,7 @@ fun FilmTimeNavHost(
       nestedGraphs = { rootRoute ->
         videoThumbnailGridScreen(rootRoute, navController)
         movieDetailScreen(rootRoute, navController)
+        genreGridScreen(rootRoute, navController)
       },
     )
 
@@ -88,6 +92,7 @@ fun FilmTimeNavHost(
         videoThumbnailGridScreen(rootRoute, navController)
         showDetailScreen(rootRoute = rootRoute, navController)
         playerScreen(rootRoute = rootRoute)
+        genreGridScreen(rootRoute, navController)
       },
     )
 
@@ -130,6 +135,7 @@ private fun NavGraphBuilder.movieDetailScreen(
     onStreamReady = navController::navigateToPlayer,
     onCastItemClick = { _, _ -> },
     onMovieClick = navController::navigateToMovieDetail,
+    onGenreClick = navController::navigateVideoGridByGenre,
     onBack = navController::popBackStack,
   )
 }
@@ -144,6 +150,7 @@ private fun NavGraphBuilder.showDetailScreen(
     onCastItemClick = { _, _ -> },
     onSimilarClick = navController::navigateToShowDetail,
     onBack = navController::popBackStack,
+    onGenreClick = navController::navigateVideoGridByGenre,
   )
 }
 
@@ -153,6 +160,18 @@ private fun NavGraphBuilder.traktLoginScreen(
 ) {
   traktLoginScreen(
     rootRoute = rootRoute,
+    onBack = navController::popBackStack,
+  )
+}
+
+private fun NavGraphBuilder.genreGridScreen(
+  rootRoute: DestinationRoute,
+  navController: NavHostController,
+) {
+  videoThumbnailGridGenreScreen(
+    rootRoute = rootRoute,
+    onMovieClick = navController::navigateToMovieDetail,
+    onShowClick = navController::navigateToShowDetail,
     onBack = navController::popBackStack,
   )
 }

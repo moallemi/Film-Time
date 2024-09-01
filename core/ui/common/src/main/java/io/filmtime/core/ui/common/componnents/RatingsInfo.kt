@@ -1,21 +1,15 @@
 package io.filmtime.core.ui.common.componnents
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
@@ -27,6 +21,7 @@ import io.filmtime.data.model.Ratings
 fun RatingsInfo(
   modifier: Modifier = Modifier,
   ratings: Ratings,
+  onRatingClick: (String) -> Unit,
 ) {
   CompositionLocalProvider(
     LocalContentColor provides MaterialTheme.colorScheme.onSurface,
@@ -36,87 +31,47 @@ fun RatingsInfo(
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
     ) {
-      ratings.imdb?.let {
-        Image(
-          modifier = Modifier.size(28.dp),
-          painter = painterResource(R.drawable.ic_imdb),
-          contentDescription = null,
+      ratings.imdb?.let { rate ->
+        RatingCard(
+          icon = R.drawable.ic_imdb,
+          rate = "${rate.rating}",
+          votes = ratings.imdb?.votes ?: "N/A",
+          onClick = { onRatingClick(rate.link!!) },
         )
-        Column {
-          Text(
-            text = "${ratings.imdb?.rating}",
-            fontWeight = FontWeight.Bold,
-          )
-          Text(
-            text = ratings.imdb?.votes ?: "N/A",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-          )
-        }
         Spacer(modifier = Modifier.width(8.dp))
       }
 
-      ratings.rottenTomatoes?.let {
-        Image(
-          modifier = Modifier.size(24.dp),
-          painter = if (it.info == "Fresh") {
-            painterResource(R.drawable.ic_rt_fresh)
+      ratings.rottenTomatoes?.let { rate ->
+        RatingCard(
+          icon = if (rate.info == "Fresh") {
+            R.drawable.ic_rt_fresh
           } else {
-            painterResource(R.drawable.ic_rt_rotten)
+            R.drawable.ic_rt_rotten
           },
-          contentDescription = null,
+          rate = "${ratings.rottenTomatoes?.rating}",
+          votes = ratings.rottenTomatoes?.info.orEmpty(),
+          onClick = { onRatingClick(rate.link!!) },
         )
-        Column {
-          Text(
-            text = "${ratings.rottenTomatoes?.rating}",
-            fontWeight = FontWeight.Bold,
-          )
-          Text(
-            text = ratings.rottenTomatoes?.info.orEmpty(),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-          )
-        }
         Spacer(modifier = Modifier.width(8.dp))
       }
 
-      ratings.tmdb?.let {
-        Image(
-          modifier = Modifier.size(28.dp),
-          painter = painterResource(R.drawable.ic_tmdb_square),
-          contentDescription = null,
+      ratings.tmdb?.let { rate ->
+        RatingCard(
+          icon = R.drawable.ic_tmdb_square,
+          rate = "${ratings.tmdb?.rating}",
+          votes = "${ratings.tmdb?.votes}",
+          onClick = { onRatingClick(rate.link!!) },
         )
-        Column {
-          Text(
-            text = "${ratings.tmdb?.rating}",
-            fontWeight = FontWeight.Bold,
-          )
-          Text(
-            text = "${ratings.tmdb?.votes}",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-          )
-        }
         Spacer(modifier = Modifier.width(8.dp))
       }
 
-      ratings.trakt?.let {
-        Image(
-          modifier = Modifier.size(36.dp),
-          painter = painterResource(R.drawable.ic_trakt),
-          contentDescription = null,
+      ratings.trakt?.let { rate ->
+        RatingCard(
+          icon = R.drawable.ic_trakt,
+          rate = "${rate.rating}",
+          votes = "${rate.votes}",
+          onClick = { onRatingClick(rate.link!!) },
         )
-        Column {
-          Text(
-            text = "${ratings.trakt?.rating}",
-            fontWeight = FontWeight.Bold,
-          )
-          Text(
-            text = "${ratings.trakt?.votes}",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-          )
-        }
       }
     }
   }
@@ -128,6 +83,7 @@ private fun RatingsInfoPreview() {
   PreviewFilmTimeTheme {
     RatingsInfo(
       ratings = Ratings.Preview,
+      onRatingClick = {},
     )
   }
 }

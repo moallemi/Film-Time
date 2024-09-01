@@ -32,6 +32,7 @@ fun VideoThumbnailInfo(
   onAddBookmark: () -> Unit,
   onRemoveBookmark: () -> Unit,
   primaryButton: @Composable () -> Unit,
+  onRatingClick: (String) -> Unit,
   traktHistoryButton: @Composable RowScope.() -> Unit,
 ) {
   Column(
@@ -93,6 +94,7 @@ fun VideoThumbnailInfo(
       RatingsInfo(
         modifier = Modifier.fillMaxWidth(),
         ratings = ratings,
+        onRatingClick = onRatingClick,
       )
     }
   }
@@ -126,6 +128,7 @@ private fun MovieDetailScreenPreview() {
           Text("Add to history")
         }
       },
+      onRatingClick = {}
     )
   }
 }

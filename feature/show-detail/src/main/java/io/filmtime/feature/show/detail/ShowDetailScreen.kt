@@ -195,6 +195,7 @@ private fun ShowDetailContent(
             primaryButton = primaryButton,
             traktHistoryButton = {
             },
+            onRatingClick = {}
           )
         }
       }

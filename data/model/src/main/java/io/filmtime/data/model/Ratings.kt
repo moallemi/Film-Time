@@ -13,6 +13,7 @@ data class RatingInfo(
   val rating: String? = null,
   val votes: String? = null,
   val info: String? = null,
+  val link: String? = null,
 )
 
 val Ratings.Companion.Preview: Ratings

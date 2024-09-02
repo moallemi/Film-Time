@@ -36,7 +36,7 @@ fun RatingsInfo(
           icon = R.drawable.ic_imdb,
           rate = "${rate.rating}",
           votes = ratings.imdb?.votes ?: "N/A",
-          onClick = { onRatingClick(rate.link!!) },
+          onClick = rate.link?.let { { onRatingClick(rate.link!!) } },
         )
         Spacer(modifier = Modifier.width(8.dp))
       }
@@ -50,7 +50,7 @@ fun RatingsInfo(
           },
           rate = "${ratings.rottenTomatoes?.rating}",
           votes = ratings.rottenTomatoes?.info.orEmpty(),
-          onClick = { onRatingClick(rate.link!!) },
+          onClick = rate.link?.let { { onRatingClick(rate.link!!) } },
         )
         Spacer(modifier = Modifier.width(8.dp))
       }
@@ -60,7 +60,7 @@ fun RatingsInfo(
           icon = R.drawable.ic_tmdb_square,
           rate = "${ratings.tmdb?.rating}",
           votes = "${ratings.tmdb?.votes}",
-          onClick = { onRatingClick(rate.link!!) },
+          onClick = rate.link?.let { { onRatingClick(rate.link!!) } },
         )
         Spacer(modifier = Modifier.width(8.dp))
       }
@@ -70,7 +70,7 @@ fun RatingsInfo(
           icon = R.drawable.ic_trakt,
           rate = "${rate.rating}",
           votes = "${rate.votes}",
-          onClick = { onRatingClick(rate.link!!) },
+          onClick = rate.link?.let { { onRatingClick(rate.link!!) } },
         )
       }
     }

@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+  implementation(project(":core:browser"))
 
   implementation(project(":data:model"))
 

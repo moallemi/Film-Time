@@ -21,9 +21,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.filmtime.core.browser.openUrl
 import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
 import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
@@ -154,6 +156,7 @@ private fun ShowDetailContent(
 ) {
   var imageHeight by remember { mutableIntStateOf(4000) }
   val density = LocalDensity.current
+  val context = LocalContext.current
   val boxHeight by remember(imageHeight) {
     derivedStateOf {
       with(density) {
@@ -195,7 +198,9 @@ private fun ShowDetailContent(
             primaryButton = primaryButton,
             traktHistoryButton = {
             },
-            onRatingClick = {}
+            onRatingClick = {
+              context.openUrl(it, isExternal = false)
+            },
           )
         }
       }

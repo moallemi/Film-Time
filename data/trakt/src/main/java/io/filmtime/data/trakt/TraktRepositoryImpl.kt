@@ -6,11 +6,10 @@ import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Ratings
 import io.filmtime.data.model.Result
 import io.filmtime.data.model.VideoType
+import io.filmtime.data.model.VideoType.Movie
+import io.filmtime.data.model.VideoType.Show
 import io.filmtime.data.trakt.model.toTraktMediaType
 import javax.inject.Inject
-
-
-
 
 internal class TraktRepositoryImpl @Inject constructor(
   private val traktRemoteSource: TraktRemoteSource,
@@ -19,8 +18,10 @@ internal class TraktRepositoryImpl @Inject constructor(
 
   companion object {
     const val TRAKT_MOVIE_BASE_URL = "https://trakt.tv/movies/"
-    const val TRAKT_SHOWS_BASE_URL = ""
-    const val IMDB_MOVIE = ""
+    const val TRAKT_SHOWS_BASE_URL = "https://trakt.tv/shows/"
+    const val IMDB_MOVIE_BASE_URL = "https://imdb.com/title/"
+    const val TMDB_MOVIE_BASE_URL = "https://themoviedb.org/movie/"
+    const val TMDB_SHOW_BASE_URL = "https://themoviedb.org/tv/"
   }
 
   override suspend fun ratings(type: VideoType, tmdbId: Int): Result<Ratings, GeneralError> =
@@ -34,13 +35,19 @@ internal class TraktRepositoryImpl @Inject constructor(
           .mapSuccess { ratings ->
             ratings.copy(
               trakt = ratings.trakt?.copy(
-                link = "https://trakt.tv/movies/${traktIdResult.data.traktId}",
+                link = when (type) {
+                  Movie -> TRAKT_MOVIE_BASE_URL
+                  Show -> TRAKT_SHOWS_BASE_URL
+                } + traktIdResult.data.traktId,
               ),
               tmdb = ratings.tmdb?.copy(
-                link = "https://www.themoviedb.org/movie/${traktIdResult.data.tmdbId}",
+                link = when (type) {
+                  Movie -> TMDB_MOVIE_BASE_URL
+                  Show -> TMDB_SHOW_BASE_URL
+                } + traktIdResult.data.tmdbId,
               ),
               imdb = ratings.imdb?.copy(
-                link = "https://www.imdb.com/title/${traktIdResult.data.imdbId}",
+                link = IMDB_MOVIE_BASE_URL + traktIdResult.data.imdbId,
               ),
             )
           }

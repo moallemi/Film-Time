@@ -79,7 +79,6 @@ internal class TraktSearchRemoteSourceImpl @Inject constructor(
           )
         }
         Result.Success(externalID)
-
       }
 
       is NetworkResponse.UnknownError -> Result.Failure(GeneralError.UnknownError(result.error))

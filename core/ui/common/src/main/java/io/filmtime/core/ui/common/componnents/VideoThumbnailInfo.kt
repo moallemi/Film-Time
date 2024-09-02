@@ -128,7 +128,7 @@ private fun MovieDetailScreenPreview() {
           Text("Add to history")
         }
       },
-      onRatingClick = {}
+      onRatingClick = {},
     )
   }
 }

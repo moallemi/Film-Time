@@ -221,7 +221,7 @@ private fun MovieDetailContent(
             ratings = ratings,
             onRatingClick = {
               context.openUrl(it, isExternal = false)
-            }
+            },
           )
         }
       }

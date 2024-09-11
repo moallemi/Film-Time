@@ -3,6 +3,7 @@ package io.filmtime.data.trakt.auth
 import io.filmtime.data.api.trakt.TraktAuthRemoteSource
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.Result
+import io.filmtime.data.model.TraktCodeLogin
 import io.filmtime.data.model.TraktTokens
 import io.filmtime.data.storage.trakt.TraktAuthLocalSource
 import kotlinx.coroutines.flow.Flow
@@ -33,4 +34,7 @@ class TraktAuthRepositoryImpl @Inject constructor(
   override suspend fun logout() {
     traktAuthLocalSource.clearAuthTokens()
   }
+
+  override suspend fun getLoginCode(): Result<TraktCodeLogin, GeneralError> =
+    traktAuthRemoteSource.getLoginCode()
 }

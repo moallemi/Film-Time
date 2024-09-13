@@ -17,4 +17,6 @@ interface TraktAuthRepository {
   suspend fun logout()
 
   suspend fun getLoginCode(): Result<TraktCodeLogin, GeneralError>
+
+  suspend fun getAccessTokenByDeviceCode(deviceCode: String): Result<TraktTokens, GeneralError>
 }

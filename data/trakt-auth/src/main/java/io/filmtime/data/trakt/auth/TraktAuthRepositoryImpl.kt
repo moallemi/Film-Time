@@ -37,4 +37,12 @@ class TraktAuthRepositoryImpl @Inject constructor(
 
   override suspend fun getLoginCode(): Result<TraktCodeLogin, GeneralError> =
     traktAuthRemoteSource.getLoginCode()
+
+  override suspend fun getAccessTokenByDeviceCode(deviceCode: String): Result<TraktTokens, GeneralError> {
+    val result = traktAuthRemoteSource.getAccessTokenByDeviceCode(code = deviceCode)
+    if (result is Result.Success) {
+      traktAuthLocalSource.storeAuthTokens(result.data)
+    }
+    return result
+  }
 }

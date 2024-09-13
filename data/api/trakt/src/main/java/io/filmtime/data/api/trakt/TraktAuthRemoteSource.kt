@@ -11,5 +11,5 @@ interface TraktAuthRemoteSource {
 
   suspend fun getLoginCode(): Result<TraktCodeLogin, GeneralError>
 
-  suspend fun getTokenByCode()
+  suspend fun getAccessTokenByDeviceCode(code: String): Result<TraktTokens, GeneralError>
 }

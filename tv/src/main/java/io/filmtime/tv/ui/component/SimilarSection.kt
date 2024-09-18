@@ -25,7 +25,7 @@ fun SimilarSection(
       videoType = type,
     )
   }
-  MoviesRow(
+  ThumbnailsRow(
     thumbnails = uiState.videoItems,
     title = stringResource(R.string.similar),
     onClick = onMovieClick,

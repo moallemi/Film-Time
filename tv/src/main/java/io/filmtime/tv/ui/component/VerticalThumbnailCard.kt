@@ -33,7 +33,7 @@ import coil.compose.AsyncImagePainter
 import io.filmtime.data.model.VideoThumbnail
 
 @Composable
-fun VerticalMovieCard(
+fun VerticalThumbnailCard(
   modifier: Modifier = Modifier,
   videoThumbnail: VideoThumbnail,
   onClick: () -> Unit = {},

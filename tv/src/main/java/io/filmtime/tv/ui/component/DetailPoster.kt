@@ -70,11 +70,11 @@ fun DetailPoster(
       )
     },
 
-    )
+  )
 }
 
 @Composable
-private fun PosterLoadingPlaceholder(
+fun PosterLoadingPlaceholder(
   modifier: Modifier = Modifier,
   durationInMillis: Int = 1000,
   scrimColor: Color = MaterialTheme.colorScheme.surfaceVariant,
@@ -94,7 +94,7 @@ private fun PosterLoadingPlaceholder(
       .drawBehind {
         drawRect(
           brush = Brush.linearGradient(
-            colors = listOf(Color.Transparent, scrimColor),
+            colors = listOf(scrimColor, Color.Transparent),
             start = Offset(size.width, 0f),
             end = Offset(size.width / 3, size.height / 2),
           ),

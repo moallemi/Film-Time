@@ -86,7 +86,7 @@ public object PlaceholderDefaults {
  * @param contentFadeTransitionSpec The transition spec to use when fading the content
  * on/off screen. The boolean parameter defined for the transition is [visible].
  */
-public fun Modifier.placeholder(
+internal fun Modifier.placeholder(
   visible: Boolean,
   color: Color,
   shape: Shape = RectangleShape,

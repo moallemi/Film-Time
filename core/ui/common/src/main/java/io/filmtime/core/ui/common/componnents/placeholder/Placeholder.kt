@@ -102,7 +102,7 @@ public fun Modifier.placeholder(
     { spring() },
   contentFadeTransitionSpec: @Composable Transition.Segment<Boolean>.() -> FiniteAnimationSpec<Float> = { spring() },
 ): Modifier = composed {
-  Modifier.placeholder(
+  placeholder(
     visible = visible,
     color = if (color.isSpecified) color else PlaceholderDefaults.color(),
     shape = shape ?: MaterialTheme.shapes.small,

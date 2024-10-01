@@ -18,15 +18,18 @@ android {
 }
 
 dependencies {
+  implementation(project(":core:ui:navigation"))
+  implementation(project(":data:model"))
+
+  implementation(project(":core:ui:common"))
+
   implementation(libs.core.ktx)
   implementation(libs.appcompat)
   implementation(libs.lifecycle.runtime.ktx)
   implementation(libs.activity.compose)
-  implementation(project(":core:ui:common"))
   implementation(libs.icons.extended)
   implementation(project(":domain:tmdb-movies"))
   implementation(project(":domain:tmdb-shows"))
-  implementation(project(":data:model"))
   implementation(project(":domain:stream"))
   implementation(project(":domain:bookmarks"))
   implementation(project(":domain:trakt:trakt"))

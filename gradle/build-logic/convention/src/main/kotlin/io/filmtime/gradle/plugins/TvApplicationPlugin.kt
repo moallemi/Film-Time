@@ -70,9 +70,7 @@ class TvApplicationPlugin : Plugin<Project> {
       }
 
       dependencies {
-        add("implementation", libs.findLibrary("compose-foundation").get())
         add("implementation", libs.findLibrary("androidx-tv-material").get())
-        add("implementation", libs.findLibrary("tv-compose-navigation").get())
       }
 
       configureGooglePlayPublish()

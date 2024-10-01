@@ -3,7 +3,6 @@ package io.filmtime.gradle.plugins
 import com.android.build.api.dsl.ApplicationExtension
 import io.filmtime.gradle.configureFlavors
 import io.filmtime.gradle.configureGooglePlayPublish
-import io.filmtime.gradle.configureGooglePlayPublishFlavors
 import io.filmtime.gradle.configureKotlinAndroid
 import io.filmtime.gradle.configureVersionCode
 import io.filmtime.gradle.libs
@@ -36,7 +35,7 @@ class TvApplicationPlugin : Plugin<Project> {
 
         configureFlavors(this)
 
-        configureGooglePlayPublishFlavors(this)
+        // configureGooglePlayPublishFlavors(this)
 
         signingConfigs {
           getByName("debug") {

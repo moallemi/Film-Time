@@ -20,6 +20,8 @@ fun VideoDescription(
   videoDetail: VideoDetail,
   modifier: Modifier = Modifier,
 ) {
+  if (videoDetail.description.isEmpty() && videoDetail.tagline.isNullOrEmpty()) return
+
   Column(
     modifier = modifier
       .padding(horizontal = 16.dp)

@@ -21,6 +21,6 @@ data class Movie(
 data class IDS(
   val trakt: Int,
   val slug: String,
-  val imdb: String,
+  val imdb: String? = null,
   val tmdb: Int,
 )

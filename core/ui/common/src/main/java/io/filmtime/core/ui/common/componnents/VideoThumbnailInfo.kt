@@ -57,15 +57,17 @@ fun VideoThumbnailInfo(
         ),
       ) {
         Text(text = videoDetail.genres.firstOrNull()?.name.orEmpty())
-        Text(text = "\u2022")
-        Text(text = videoDetail.year.toString())
+        videoDetail.year.takeIf { it != 0 }?.let { year ->
+          Text(text = "\u2022")
+          Text(text = year.toString())
+        }
         videoDetail.runtime?.let { runtime ->
           Text(text = "\u2022")
           Text(text = runtime)
         }
-        videoDetail.networks?.let { networks ->
+        videoDetail.networks?.firstOrNull()?.let { network ->
           Text(text = "\u2022")
-          Text(text = networks.firstOrNull().orEmpty())
+          Text(text = network)
         }
       }
     }

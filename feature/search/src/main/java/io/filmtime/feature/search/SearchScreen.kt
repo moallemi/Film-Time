@@ -91,7 +91,7 @@ fun SearchScreen(
         },
       )
       Box(
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.TopCenter,
         modifier = Modifier.fillMaxSize(),
       ) {
         val items = viewModel.state.collectAsLazyPagingItems()
@@ -114,7 +114,7 @@ fun SearchScreen(
           },
         )
         if (items.loadState.refresh is LoadState.Loading) {
-          CircularProgressIndicator()
+          CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
       }
     }

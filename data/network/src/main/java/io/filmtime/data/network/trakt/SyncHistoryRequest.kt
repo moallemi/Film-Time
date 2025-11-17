@@ -49,7 +49,7 @@ data class HistoryIDS(
 @Serializable
 data class Show(
   val title: String,
-  val year: Long,
+  val year: Long? = null,
   val ids: HistoryIDS,
   val seasons: List<Season>? = null,
 )

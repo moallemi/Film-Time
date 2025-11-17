@@ -56,16 +56,18 @@ fun VideoThumbnailInfo(
           color = MaterialTheme.colorScheme.onSurface,
         ),
       ) {
-        Text(text = videoDetail.genres.first().name)
-        Text(text = "\u2022")
-        Text(text = videoDetail.year.toString())
+        Text(text = videoDetail.genres.firstOrNull()?.name.orEmpty())
+        videoDetail.year.takeIf { it != 0 }?.let { year ->
+          Text(text = "\u2022")
+          Text(text = year.toString())
+        }
         videoDetail.runtime?.let { runtime ->
           Text(text = "\u2022")
           Text(text = runtime)
         }
-        videoDetail.networks?.let { networks ->
+        videoDetail.networks?.firstOrNull()?.let { network ->
           Text(text = "\u2022")
-          Text(text = networks.firstOrNull().orEmpty())
+          Text(text = network)
         }
       }
     }

@@ -7,5 +7,6 @@ android {
 }
 
 dependencies {
-
+  implementation(project(":domain:tmdb-movies"))
+  implementation(project(":domain:tmdb-shows"))
 }

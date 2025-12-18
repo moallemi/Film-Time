@@ -29,7 +29,7 @@ internal class HomeViewModel @Inject constructor(
   private val getBookmarkedShowsUseCase: GetBookmarkedShowsUseCase,
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow(HomeUiState(isLoading = false))
+  private val _state = MutableStateFlow(HomeUiState(isLoading = true))
   val state = _state.asStateFlow()
 
   init {
@@ -68,7 +68,7 @@ internal class HomeViewModel @Inject constructor(
               state.copy(
                 videoSections = state.videoSections + listOf(
                   VideoSection(
-                    title = "Trending Movies",
+                    title = SectionType.TrendingMovies.title,
                     items = result.data,
                     type = SectionType.TrendingMovies,
                   ),
@@ -99,7 +99,7 @@ internal class HomeViewModel @Inject constructor(
               state.copy(
                 videoSections = state.videoSections + listOf(
                   VideoSection(
-                    title = "Trending Shows",
+                    title = SectionType.TrendingShows.title,
                     items = result.data,
                     type = SectionType.TrendingShows,
                   ),

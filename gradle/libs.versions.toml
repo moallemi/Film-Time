@@ -23,6 +23,8 @@ lifecycle = "2.8.6"
 google-play-publish = "3.10.1"
 advanced-gradle-build-version = "3.0.0"
 tv-material = "1.0.0"
+coroutines = "1.8.0"
+turbine = "1.1.0"
 
 [libraries]
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3-exoplayer" }
@@ -67,7 +69,8 @@ androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.re
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
-
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }

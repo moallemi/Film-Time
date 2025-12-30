@@ -7,21 +7,15 @@ import io.filmtime.domain.testing.FakeGetBookmarkedMoviesUseCase
 import io.filmtime.domain.testing.FakeGetBookmarkedShowsUseCase
 import io.filmtime.domain.testing.FakeGetMoviesListUseCase
 import io.filmtime.domain.testing.FakeGetTrendingShowsUseCase
+import io.filmtime.domain.testing.util.MainDispatcherRule
 import io.filmtime.domain.testing.util.TestDataFactory
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestWatcher
-import org.junit.runner.Description
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -351,18 +345,5 @@ class HomeViewModelTest {
       getBookmarkedMoviesUseCase = getBookmarkedMovies,
       getBookmarkedShowsUseCase = getBookmarkedShows,
     )
-  }
-}
-
-@OptIn(ExperimentalCoroutinesApi::class)
-class MainDispatcherRule(
-  private val testDispatcher: TestDispatcher = StandardTestDispatcher(),
-) : TestWatcher() {
-  override fun starting(description: Description) {
-    Dispatchers.setMain(testDispatcher)
-  }
-
-  override fun finished(description: Description) {
-    Dispatchers.resetMain()
   }
 }

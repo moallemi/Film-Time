@@ -279,8 +279,10 @@ class HomeViewModelTest {
     val state = viewModel.state.value
     val moviesSection = state.videoSections.find { it.type == SectionType.TrendingMovies }
     val showsSection = state.videoSections.find { it.type == SectionType.TrendingShows }
-    assertEquals(5, moviesSection?.items?.size)
-    assertEquals(0, showsSection?.items?.size)
+    assertNotNull(moviesSection)
+    assertNotNull(showsSection)
+    assertEquals(5, moviesSection.items.size)
+    assertEquals(0, showsSection.items.size)
   }
 
   @Test

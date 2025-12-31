@@ -1,6 +1,7 @@
 package io.filmtime.gradle.plugins
 
 import com.android.build.api.dsl.ApplicationExtension
+import io.filmtime.gradle.Versions
 import io.filmtime.gradle.configureFlavors
 import io.filmtime.gradle.configureGooglePlayPublish
 import io.filmtime.gradle.configureGooglePlayPublishFlavors
@@ -28,7 +29,7 @@ class ApplicationPlugin : Plugin<Project> {
         configureKotlinAndroid()
 
         defaultConfig {
-          targetSdk = 34
+          targetSdk = Versions.TARGET_SDK
         }
 
         configureVersionCode(this)

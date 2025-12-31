@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.pm.PackageInfoCompat
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
 import io.filmtime.feature.settings.R
@@ -70,8 +71,8 @@ internal fun FilmTimeCard(
         val context = LocalContext.current
         val versionInfo by remember {
           val packageInfo = context.packageManager.getPackageInfo("io.filmtime", 0)
-          val versionName = packageInfo.versionName
-          val versionCode = packageInfo.versionCode
+          val versionName = packageInfo.versionName ?: "NA"
+          val versionCode = PackageInfoCompat.getLongVersionCode(packageInfo)
           mutableStateOf(versionName to versionCode)
         }
 

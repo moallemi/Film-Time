@@ -7,7 +7,7 @@ import okhttp3.Response
 class TmdbApiKeyInterceptor : Interceptor {
   override fun intercept(chain: Interceptor.Chain): Response {
     val originalRequest = chain.request()
-    val originalHttpUrl = chain.request().url()
+    val originalHttpUrl = chain.request().url
 
     val newHttpUrl = originalHttpUrl
       .newBuilder()

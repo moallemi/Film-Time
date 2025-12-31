@@ -17,7 +17,7 @@ import io.filmtime.data.network.trakt.TraktService
 import io.filmtime.data.network.trakt.TraktSyncService
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
@@ -64,7 +64,7 @@ object NetworkModule {
   ): Retrofit {
     return Retrofit.Builder()
       .baseUrl("https://api.themoviedb.org/3/")
-      .addConverterFactory(json.asConverterFactory(MediaType.get("application/json")))
+      .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
       .addCallAdapterFactory(networkCallAdapterFactory)
       .client(okHttpClient)
       .build()
@@ -80,7 +80,7 @@ object NetworkModule {
   ): Retrofit {
     return Retrofit.Builder()
       .baseUrl("https://api.trakt.tv/")
-      .addConverterFactory(json.asConverterFactory(MediaType.get("application/json")))
+      .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
       .addCallAdapterFactory(networkCallAdapterFactory)
       .client(client)
       .build()

@@ -1,7 +1,7 @@
 package io.filmtime.core.libs.logger
 
-import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.crashlytics.crashlytics
 import javax.inject.Inject
 
 internal class AppLogger @Inject constructor() : Logger {

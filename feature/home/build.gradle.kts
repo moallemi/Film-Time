@@ -10,4 +10,7 @@ android {
 dependencies {
   implementation(project(":domain:tmdb-movies"))
   implementation(project(":domain:tmdb-shows"))
+
+  testImplementation(project(":domain:testing"))
+  testImplementation(libs.coroutines.test)
 }

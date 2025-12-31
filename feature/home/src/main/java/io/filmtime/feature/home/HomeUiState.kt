@@ -17,8 +17,8 @@ internal data class VideoSection(
   val type: SectionType,
 )
 
-internal enum class SectionType {
-  TrendingMovies,
-  TrendingShows,
-  None,
+internal enum class SectionType(val title: String) {
+  TrendingMovies("Trending Movies"),
+  TrendingShows("Trending Shows"),
+  None("None"),
 }

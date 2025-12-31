@@ -141,7 +141,7 @@ fun SearchListGrid(
       item?.let {
         SearchThumbnailCardContent(
           modifier = Modifier
-            .animateItemPlacement()
+            .animateItem()
             .fillMaxWidth()
             .aspectRatio(2 / 3f),
           item = item,

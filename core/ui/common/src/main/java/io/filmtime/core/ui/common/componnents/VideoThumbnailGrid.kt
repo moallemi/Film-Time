@@ -40,7 +40,7 @@ fun VideoThumbnailGrid(
       if (videoThumbnail != null) {
         VideoThumbnailCard(
           modifier = Modifier
-            .animateItemPlacement()
+            .animateItem()
             .fillMaxWidth()
             .aspectRatio(2 / 3f),
           videoThumbnail = videoThumbnail,

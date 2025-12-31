@@ -76,7 +76,7 @@ fun VideoSectionRow(
           VideoThumbnailCard(
             modifier = Modifier
               .testTag("discover_carousel_item")
-              .animateItemPlacement()
+              .animateItem()
               .fillParentMaxHeight()
               .aspectRatio(2 / 3f),
             videoThumbnail = item,

@@ -10,4 +10,14 @@ interface TraktAuthService {
   suspend fun getAccessToken(
     @Body body: TraktGetTokenRequest,
   ): NetworkResponse<TraktAccessTokenResponse, TraktErrorResponse>
+
+  @POST("oauth/device/code")
+  suspend fun getDeviceCode(
+    @Body body: TraktClientIDRequest,
+  ): NetworkResponse<TraktDeviceCodeResponse, TraktErrorResponse>
+
+  @POST("oauth/device/token")
+  suspend fun pollAccessToken(
+    @Body body: PollAccessTokenRequest,
+  ): NetworkResponse<TraktAccessTokenResponse, TraktErrorResponse>
 }

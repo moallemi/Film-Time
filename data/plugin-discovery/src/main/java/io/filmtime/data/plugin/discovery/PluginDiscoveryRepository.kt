@@ -1,5 +1,6 @@
 package io.filmtime.data.plugin.discovery
 
+import io.filmtime.core.plugin.api.PluginAuthState
 import io.filmtime.core.plugin.api.PluginError
 import io.filmtime.core.plugin.api.PluginMetadata
 import io.filmtime.core.plugin.api.StreamRequest
@@ -17,4 +18,8 @@ interface PluginDiscoveryRepository {
     pluginId: String,
     request: StreamRequest,
   ): Result<StreamResponse, PluginError>
+
+  suspend fun getPluginAuthState(pluginId: String): Result<PluginAuthState, PluginError>
+
+  suspend fun logoutPlugin(pluginId: String): Result<Boolean, PluginError>
 }

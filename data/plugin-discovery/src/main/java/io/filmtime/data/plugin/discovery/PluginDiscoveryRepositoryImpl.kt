@@ -9,6 +9,7 @@ import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.os.Build
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.filmtime.core.plugin.api.PluginAuthState
 import io.filmtime.core.plugin.api.PluginContract
 import io.filmtime.core.plugin.api.PluginError
 import io.filmtime.core.plugin.api.PluginMetadata
@@ -105,6 +106,8 @@ internal class PluginDiscoveryRepositoryImpl @Inject constructor(
           val descriptionIndex = cursor.getColumnIndex(PluginContract.Metadata.COLUMN_DESCRIPTION)
           val versionIndex = cursor.getColumnIndex(PluginContract.Metadata.COLUMN_VERSION)
           val iconUrlIndex = cursor.getColumnIndex(PluginContract.Metadata.COLUMN_ICON_URL)
+          val requiresAuthIndex = cursor.getColumnIndex(PluginContract.Metadata.COLUMN_REQUIRES_AUTH)
+          val loginActivityIndex = cursor.getColumnIndex(PluginContract.Metadata.COLUMN_LOGIN_ACTIVITY)
 
           PluginMetadata(
             pluginId = if (pluginIdIndex >= 0) cursor.getString(pluginIdIndex) else authority,
@@ -113,6 +116,9 @@ internal class PluginDiscoveryRepositoryImpl @Inject constructor(
             version = if (versionIndex >= 0) cursor.getString(versionIndex) else "1.0.0",
             iconUrl = if (iconUrlIndex >= 0) cursor.getString(iconUrlIndex) else null,
             authority = authority,
+            packageName = providerInfo.packageName,
+            requiresAuth = if (requiresAuthIndex >= 0) cursor.getInt(requiresAuthIndex) == 1 else false,
+            loginActivityClass = if (loginActivityIndex >= 0) cursor.getString(loginActivityIndex) else null,
           )
         } else {
           null
@@ -136,6 +142,11 @@ internal class PluginDiscoveryRepositoryImpl @Inject constructor(
       val streams = mutableListOf<PluginStream>()
 
       contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+        val extras = cursor.extras
+        if (extras?.getBoolean(PluginContract.Stream.EXTRA_AUTH_REQUIRED, false) == true) {
+          return@withContext Result.Failure(PluginError.AuthenticationRequired)
+        }
+
         val urlIndex = cursor.getColumnIndex(PluginContract.Stream.COLUMN_STREAM_URL)
         val qualityIndex = cursor.getColumnIndex(PluginContract.Stream.COLUMN_QUALITY)
         val typeIndex = cursor.getColumnIndex(PluginContract.Stream.COLUMN_STREAM_TYPE)
@@ -256,4 +267,48 @@ internal class PluginDiscoveryRepositoryImpl @Inject constructor(
       emptyList()
     }
   }
+
+  override suspend fun getPluginAuthState(pluginId: String): Result<PluginAuthState, PluginError> =
+    withContext(Dispatchers.IO) {
+      val plugin = _plugins.value.find { it.pluginId == pluginId }
+        ?: return@withContext Result.Failure(PluginError.PluginNotFound)
+
+      if (!plugin.requiresAuth) {
+        return@withContext Result.Success(PluginAuthState.NotRequired)
+      }
+
+      try {
+        val uri = Uri.parse("content://${plugin.authority}")
+        val result = contentResolver.call(uri, PluginContract.Auth.METHOD_GET_AUTH_STATE, null, null)
+
+        if (result == null) {
+          return@withContext Result.Success(PluginAuthState.NotAuthenticated)
+        }
+
+        val isAuthenticated = result.getBoolean(PluginContract.Auth.KEY_IS_AUTHENTICATED, false)
+        if (isAuthenticated) {
+          Result.Success(PluginAuthState.Authenticated)
+        } else {
+          Result.Success(PluginAuthState.NotAuthenticated)
+        }
+      } catch (e: Exception) {
+        Result.Failure(PluginError.CommunicationError(e.message ?: "Unknown error"))
+      }
+    }
+
+  override suspend fun logoutPlugin(pluginId: String): Result<Boolean, PluginError> =
+    withContext(Dispatchers.IO) {
+      val plugin = _plugins.value.find { it.pluginId == pluginId }
+        ?: return@withContext Result.Failure(PluginError.PluginNotFound)
+
+      try {
+        val uri = Uri.parse("content://${plugin.authority}")
+        val result = contentResolver.call(uri, PluginContract.Auth.METHOD_LOGOUT, null, null)
+
+        val success = result?.getBoolean(PluginContract.Auth.KEY_LOGOUT_SUCCESS, false) ?: false
+        Result.Success(success)
+      } catch (e: Exception) {
+        Result.Failure(PluginError.CommunicationError(e.message ?: "Unknown error"))
+      }
+    }
 }

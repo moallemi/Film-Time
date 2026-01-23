@@ -7,4 +7,7 @@ data class PluginMetadata(
   val version: String,
   val iconUrl: String?,
   val authority: String,
+  val packageName: String = "",
+  val requiresAuth: Boolean = false,
+  val loginActivityClass: String? = null,
 )

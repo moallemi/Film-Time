@@ -16,6 +16,8 @@ object PluginContract {
     const val COLUMN_DESCRIPTION = "description"
     const val COLUMN_VERSION = "version"
     const val COLUMN_ICON_URL = "icon_url"
+    const val COLUMN_REQUIRES_AUTH = "requires_auth"
+    const val COLUMN_LOGIN_ACTIVITY = "login_activity"
   }
 
   object Stream {
@@ -32,6 +34,8 @@ object PluginContract {
     const val COLUMN_TITLE = "title"
     const val COLUMN_HEADERS = "headers"
     const val COLUMN_SUBTITLES = "subtitles"
+
+    const val EXTRA_AUTH_REQUIRED = "auth_required"
   }
 
   object StreamType {
@@ -47,5 +51,20 @@ object PluginContract {
     const val HD = "hd"
     const val FHD = "fhd"
     const val UHD = "uhd"
+  }
+
+  object Auth {
+    const val METHOD_GET_AUTH_STATE = "get_auth_state"
+    const val METHOD_LOGOUT = "logout"
+    const val KEY_REQUIRES_AUTH = "requires_auth"
+    const val KEY_IS_AUTHENTICATED = "is_authenticated"
+    const val KEY_AUTH_DISPLAY_NAME = "auth_display_name"
+    const val KEY_LOGOUT_SUCCESS = "logout_success"
+    const val ACTION_LOGIN = "io.filmtime.plugin.ACTION_LOGIN"
+    const val EXTRA_LOGIN_RESULT = "login_result"
+    const val LOGIN_RESULT_SUCCESS = 1
+    const val LOGIN_RESULT_CANCELLED = 2
+    const val LOGIN_RESULT_ERROR = 3
+    const val EXTRA_ERROR_MESSAGE = "error_message"
   }
 }

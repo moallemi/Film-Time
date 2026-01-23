@@ -1,5 +1,6 @@
 package io.filmtime.feature.show.detail
 
+import io.filmtime.core.plugin.api.PluginMetadata
 import io.filmtime.core.ui.common.UiMessage
 import io.filmtime.data.model.EpisodeThumbnail
 import io.filmtime.data.model.MovieVideo
@@ -16,6 +17,12 @@ internal data class ShowDetailState(
   val error: UiMessage? = null,
   val videos: List<MovieVideo>? = null,
   val isTrailersLoading: Boolean = false,
+  val installedPlugins: List<PluginMetadata> = emptyList(),
+  val showPluginSelection: Boolean = false,
+  val showNoPluginsDialog: Boolean = false,
+  val isStreamLoading: Boolean = false,
+  val streamError: String? = null,
+  val pendingEpisode: EpisodeThumbnail? = null,
 )
 
 internal data class SeasonsState(

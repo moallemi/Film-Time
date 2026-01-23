@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.filmtime.core.plugin.api.PluginMetadata
+import io.filmtime.core.plugin.api.StreamRequest
 import io.filmtime.core.ui.common.toUiMessage
 import io.filmtime.data.model.EpisodeThumbnail
 import io.filmtime.data.model.Result.Failure
@@ -12,6 +14,9 @@ import io.filmtime.data.model.VideoType.Show
 import io.filmtime.domain.bookmarks.AddBookmarkUseCase
 import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
 import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
+import io.filmtime.domain.plugin.GetInstalledPluginsUseCase
+import io.filmtime.domain.plugin.GetStreamFromPluginUseCase
+import io.filmtime.domain.plugin.RefreshPluginsUseCase
 import io.filmtime.domain.tmdb.shows.GetEpisodesBySeasonUseCase
 import io.filmtime.domain.tmdb.shows.GetShowDetailsUseCase
 import io.filmtime.domain.tmdb.shows.GetShowVideosUseCase
@@ -19,9 +24,12 @@ import io.filmtime.domain.trakt.GetRatingsUseCase
 import io.filmtime.domain.trakt.history.AddEpisodeToHistoryUseCase
 import io.filmtime.domain.trakt.history.IsShowWatchedUseCase
 import io.filmtime.domain.trakt.history.RemoveEpisodeFromHistoryUseCase
+import io.filmtime.feature.plugin.manager.PluginPreferences
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,16 +48,38 @@ internal class ShowDetailViewModel @Inject constructor(
   private val addToHistory: AddEpisodeToHistoryUseCase,
   private val removeFromHistory: RemoveEpisodeFromHistoryUseCase,
   private val getShowVideos: GetShowVideosUseCase,
+  private val getInstalledPlugins: GetInstalledPluginsUseCase,
+  private val refreshPlugins: RefreshPluginsUseCase,
+  private val getStreamFromPlugin: GetStreamFromPluginUseCase,
+  private val pluginPreferences: PluginPreferences,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
   private val _state: MutableStateFlow<ShowDetailState> = MutableStateFlow(ShowDetailState())
   val state = _state.asStateFlow()
 
+  val navigateToPlayer = MutableSharedFlow<String?>()
+
   init {
     observeBookmark()
     load()
     loadVideos()
+    observePlugins()
+    refreshPluginList()
+  }
+
+  private fun observePlugins() {
+    getInstalledPlugins()
+      .onEach { plugins ->
+        _state.update { it.copy(installedPlugins = plugins) }
+      }
+      .launchIn(viewModelScope)
+  }
+
+  private fun refreshPluginList() {
+    viewModelScope.launch {
+      refreshPlugins()
+    }
   }
 
   fun load() = viewModelScope.launch {
@@ -280,5 +310,84 @@ internal class ShowDetailViewModel @Inject constructor(
           _state.update { state -> state.copy(isTrailersLoading = false) }
         },
       )
+  }
+
+  fun playEpisode(episode: EpisodeThumbnail) {
+    val plugins = _state.value.installedPlugins
+    _state.update { it.copy(pendingEpisode = episode) }
+    when {
+      plugins.isEmpty() -> {
+        _state.update { it.copy(showNoPluginsDialog = true) }
+      }
+      plugins.size == 1 -> {
+        loadStreamFromPlugin(plugins.first(), episode)
+      }
+      else -> {
+        val defaultPluginId = pluginPreferences.getDefaultPluginId()
+        val defaultPlugin = plugins.find { it.pluginId == defaultPluginId }
+        if (defaultPlugin != null) {
+          loadStreamFromPlugin(defaultPlugin, episode)
+        } else {
+          _state.update { it.copy(showPluginSelection = true) }
+        }
+      }
+    }
+  }
+
+  fun onPluginSelected(plugin: PluginMetadata) {
+    _state.update { it.copy(showPluginSelection = false) }
+    val episode = _state.value.pendingEpisode ?: return
+    loadStreamFromPlugin(plugin, episode)
+  }
+
+  fun dismissPluginSelection() {
+    _state.update { it.copy(showPluginSelection = false, pendingEpisode = null) }
+  }
+
+  fun dismissNoPluginsDialog() {
+    _state.update { it.copy(showNoPluginsDialog = false, pendingEpisode = null) }
+  }
+
+  private fun loadStreamFromPlugin(plugin: PluginMetadata, episode: EpisodeThumbnail) = viewModelScope.launch {
+    val videoDetail = _state.value.videoDetail ?: return@launch
+    val tmdbId = videoDetail.ids.tmdbId ?: return@launch
+
+    _state.update { it.copy(isStreamLoading = true, streamError = null) }
+
+    val request = StreamRequest.Show(
+      tmdbId = tmdbId,
+      imdbId = null,
+      title = videoDetail.title,
+      year = videoDetail.year,
+      season = episode.seasonNumber,
+      episode = episode.episodeNumber,
+    )
+
+    getStreamFromPlugin(plugin.pluginId, request).fold(
+      onSuccess = { response ->
+        val firstStream = response.streams.firstOrNull()
+        if (firstStream != null) {
+          _state.update { it.copy(isStreamLoading = false, pendingEpisode = null) }
+          navigateToPlayer.emit(firstStream.url)
+        } else {
+          _state.update {
+            it.copy(
+              isStreamLoading = false,
+              streamError = "No streams available from ${plugin.name}",
+              pendingEpisode = null,
+            )
+          }
+        }
+      },
+      onFailure = { error ->
+        _state.update {
+          it.copy(
+            isStreamLoading = false,
+            streamError = "Failed to get stream from ${plugin.name}",
+            pendingEpisode = null,
+          )
+        }
+      },
+    )
   }
 }

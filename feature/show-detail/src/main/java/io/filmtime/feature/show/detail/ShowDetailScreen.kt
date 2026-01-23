@@ -13,6 +13,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -44,6 +45,8 @@ import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoGenre
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.credits.components.CreditsRow
+import io.filmtime.feature.plugin.manager.NoPluginsInstalledDialog
+import io.filmtime.feature.plugin.manager.PluginSelectionDialog
 import io.filmtime.feature.show.detail.components.SeasonsSection
 import io.filmtime.feature.similar.SimilarVideosRow
 
@@ -54,8 +57,38 @@ internal fun ShowDetailScreen(
   onShowClick: (Int) -> Unit,
   onGenreClick: (VideoGenre, VideoType) -> Unit,
   onBackPressed: () -> Unit,
+  onStreamReady: (String) -> Unit,
+  onNavigateToPluginManager: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
+  val navigateToPlayer by viewModel.navigateToPlayer.collectAsStateWithLifecycle(null)
+
+  LaunchedEffect(key1 = navigateToPlayer) {
+    navigateToPlayer?.let { streamUrl ->
+      onStreamReady(streamUrl)
+    }
+  }
+
+  if (state.showPluginSelection) {
+    PluginSelectionDialog(
+      plugins = state.installedPlugins,
+      selectedPluginId = null,
+      onPluginSelected = { plugin ->
+        viewModel.onPluginSelected(plugin)
+      },
+      onDismiss = viewModel::dismissPluginSelection,
+    )
+  }
+
+  if (state.showNoPluginsDialog) {
+    NoPluginsInstalledDialog(
+      onDismiss = viewModel::dismissNoPluginsDialog,
+      onOpenPluginManager = {
+        viewModel.dismissNoPluginsDialog()
+        onNavigateToPluginManager()
+      },
+    )
+  }
 
   ShowDetailScreen(
     state = state,
@@ -67,8 +100,13 @@ internal fun ShowDetailScreen(
     addToHistory = viewModel::addEpisodeToHistory,
     removeFromHistory = viewModel::removeEpisodeFromHistory,
     onGenreClick = onGenreClick,
-    onPrimaryButtonClick = {},
-    onEpisodeClick = {},
+    onPrimaryButtonClick = {
+      val firstEpisode = state.seasonsState.seasons[1]?.firstOrNull()
+      if (firstEpisode != null) {
+        viewModel.playEpisode(firstEpisode)
+      }
+    },
+    onEpisodeClick = viewModel::playEpisode,
   )
 }
 

@@ -45,6 +45,7 @@ import io.filmtime.data.model.EpisodeThumbnail
 import io.filmtime.data.model.Preview
 import io.filmtime.data.model.PreviewShow
 import io.filmtime.data.model.Ratings
+import io.filmtime.data.model.StreamInfo
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoGenre
 import io.filmtime.data.model.VideoType
@@ -61,7 +62,7 @@ internal fun ShowDetailScreen(
   onShowClick: (Int) -> Unit,
   onGenreClick: (VideoGenre, VideoType) -> Unit,
   onBackPressed: () -> Unit,
-  onStreamReady: (String) -> Unit,
+  onStreamReady: (StreamInfo) -> Unit,
   onNavigateToPluginManager: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
@@ -86,8 +87,8 @@ internal fun ShowDetailScreen(
   }
 
   LaunchedEffect(key1 = navigateToPlayer) {
-    navigateToPlayer?.let { streamUrl ->
-      onStreamReady(streamUrl)
+    navigateToPlayer?.let { streamInfo ->
+      onStreamReady(streamInfo)
     }
   }
 

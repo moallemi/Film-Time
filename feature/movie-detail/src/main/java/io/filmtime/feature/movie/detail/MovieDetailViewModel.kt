@@ -55,7 +55,7 @@ class MovieDetailViewModel @Inject constructor(
   private val _state = MutableStateFlow(MovieDetailState())
   val state = _state.asStateFlow()
 
-  val navigateToPlayer = MutableSharedFlow<String?>()
+  val navigateToPlayer = MutableSharedFlow<StreamInfo?>()
 
   init {
     loadMovieDetail()
@@ -181,7 +181,7 @@ class MovieDetailViewModel @Inject constructor(
             },
           )
           _state.update { it.copy(streamInfo = streamInfo, isStreamLoading = false) }
-          navigateToPlayer.emit(streamInfo.url)
+          navigateToPlayer.emit(streamInfo)
         } else {
           _state.update {
             it.copy(

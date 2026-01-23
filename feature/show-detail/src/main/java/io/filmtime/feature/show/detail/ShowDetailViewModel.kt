@@ -11,6 +11,8 @@ import io.filmtime.core.ui.common.toUiMessage
 import io.filmtime.data.model.EpisodeThumbnail
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
+import io.filmtime.data.model.StreamInfo
+import io.filmtime.data.model.SubtitleInfo
 import io.filmtime.data.model.VideoType.Show
 import io.filmtime.domain.bookmarks.AddBookmarkUseCase
 import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
@@ -61,7 +63,7 @@ internal class ShowDetailViewModel @Inject constructor(
   private val _state: MutableStateFlow<ShowDetailState> = MutableStateFlow(ShowDetailState())
   val state = _state.asStateFlow()
 
-  val navigateToPlayer = MutableSharedFlow<String?>()
+  val navigateToPlayer = MutableSharedFlow<StreamInfo?>()
 
   init {
     observeBookmark()
@@ -370,8 +372,22 @@ internal class ShowDetailViewModel @Inject constructor(
       onSuccess = { response ->
         val firstStream = response.streams.firstOrNull()
         if (firstStream != null) {
+          val streamInfo = StreamInfo(
+            url = firstStream.url,
+            quality = firstStream.quality,
+            streamType = firstStream.streamType,
+            title = firstStream.title,
+            headers = firstStream.headers,
+            subtitles = firstStream.subtitles.map { subtitle ->
+              SubtitleInfo(
+                url = subtitle.url,
+                language = subtitle.language,
+                label = subtitle.label,
+              )
+            },
+          )
           _state.update { it.copy(isStreamLoading = false, pendingEpisode = null) }
-          navigateToPlayer.emit(firstStream.url)
+          navigateToPlayer.emit(streamInfo)
         } else {
           _state.update {
             it.copy(

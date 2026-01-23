@@ -47,6 +47,7 @@ import io.filmtime.core.ui.common.componnents.VideoTrailerRow
 import io.filmtime.data.model.Preview
 import io.filmtime.data.model.PreviewMovie
 import io.filmtime.data.model.Ratings
+import io.filmtime.data.model.StreamInfo
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoGenre
 import io.filmtime.data.model.VideoType
@@ -59,7 +60,7 @@ import io.filmtime.feature.trakt.buttons.addremovehistory.TraktAddRemoveHistoryB
 @Composable
 fun MovieDetailScreen(
   viewModel: MovieDetailViewModel,
-  onStreamReady: (String) -> Unit,
+  onStreamReady: (StreamInfo) -> Unit,
   onCastItemClick: (Long) -> Unit,
   onMovieClick: (Int) -> Unit,
   onGenreClick: (VideoGenre, VideoType) -> Unit,
@@ -88,8 +89,8 @@ fun MovieDetailScreen(
   }
 
   LaunchedEffect(key1 = navigateToPlayer) {
-    navigateToPlayer?.let { streamUrl ->
-      onStreamReady(streamUrl)
+    navigateToPlayer?.let { streamInfo ->
+      onStreamReady(streamInfo)
     }
   }
 

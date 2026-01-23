@@ -9,6 +9,9 @@
             <action android:name=
                 "android.support.customtabs.action.CustomTabsService" />
         </intent>
+        <intent>
+            <action android:name="io.filmtime.plugin.STREAM_PROVIDER" />
+        </intent>
     </queries>
 
     <application

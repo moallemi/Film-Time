@@ -9,4 +9,5 @@ android {
 
 dependencies {
   implementation(project(":domain:trakt:auth"))
+  implementation(project(":feature:plugin-manager"))
 }

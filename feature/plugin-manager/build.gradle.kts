@@ -10,4 +10,7 @@ android {
 dependencies {
   implementation(project(":core:plugin-api"))
   implementation(project(":domain:plugin"))
+
+  testImplementation(project(":domain:testing"))
+  testImplementation(libs.coroutines.test)
 }

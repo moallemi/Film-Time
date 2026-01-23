@@ -21,4 +21,7 @@ dependencies {
   implementation(project(":feature:credits"))
   implementation(project(":feature:similar"))
   implementation(project(":feature:plugin-manager"))
+
+  testImplementation(project(":domain:testing"))
+  testImplementation(libs.coroutines.test)
 }

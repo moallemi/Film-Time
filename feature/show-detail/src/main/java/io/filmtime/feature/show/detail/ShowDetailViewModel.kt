@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.filmtime.core.plugin.api.PluginError
 import io.filmtime.core.plugin.api.PluginMetadata
 import io.filmtime.core.plugin.api.StreamRequest
 import io.filmtime.core.ui.common.toUiMessage
@@ -14,6 +15,7 @@ import io.filmtime.data.model.VideoType.Show
 import io.filmtime.domain.bookmarks.AddBookmarkUseCase
 import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
 import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
+import io.filmtime.domain.plugin.CreatePluginLoginIntentUseCase
 import io.filmtime.domain.plugin.GetInstalledPluginsUseCase
 import io.filmtime.domain.plugin.GetStreamFromPluginUseCase
 import io.filmtime.domain.plugin.RefreshPluginsUseCase
@@ -51,6 +53,7 @@ internal class ShowDetailViewModel @Inject constructor(
   private val getInstalledPlugins: GetInstalledPluginsUseCase,
   private val refreshPlugins: RefreshPluginsUseCase,
   private val getStreamFromPlugin: GetStreamFromPluginUseCase,
+  private val createPluginLoginIntent: CreatePluginLoginIntentUseCase,
   private val pluginPreferences: PluginPreferences,
 ) : ViewModel() {
 
@@ -380,14 +383,36 @@ internal class ShowDetailViewModel @Inject constructor(
         }
       },
       onFailure = { error ->
-        _state.update {
-          it.copy(
-            isStreamLoading = false,
-            streamError = "Failed to get stream from ${plugin.name}",
-            pendingEpisode = null,
-          )
+        if (error is PluginError.AuthenticationRequired) {
+          val intent = createPluginLoginIntent(plugin)
+          _state.update {
+            it.copy(
+              isStreamLoading = false,
+              pendingAuthPlugin = plugin,
+              loginIntent = intent,
+            )
+          }
+        } else {
+          _state.update {
+            it.copy(
+              isStreamLoading = false,
+              streamError = "Failed to get stream from ${plugin.name}",
+              pendingEpisode = null,
+            )
+          }
         }
       },
     )
+  }
+
+  fun onPluginLoginResult(success: Boolean) {
+    val plugin = _state.value.pendingAuthPlugin
+    val episode = _state.value.pendingEpisode
+    _state.update { it.copy(pendingAuthPlugin = null, loginIntent = null) }
+    if (success && plugin != null && episode != null) {
+      loadStreamFromPlugin(plugin, episode)
+    } else {
+      _state.update { it.copy(pendingEpisode = null) }
+    }
   }
 }

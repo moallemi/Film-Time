@@ -1,5 +1,6 @@
 package io.filmtime.feature.show.detail
 
+import android.content.Intent
 import io.filmtime.core.plugin.api.PluginMetadata
 import io.filmtime.core.ui.common.UiMessage
 import io.filmtime.data.model.EpisodeThumbnail
@@ -23,6 +24,8 @@ internal data class ShowDetailState(
   val isStreamLoading: Boolean = false,
   val streamError: String? = null,
   val pendingEpisode: EpisodeThumbnail? = null,
+  val pendingAuthPlugin: PluginMetadata? = null,
+  val loginIntent: Intent? = null,
 )
 
 internal data class SeasonsState(

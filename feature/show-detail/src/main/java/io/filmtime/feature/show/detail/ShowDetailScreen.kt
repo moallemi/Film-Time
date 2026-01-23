@@ -1,5 +1,8 @@
 package io.filmtime.feature.show.detail
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +34,7 @@ import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
 import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
+import io.filmtime.core.plugin.api.PluginContract
 import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.VideoDescription
 import io.filmtime.core.ui.common.componnents.VideoInfo
@@ -62,6 +66,24 @@ internal fun ShowDetailScreen(
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
   val navigateToPlayer by viewModel.navigateToPlayer.collectAsStateWithLifecycle(null)
+
+  val loginLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.StartActivityForResult(),
+  ) { result ->
+    val loginResult = result.data?.getIntExtra(
+      PluginContract.Auth.EXTRA_LOGIN_RESULT,
+      PluginContract.Auth.LOGIN_RESULT_CANCELLED,
+    ) ?: PluginContract.Auth.LOGIN_RESULT_CANCELLED
+    val success = result.resultCode == Activity.RESULT_OK &&
+      loginResult == PluginContract.Auth.LOGIN_RESULT_SUCCESS
+    viewModel.onPluginLoginResult(success)
+  }
+
+  LaunchedEffect(state.loginIntent) {
+    state.loginIntent?.let { intent ->
+      loginLauncher.launch(intent)
+    }
+  }
 
   LaunchedEffect(key1 = navigateToPlayer) {
     navigateToPlayer?.let { streamUrl ->

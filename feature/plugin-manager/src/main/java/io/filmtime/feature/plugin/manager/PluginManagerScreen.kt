@@ -1,5 +1,8 @@
 package io.filmtime.feature.plugin.manager
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,13 +21,16 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Extension
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +38,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.filmtime.core.plugin.api.PluginAuthState
+import io.filmtime.core.plugin.api.PluginContract
 import io.filmtime.core.plugin.api.PluginMetadata
 
 @Composable
@@ -41,6 +49,24 @@ fun PluginManagerScreen(
   val viewModel = hiltViewModel<PluginManagerViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
 
+  val loginLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.StartActivityForResult(),
+  ) { result ->
+    val loginResult = result.data?.getIntExtra(
+      PluginContract.Auth.EXTRA_LOGIN_RESULT,
+      PluginContract.Auth.LOGIN_RESULT_CANCELLED,
+    ) ?: PluginContract.Auth.LOGIN_RESULT_CANCELLED
+    val success = result.resultCode == Activity.RESULT_OK &&
+      loginResult == PluginContract.Auth.LOGIN_RESULT_SUCCESS
+    viewModel.onLoginResult(success)
+  }
+
+  LaunchedEffect(state.loginIntent) {
+    state.loginIntent?.let { intent ->
+      loginLauncher.launch(intent)
+    }
+  }
+
   PluginManagerScreen(
     state = state,
     onBackClick = onBackClick,
@@ -48,6 +74,8 @@ fun PluginManagerScreen(
       val newDefault = if (state.defaultPluginId == plugin.pluginId) null else plugin.pluginId
       viewModel.setDefaultPlugin(newDefault)
     },
+    onLoginClick = viewModel::loginPlugin,
+    onLogoutClick = viewModel::logoutPlugin,
   )
 }
 
@@ -57,6 +85,8 @@ private fun PluginManagerScreen(
   state: PluginManagerUiState,
   onBackClick: () -> Unit,
   onPluginClick: (PluginMetadata) -> Unit,
+  onLoginClick: (PluginMetadata) -> Unit,
+  onLogoutClick: (PluginMetadata) -> Unit,
 ) {
   Scaffold(
     topBar = {
@@ -77,6 +107,8 @@ private fun PluginManagerScreen(
       state = state,
       contentPadding = padding,
       onPluginClick = onPluginClick,
+      onLoginClick = onLoginClick,
+      onLogoutClick = onLogoutClick,
     )
   }
 }
@@ -86,6 +118,8 @@ private fun PluginManagerContent(
   state: PluginManagerUiState,
   contentPadding: PaddingValues,
   onPluginClick: (PluginMetadata) -> Unit,
+  onLoginClick: (PluginMetadata) -> Unit,
+  onLogoutClick: (PluginMetadata) -> Unit,
 ) {
   LazyColumn(
     modifier = Modifier
@@ -102,7 +136,10 @@ private fun PluginManagerContent(
         PluginCard(
           plugin = plugin,
           isDefault = plugin.pluginId == state.defaultPluginId,
+          authState = state.authStates[plugin.pluginId],
           onClick = { onPluginClick(plugin) },
+          onLoginClick = { onLoginClick(plugin) },
+          onLogoutClick = { onLogoutClick(plugin) },
         )
         Spacer(modifier = Modifier.height(8.dp))
       }
@@ -114,7 +151,10 @@ private fun PluginManagerContent(
 private fun PluginCard(
   plugin: PluginMetadata,
   isDefault: Boolean,
+  authState: PluginAuthState?,
   onClick: () -> Unit,
+  onLoginClick: () -> Unit,
+  onLogoutClick: () -> Unit,
 ) {
   Card(
     modifier = Modifier
@@ -150,6 +190,22 @@ private fun PluginCard(
           style = MaterialTheme.typography.bodySmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        if (plugin.requiresAuth && authState != null) {
+          Spacer(modifier = Modifier.height(8.dp))
+          when (authState) {
+            is PluginAuthState.Authenticated -> {
+              OutlinedButton(onClick = onLogoutClick) {
+                Text(stringResource(R.string.plugin_manager_logout))
+              }
+            }
+            is PluginAuthState.NotAuthenticated -> {
+              FilledTonalButton(onClick = onLoginClick) {
+                Text(stringResource(R.string.plugin_manager_login))
+              }
+            }
+            else -> {}
+          }
+        }
       }
       if (isDefault) {
         Icon(

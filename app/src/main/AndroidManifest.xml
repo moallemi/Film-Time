@@ -12,6 +12,9 @@
         <intent>
             <action android:name="io.filmtime.plugin.STREAM_PROVIDER" />
         </intent>
+        <intent>
+            <action android:name="io.filmtime.plugin.ACTION_LOGIN" />
+        </intent>
     </queries>
 
     <application

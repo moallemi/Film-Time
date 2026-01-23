@@ -47,6 +47,8 @@ import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoGenre
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.credits.components.CreditsRow
+import io.filmtime.feature.plugin.manager.NoPluginsInstalledDialog
+import io.filmtime.feature.plugin.manager.PluginSelectionDialog
 import io.filmtime.feature.similar.SimilarVideosRow
 import io.filmtime.feature.trakt.buttons.addremovehistory.TraktAddRemoveHistoryButton
 
@@ -58,6 +60,7 @@ fun MovieDetailScreen(
   onMovieClick: (Int) -> Unit,
   onGenreClick: (VideoGenre, VideoType) -> Unit,
   onBackPressed: () -> Unit,
+  onNavigateToPluginManager: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
   val navigateToPlayer by viewModel.navigateToPlayer.collectAsStateWithLifecycle(null)
@@ -68,6 +71,27 @@ fun MovieDetailScreen(
     }
   }
 
+  if (state.showPluginSelection) {
+    PluginSelectionDialog(
+      plugins = state.installedPlugins,
+      selectedPluginId = null,
+      onPluginSelected = { plugin ->
+        viewModel.onPluginSelected(plugin)
+      },
+      onDismiss = viewModel::dismissPluginSelection,
+    )
+  }
+
+  if (state.showNoPluginsDialog) {
+    NoPluginsInstalledDialog(
+      onDismiss = viewModel::dismissNoPluginsDialog,
+      onOpenPluginManager = {
+        viewModel.dismissNoPluginsDialog()
+        onNavigateToPluginManager()
+      },
+    )
+  }
+
   MovieDetailScreen(
     state = state,
     onRetry = viewModel::reload,
@@ -75,8 +99,7 @@ fun MovieDetailScreen(
     onAddBookmark = viewModel::addBookmark,
     onRemoveBookmark = viewModel::removeBookmark,
     onGenreClick = onGenreClick,
-    onPLayClick = {
-    },
+    onPLayClick = viewModel::loadStreamInfo,
   )
 }
 

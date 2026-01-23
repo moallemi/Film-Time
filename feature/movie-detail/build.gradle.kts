@@ -9,14 +9,17 @@ android {
 
 dependencies {
   implementation(project(":core:browser"))
+  implementation(project(":core:plugin-api"))
   implementation(project(":data:model"))
 
   implementation(project(":domain:tmdb-movies"))
   implementation(project(":domain:stream"))
   implementation(project(":domain:bookmarks"))
   implementation(project(":domain:trakt:trakt"))
+  implementation(project(":domain:plugin"))
 
   implementation(project(":feature:trakt-buttons"))
   implementation(project(":feature:credits"))
   implementation(project(":feature:similar"))
+  implementation(project(":feature:plugin-manager"))
 }

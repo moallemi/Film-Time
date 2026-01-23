@@ -15,6 +15,7 @@ fun NavGraphBuilder.movieDetailScreen(
   onCastItemClick: (DestinationRoute, castId: Long) -> Unit,
   onMovieClick: (DestinationRoute, tmdbId: Int) -> Unit,
   onGenreClick: (DestinationRoute, genreId: Long, genreName: String, videoType: VideoType) -> Unit,
+  onNavigateToPluginManager: (DestinationRoute) -> Unit,
   onBack: () -> Unit,
 ) {
   composable(
@@ -33,6 +34,7 @@ fun NavGraphBuilder.movieDetailScreen(
       onCastItemClick = { onCastItemClick(rootRoute, it) },
       onMovieClick = { onMovieClick(rootRoute, it) },
       onBackPressed = onBack,
+      onNavigateToPluginManager = { onNavigateToPluginManager(rootRoute) },
     )
   }
 }

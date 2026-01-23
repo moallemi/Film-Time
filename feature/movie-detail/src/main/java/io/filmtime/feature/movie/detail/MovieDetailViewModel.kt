@@ -4,20 +4,28 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.filmtime.core.plugin.api.PluginMetadata
+import io.filmtime.core.plugin.api.StreamRequest
 import io.filmtime.core.ui.common.toUiMessage
+import io.filmtime.data.model.StreamInfo
+import io.filmtime.data.model.SubtitleInfo
 import io.filmtime.data.model.VideoType.Movie
 import io.filmtime.domain.bookmarks.AddBookmarkUseCase
 import io.filmtime.domain.bookmarks.DeleteBookmarkUseCase
 import io.filmtime.domain.bookmarks.ObserveBookmarkUseCase
-import io.filmtime.domain.stream.GetStreamInfoUseCase
+import io.filmtime.domain.plugin.GetInstalledPluginsUseCase
+import io.filmtime.domain.plugin.GetStreamFromPluginUseCase
+import io.filmtime.domain.plugin.RefreshPluginsUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieCollectionUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieVideosUseCase
 import io.filmtime.domain.trakt.GetRatingsUseCase
+import io.filmtime.feature.plugin.manager.PluginPreferences
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,13 +35,16 @@ import javax.inject.Inject
 class MovieDetailViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   private val getMovieDetail: GetMovieDetailsUseCase,
-  private val getStreamInfo: GetStreamInfoUseCase,
   private val addBookmark: AddBookmarkUseCase,
   private val deleteBookmark: DeleteBookmarkUseCase,
   private val observeBookmark: ObserveBookmarkUseCase,
   private val getRatings: GetRatingsUseCase,
   private val getCollection: GetMovieCollectionUseCase,
   private val getMovieVideos: GetMovieVideosUseCase,
+  private val getInstalledPlugins: GetInstalledPluginsUseCase,
+  private val refreshPlugins: RefreshPluginsUseCase,
+  private val getStreamFromPlugin: GetStreamFromPluginUseCase,
+  private val pluginPreferences: PluginPreferences,
 ) : ViewModel() {
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
@@ -47,6 +58,22 @@ class MovieDetailViewModel @Inject constructor(
     loadMovieDetail()
     observeBookmark()
     loadVideos()
+    observePlugins()
+    refreshPluginList()
+  }
+
+  private fun observePlugins() {
+    getInstalledPlugins()
+      .onEach { plugins ->
+        _state.update { it.copy(installedPlugins = plugins) }
+      }
+      .launchIn(viewModelScope)
+  }
+
+  private fun refreshPluginList() {
+    viewModelScope.launch {
+      refreshPlugins()
+    }
   }
 
   fun reload() {
@@ -85,14 +112,91 @@ class MovieDetailViewModel @Inject constructor(
     }
   }
 
-  fun loadStreamInfo() = viewModelScope.launch {
-    _state.value = _state.value.copy(isStreamLoading = true)
-    getStreamInfo()
-      .onEach { streamInfo ->
-        _state.value = _state.value.copy(streamInfo = streamInfo, isStreamLoading = false)
-        navigateToPlayer.emit(streamInfo.url)
+  fun loadStreamInfo() {
+    val plugins = _state.value.installedPlugins
+    when {
+      plugins.isEmpty() -> {
+        _state.update { it.copy(showNoPluginsDialog = true) }
       }
-      .collect()
+      plugins.size == 1 -> {
+        loadStreamFromPlugin(plugins.first())
+      }
+      else -> {
+        val defaultPluginId = pluginPreferences.getDefaultPluginId()
+        val defaultPlugin = plugins.find { it.pluginId == defaultPluginId }
+        if (defaultPlugin != null) {
+          loadStreamFromPlugin(defaultPlugin)
+        } else {
+          _state.update { it.copy(showPluginSelection = true) }
+        }
+      }
+    }
+  }
+
+  fun onPluginSelected(plugin: PluginMetadata) {
+    _state.update { it.copy(showPluginSelection = false) }
+    loadStreamFromPlugin(plugin)
+  }
+
+  fun dismissPluginSelection() {
+    _state.update { it.copy(showPluginSelection = false) }
+  }
+
+  fun dismissNoPluginsDialog() {
+    _state.update { it.copy(showNoPluginsDialog = false) }
+  }
+
+  private fun loadStreamFromPlugin(plugin: PluginMetadata) = viewModelScope.launch {
+    val videoDetail = _state.value.videoDetail ?: return@launch
+    val tmdbId = videoDetail.ids.tmdbId ?: return@launch
+
+    _state.update { it.copy(isStreamLoading = true, streamError = null) }
+
+    val request = StreamRequest.Movie(
+      tmdbId = tmdbId,
+      imdbId = null,
+      title = videoDetail.title,
+      year = videoDetail.year,
+    )
+
+    getStreamFromPlugin(plugin.pluginId, request).fold(
+      onSuccess = { response ->
+        val firstStream = response.streams.firstOrNull()
+        if (firstStream != null) {
+          val streamInfo = StreamInfo(
+            url = firstStream.url,
+            quality = firstStream.quality,
+            streamType = firstStream.streamType,
+            title = firstStream.title,
+            headers = firstStream.headers,
+            subtitles = firstStream.subtitles.map { subtitle ->
+              SubtitleInfo(
+                url = subtitle.url,
+                language = subtitle.language,
+                label = subtitle.label,
+              )
+            },
+          )
+          _state.update { it.copy(streamInfo = streamInfo, isStreamLoading = false) }
+          navigateToPlayer.emit(streamInfo.url)
+        } else {
+          _state.update {
+            it.copy(
+              isStreamLoading = false,
+              streamError = "No streams available from ${plugin.name}",
+            )
+          }
+        }
+      },
+      onFailure = { error ->
+        _state.update {
+          it.copy(
+            isStreamLoading = false,
+            streamError = "Failed to get stream from ${plugin.name}",
+          )
+        }
+      },
+    )
   }
 
   private fun loadCollection(collectionId: Int?) = viewModelScope.launch {

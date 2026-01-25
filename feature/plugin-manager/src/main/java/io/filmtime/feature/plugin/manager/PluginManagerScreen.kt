@@ -252,6 +252,20 @@ private fun PluginCard(
           onDismissRequest = { menuExpanded = false },
         ) {
           DropdownMenuItem(
+            text = {
+              Text(
+                stringResource(
+                  if (isDefault) R.string.plugin_manager_remove_default
+                  else R.string.plugin_manager_set_default,
+                ),
+              )
+            },
+            onClick = {
+              menuExpanded = false
+              onClick()
+            },
+          )
+          DropdownMenuItem(
             text = { Text(stringResource(R.string.plugin_manager_view_info)) },
             onClick = {
               menuExpanded = false

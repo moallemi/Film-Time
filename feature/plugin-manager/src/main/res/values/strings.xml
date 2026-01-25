@@ -15,5 +15,7 @@
   <string name="plugin_manager_login">Sign in</string>
   <string name="plugin_manager_logout">Sign out</string>
   <string name="plugin_manager_menu">Plugin options</string>
+  <string name="plugin_manager_set_default">Set as default</string>
+  <string name="plugin_manager_remove_default">Remove default</string>
   <string name="plugin_manager_view_info">View info</string>
 </resources>

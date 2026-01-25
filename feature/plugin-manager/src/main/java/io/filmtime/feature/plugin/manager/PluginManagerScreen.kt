@@ -165,6 +165,14 @@ private fun PluginManagerContent(
         )
         Spacer(modifier = Modifier.height(8.dp))
       }
+      item {
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+          text = stringResource(R.string.plugin_manager_default_hint),
+          style = MaterialTheme.typography.bodySmall,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+      }
     }
   }
 }
@@ -255,8 +263,11 @@ private fun PluginCard(
             text = {
               Text(
                 stringResource(
-                  if (isDefault) R.string.plugin_manager_remove_default
-                  else R.string.plugin_manager_set_default,
+                  if (isDefault) {
+                    R.string.plugin_manager_remove_default
+                  } else {
+                    R.string.plugin_manager_set_default
+                  },
                 ),
               )
             },

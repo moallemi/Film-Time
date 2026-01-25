@@ -18,4 +18,6 @@
   <string name="plugin_manager_set_default">Set as default</string>
   <string name="plugin_manager_remove_default">Remove default</string>
   <string name="plugin_manager_view_info">View info</string>
+  <string name="plugin_manager_default_hint">Setting a default provider will skip the provider selection when playing content.</string>
+  <string name="plugin_selection_default_hint">Tip: Set a default provider in settings to skip this step.</string>
 </resources>

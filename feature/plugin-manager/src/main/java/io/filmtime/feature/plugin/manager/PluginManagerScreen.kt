@@ -49,6 +49,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
+import io.filmtime.core.designsystem.theme.ThemePreviews
 import io.filmtime.core.plugin.api.PluginAuthState
 import io.filmtime.core.plugin.api.PluginContract
 import io.filmtime.core.plugin.api.PluginMetadata
@@ -202,6 +204,9 @@ private fun PluginCard(
       verticalAlignment = Alignment.CenterVertically,
     ) {
       Icon(
+        modifier = Modifier
+          .padding(top = 4.dp)
+          .align(Alignment.Top),
         imageVector = Icons.Default.Extension,
         contentDescription = null,
         tint = MaterialTheme.colorScheme.primary,
@@ -312,6 +317,29 @@ private fun EmptyPluginsMessage() {
       text = stringResource(R.string.plugin_manager_no_plugins_description),
       style = MaterialTheme.typography.bodyMedium,
       color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+  }
+}
+
+@ThemePreviews
+@Composable
+private fun PluginCardPreview() {
+  PreviewFilmTimeTheme {
+    PluginCard(
+      plugin = PluginMetadata(
+        pluginId = "plugin-id",
+        name = "Test Plugin",
+        description = "This is a test plugin",
+        version = "1.0.0",
+        iconUrl = null,
+        authority = "io.filmtime.test.plugin",
+      ),
+      isDefault = true,
+      authState = PluginAuthState.NotAuthenticated,
+      onClick = {},
+      onLoginClick = {},
+      onLogoutClick = {},
+      onViewInfoClick = {},
     )
   }
 }

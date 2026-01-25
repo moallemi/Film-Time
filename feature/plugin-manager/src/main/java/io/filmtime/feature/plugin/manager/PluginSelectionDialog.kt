@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
+import io.filmtime.core.designsystem.theme.ThemePreviews
 import io.filmtime.core.plugin.api.PluginMetadata
 
 @Composable
@@ -81,6 +83,8 @@ private fun PluginSelectionItem(
   ) {
     Spacer(modifier = Modifier.width(8.dp))
     Icon(
+      modifier = Modifier
+        .align(Alignment.Top),
       imageVector = Icons.Default.Extension,
       contentDescription = null,
       tint = MaterialTheme.colorScheme.primary,
@@ -92,7 +96,7 @@ private fun PluginSelectionItem(
       Text(
         text = plugin.name,
         style = MaterialTheme.typography.bodyLarge,
-        fontWeight = FontWeight.Medium,
+        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
       )
       Text(
         text = plugin.description,
@@ -127,4 +131,43 @@ fun NoPluginsInstalledDialog(
       }
     },
   )
+}
+
+@ThemePreviews
+@Composable
+private fun PluginSelectionItemPreview() {
+  PreviewFilmTimeTheme {
+    PluginSelectionItem(
+      plugin = PluginMetadata(
+        pluginId = "plugin-id",
+        name = "Test Plugin",
+        description = "This is a test plugin with a long description that should wrap " +
+          "properly and do not show ellipsis",
+        version = "1.0.0",
+        iconUrl = null,
+        authority = "io.filmtime.test.plugin",
+      ),
+      isSelected = false,
+      onClick = {},
+    )
+  }
+}
+
+@ThemePreviews
+@Composable
+private fun PluginSelectionItemSelectedPreview() {
+  PreviewFilmTimeTheme {
+    PluginSelectionItem(
+      plugin = PluginMetadata(
+        pluginId = "plugin-id",
+        name = "Test Plugin",
+        description = "This is a test plugin",
+        version = "1.0.0",
+        iconUrl = null,
+        authority = "io.filmtime.test.plugin",
+      ),
+      isSelected = true,
+      onClick = {},
+    )
+  }
 }

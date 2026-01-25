@@ -86,9 +86,14 @@ internal fun ShowDetailScreen(
     }
   }
 
+  val context = LocalContext.current
   LaunchedEffect(key1 = navigateToPlayer) {
     navigateToPlayer?.let { streamInfo ->
-      onStreamReady(streamInfo)
+      if (streamInfo.streamType == PluginContract.StreamType.EMBED) {
+        context.openUrl(streamInfo.url, isExternal = false)
+      } else {
+        onStreamReady(streamInfo)
+      }
     }
   }
 

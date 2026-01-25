@@ -10,8 +10,9 @@ FilmTime plugins are standalone Android apps that provide stream sources for mov
 
 | Directory | Description |
 |-----------|-------------|
-| `stream-basic-sample/` | Simple plugin without authentication |
-| `stream-auth-sample/` | Plugin with login/authentication flow |
+| `stream-basic-sample/` | Simple stream plugin without authentication |
+| `stream-auth-sample/` | Stream plugin with login/authentication flow |
+| `embed-sample/` | Embed plugin that returns URLs for WebView playback |
 
 ## Quick Start
 
@@ -246,6 +247,59 @@ private fun queryStream(uri: Uri): Cursor {
 | `hls` | HTTP Live Streaming | `.m3u8` playlists |
 | `dash` | MPEG-DASH | `.mpd` manifests |
 | `mp4` | Direct MP4 | `.mp4` files |
+| `embed` | WebView embed URL | Opens in browser/WebView |
+
+## Embed Plugins
+
+Embed plugins return URLs that should be opened in a WebView instead of being played directly in ExoPlayer. This is useful for services that provide iframe/embed players.
+
+### How It Works
+
+1. Set `stream_type` to `embed` instead of `hls`, `dash`, or `mp4`
+2. The `stream_url` should be the embed URL (e.g., `https://foo.com/embed/movie/123`)
+3. FilmTime will open this URL in a Custom Tabs browser instead of the native player
+
+### Example
+
+```kotlin
+private fun queryMovieEmbed(uri: Uri): Cursor {
+    val cursor = MatrixCursor(arrayOf(
+        "stream_url",
+        "quality",
+        "stream_type",
+        "title",
+        "headers",
+        "subtitles",
+    ))
+
+    val tmdbId = uri.getQueryParameter("tmdb_id")
+
+    cursor.addRow(arrayOf(
+        "https://foo.com/embed/movie/$tmdbId",
+        "auto",
+        "embed",  // This tells the app to open in WebView
+        "Watch Movie",
+        "",       // No headers needed
+        "",       // No subtitles - handled by embed player
+    ))
+
+    return cursor
+}
+```
+
+### For TV Shows
+
+Include season and episode in the embed URL:
+
+```kotlin
+val embedUrl = "https://foo.com/embed/tv/$tmdbId/$season/$episode"
+```
+
+### When to Use Embed
+
+- When a service only provides iframe/embed players
+- When the stream URL requires JavaScript to resolve
+- When the service handles its own player UI and subtitles
 
 ## Quality Values
 

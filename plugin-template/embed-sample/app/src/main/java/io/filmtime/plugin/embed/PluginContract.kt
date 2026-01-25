@@ -1,5 +1,9 @@
-package io.filmtime.core.plugin.api
+package io.filmtime.plugin.embed
 
+/**
+ * Local copy of the FilmTime plugin contract constants.
+ * This allows the template to be built independently without depending on the main repo.
+ */
 object PluginContract {
 
   const val AUTHORITY_PREFIX = "io.filmtime.plugin"
@@ -61,11 +65,5 @@ object PluginContract {
     const val KEY_IS_AUTHENTICATED = "is_authenticated"
     const val KEY_AUTH_DISPLAY_NAME = "auth_display_name"
     const val KEY_LOGOUT_SUCCESS = "logout_success"
-    const val ACTION_LOGIN = "io.filmtime.plugin.ACTION_LOGIN"
-    const val EXTRA_LOGIN_RESULT = "login_result"
-    const val LOGIN_RESULT_SUCCESS = 1
-    const val LOGIN_RESULT_CANCELLED = 2
-    const val LOGIN_RESULT_ERROR = 3
-    const val EXTRA_ERROR_MESSAGE = "error_message"
   }
 }

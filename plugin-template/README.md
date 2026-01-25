@@ -324,3 +324,33 @@ val embedUrl = "https://foo.com/embed/tv/$tmdbId/$season/$episode"
 - **Plugin not discovered**: Verify the service intent filter action is exactly `io.filmtime.plugin.STREAM_PROVIDER`
 - **Streams not loading**: Check that the provider authority matches `io.filmtime.plugin.<id>` pattern
 - **Auth not working**: Ensure login activity has the correct intent filter and returns proper result codes
+
+## Installing Plugins (For Users)
+
+FilmTime plugins are distributed as standalone Android APK files. To install a plugin:
+
+### Method 1: Using ADB (Recommended for developers)
+
+1. Download the plugin APK file
+2. Connect your device via USB with debugging enabled
+3. Run: `adb install path/to/plugin.apk`
+
+### Method 2: Using a File Manager
+
+1. Download the plugin APK to your device
+2. Open a file manager app
+3. Navigate to the downloaded APK
+4. Tap to install (you may need to enable "Install from unknown sources")
+
+### Method 3: Direct Download on Device
+
+1. Open the plugin download link in your device's browser
+2. Download will start automatically
+3. Open the downloaded file to install
+
+### After Installation
+
+1. Open FilmTime
+2. Go to Settings → Plugin Manager
+3. Your installed plugin should appear in the list
+4. Select the plugin and try playing content

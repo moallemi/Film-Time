@@ -1,9 +1,13 @@
 package io.filmtime.feature.plugin.manager
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,7 +23,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Extension
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -32,8 +39,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,6 +59,7 @@ fun PluginManagerScreen(
 ) {
   val viewModel = hiltViewModel<PluginManagerViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
+  val context = LocalContext.current
 
   val loginLauncher = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.StartActivityForResult(),
@@ -76,6 +88,12 @@ fun PluginManagerScreen(
     },
     onLoginClick = viewModel::loginPlugin,
     onLogoutClick = viewModel::logoutPlugin,
+    onViewInfoClick = { plugin ->
+      val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+        data = Uri.parse("package:${plugin.packageName}")
+      }
+      context.startActivity(intent)
+    },
   )
 }
 
@@ -87,6 +105,7 @@ private fun PluginManagerScreen(
   onPluginClick: (PluginMetadata) -> Unit,
   onLoginClick: (PluginMetadata) -> Unit,
   onLogoutClick: (PluginMetadata) -> Unit,
+  onViewInfoClick: (PluginMetadata) -> Unit,
 ) {
   Scaffold(
     topBar = {
@@ -109,6 +128,7 @@ private fun PluginManagerScreen(
       onPluginClick = onPluginClick,
       onLoginClick = onLoginClick,
       onLogoutClick = onLogoutClick,
+      onViewInfoClick = onViewInfoClick,
     )
   }
 }
@@ -120,6 +140,7 @@ private fun PluginManagerContent(
   onPluginClick: (PluginMetadata) -> Unit,
   onLoginClick: (PluginMetadata) -> Unit,
   onLogoutClick: (PluginMetadata) -> Unit,
+  onViewInfoClick: (PluginMetadata) -> Unit,
 ) {
   LazyColumn(
     modifier = Modifier
@@ -140,6 +161,7 @@ private fun PluginManagerContent(
           onClick = { onPluginClick(plugin) },
           onLoginClick = { onLoginClick(plugin) },
           onLogoutClick = { onLogoutClick(plugin) },
+          onViewInfoClick = { onViewInfoClick(plugin) },
         )
         Spacer(modifier = Modifier.height(8.dp))
       }
@@ -155,7 +177,10 @@ private fun PluginCard(
   onClick: () -> Unit,
   onLoginClick: () -> Unit,
   onLogoutClick: () -> Unit,
+  onViewInfoClick: () -> Unit,
 ) {
+  var menuExpanded by remember { mutableStateOf(false) }
+
   Card(
     modifier = Modifier
       .fillMaxWidth()
@@ -164,7 +189,8 @@ private fun PluginCard(
     Row(
       modifier = Modifier
         .fillMaxWidth()
-        .padding(16.dp),
+        .padding(start = 16.dp)
+        .padding(vertical = 16.dp),
       verticalAlignment = Alignment.CenterVertically,
     ) {
       Icon(
@@ -213,6 +239,26 @@ private fun PluginCard(
           contentDescription = stringResource(R.string.plugin_manager_default),
           tint = MaterialTheme.colorScheme.primary,
         )
+      }
+      Box {
+        IconButton(onClick = { menuExpanded = true }) {
+          Icon(
+            imageVector = Icons.Default.MoreVert,
+            contentDescription = stringResource(R.string.plugin_manager_menu),
+          )
+        }
+        DropdownMenu(
+          expanded = menuExpanded,
+          onDismissRequest = { menuExpanded = false },
+        ) {
+          DropdownMenuItem(
+            text = { Text(stringResource(R.string.plugin_manager_view_info)) },
+            onClick = {
+              menuExpanded = false
+              onViewInfoClick()
+            },
+          )
+        }
       }
     }
   }

@@ -2,6 +2,8 @@ package io.filmtime.feature.show.detail
 
 import android.content.Intent
 import androidx.lifecycle.SavedStateHandle
+import app.cash.turbine.test
+import io.filmtime.core.plugin.api.PluginContract
 import io.filmtime.core.plugin.api.PluginError
 import io.filmtime.core.plugin.api.PluginMetadata
 import io.filmtime.core.plugin.api.PluginStream
@@ -200,6 +202,66 @@ class ShowDetailViewModelAuthTest {
     assertNull(state.loginIntent)
     assertNotNull(state.streamError)
     assertNull(state.pendingEpisode)
+  }
+
+  @Test
+  fun `embed stream type is preserved for episode`() = runTest {
+    val streamResponse = StreamResponse(
+      streams = listOf(
+        PluginStream(
+          url = "https://example.com/embed/tv/123/1/1",
+          quality = "auto",
+          streamType = PluginContract.StreamType.EMBED,
+          title = "Watch Episode",
+          headers = emptyMap(),
+          subtitles = emptyList(),
+        ),
+      ),
+    )
+    getStreamFromPlugin.setResult(Result.Success(streamResponse))
+
+    val viewModel = createViewModel()
+    advanceUntilIdle()
+
+    viewModel.navigateToPlayer.test {
+      viewModel.playEpisode(testEpisode)
+      advanceUntilIdle()
+
+      val streamInfo = awaitItem()
+      assertNotNull(streamInfo)
+      assertEquals(PluginContract.StreamType.EMBED, streamInfo?.streamType)
+      assertEquals("https://example.com/embed/tv/123/1/1", streamInfo?.url)
+    }
+  }
+
+  @Test
+  fun `hls stream type is preserved for episode`() = runTest {
+    val streamResponse = StreamResponse(
+      streams = listOf(
+        PluginStream(
+          url = "https://example.com/episode.m3u8",
+          quality = "hd",
+          streamType = PluginContract.StreamType.HLS,
+          title = "Episode Stream",
+          headers = mapOf("User-Agent" to "TestAgent"),
+          subtitles = emptyList(),
+        ),
+      ),
+    )
+    getStreamFromPlugin.setResult(Result.Success(streamResponse))
+
+    val viewModel = createViewModel()
+    advanceUntilIdle()
+
+    viewModel.navigateToPlayer.test {
+      viewModel.playEpisode(testEpisode)
+      advanceUntilIdle()
+
+      val streamInfo = awaitItem()
+      assertNotNull(streamInfo)
+      assertEquals(PluginContract.StreamType.HLS, streamInfo?.streamType)
+      assertEquals("https://example.com/episode.m3u8", streamInfo?.url)
+    }
   }
 }
 

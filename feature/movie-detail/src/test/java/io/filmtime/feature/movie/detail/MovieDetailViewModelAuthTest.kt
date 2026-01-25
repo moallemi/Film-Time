@@ -2,6 +2,8 @@ package io.filmtime.feature.movie.detail
 
 import android.content.Intent
 import androidx.lifecycle.SavedStateHandle
+import app.cash.turbine.test
+import io.filmtime.core.plugin.api.PluginContract
 import io.filmtime.core.plugin.api.PluginError
 import io.filmtime.core.plugin.api.PluginMetadata
 import io.filmtime.core.plugin.api.PluginStream
@@ -194,6 +196,92 @@ class MovieDetailViewModelAuthTest {
     advanceUntilIdle()
 
     assertEquals(testPlugin, createPluginLoginIntent.lastPlugin)
+  }
+
+  @Test
+  fun `embed stream type is preserved in streamInfo`() = runTest {
+    val streamResponse = StreamResponse(
+      streams = listOf(
+        PluginStream(
+          url = "https://example.com/embed/movie/123",
+          quality = "auto",
+          streamType = PluginContract.StreamType.EMBED,
+          title = "Watch Movie",
+          headers = emptyMap(),
+          subtitles = emptyList(),
+        ),
+      ),
+    )
+    getStreamFromPlugin.setResult(Result.Success(streamResponse))
+
+    val viewModel = createViewModel()
+    advanceUntilIdle()
+
+    viewModel.loadStreamInfo()
+    advanceUntilIdle()
+
+    val state = viewModel.state.value
+    assertNotNull(state.streamInfo)
+    assertEquals(PluginContract.StreamType.EMBED, state.streamInfo?.streamType)
+    assertEquals("https://example.com/embed/movie/123", state.streamInfo?.url)
+  }
+
+  @Test
+  fun `embed stream emits to navigateToPlayer`() = runTest {
+    val streamResponse = StreamResponse(
+      streams = listOf(
+        PluginStream(
+          url = "https://example.com/embed/movie/123",
+          quality = "auto",
+          streamType = PluginContract.StreamType.EMBED,
+          title = "Watch Movie",
+          headers = emptyMap(),
+          subtitles = emptyList(),
+        ),
+      ),
+    )
+    getStreamFromPlugin.setResult(Result.Success(streamResponse))
+
+    val viewModel = createViewModel()
+    advanceUntilIdle()
+
+    viewModel.navigateToPlayer.test {
+      viewModel.loadStreamInfo()
+      advanceUntilIdle()
+
+      val streamInfo = awaitItem()
+      assertNotNull(streamInfo)
+      assertEquals(PluginContract.StreamType.EMBED, streamInfo?.streamType)
+      assertEquals("https://example.com/embed/movie/123", streamInfo?.url)
+    }
+  }
+
+  @Test
+  fun `hls stream type is preserved in streamInfo`() = runTest {
+    val streamResponse = StreamResponse(
+      streams = listOf(
+        PluginStream(
+          url = "https://example.com/stream.m3u8",
+          quality = "hd",
+          streamType = PluginContract.StreamType.HLS,
+          title = "HD Stream",
+          headers = mapOf("User-Agent" to "TestAgent"),
+          subtitles = emptyList(),
+        ),
+      ),
+    )
+    getStreamFromPlugin.setResult(Result.Success(streamResponse))
+
+    val viewModel = createViewModel()
+    advanceUntilIdle()
+
+    viewModel.loadStreamInfo()
+    advanceUntilIdle()
+
+    val state = viewModel.state.value
+    assertNotNull(state.streamInfo)
+    assertEquals(PluginContract.StreamType.HLS, state.streamInfo?.streamType)
+    assertEquals("https://example.com/stream.m3u8", state.streamInfo?.url)
   }
 }
 

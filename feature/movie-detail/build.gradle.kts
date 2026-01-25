@@ -25,4 +25,5 @@ dependencies {
 
   testImplementation(project(":domain:testing"))
   testImplementation(libs.coroutines.test)
+  testImplementation(libs.turbine)
 }

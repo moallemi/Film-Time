@@ -68,7 +68,6 @@ fun MovieDetailScreen(
   onNavigateToPluginManager: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
-  val navigateToPlayer by viewModel.navigateToPlayer.collectAsStateWithLifecycle(null)
 
   val loginLauncher = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.StartActivityForResult(),
@@ -89,12 +88,14 @@ fun MovieDetailScreen(
   }
 
   val context = LocalContext.current
-  LaunchedEffect(key1 = navigateToPlayer) {
-    navigateToPlayer?.let { streamInfo ->
-      if (streamInfo.streamType == PluginContract.StreamType.EMBED) {
-        context.openUrl(streamInfo.url, isExternal = false)
-      } else {
-        onStreamReady(streamInfo)
+  LaunchedEffect(Unit) {
+    viewModel.navigateToPlayer.collect { streamInfo ->
+      if (streamInfo != null) {
+        if (streamInfo.streamType == PluginContract.StreamType.EMBED) {
+          context.openUrl(streamInfo.url, isExternal = true)
+        } else {
+          onStreamReady(streamInfo)
+        }
       }
     }
   }

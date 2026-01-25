@@ -48,6 +48,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
@@ -79,6 +81,10 @@ fun PluginManagerScreen(
     state.loginIntent?.let { intent ->
       loginLauncher.launch(intent)
     }
+  }
+
+  LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+    viewModel.refresh()
   }
 
   PluginManagerScreen(
@@ -157,6 +163,8 @@ private fun PluginManagerContent(
     } else {
       items(state.plugins, key = { it.pluginId }) { plugin ->
         PluginCard(
+          modifier = Modifier
+            .animateItem(),
           plugin = plugin,
           isDefault = plugin.pluginId == state.defaultPluginId,
           authState = state.authStates[plugin.pluginId],
@@ -188,11 +196,12 @@ private fun PluginCard(
   onLoginClick: () -> Unit,
   onLogoutClick: () -> Unit,
   onViewInfoClick: () -> Unit,
+  modifier: Modifier = Modifier,
 ) {
   var menuExpanded by remember { mutableStateOf(false) }
 
   Card(
-    modifier = Modifier
+    modifier = modifier
       .fillMaxWidth()
       .clickable(onClick = onClick),
   ) {

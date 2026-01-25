@@ -68,6 +68,7 @@ class PluginManagerViewModel @Inject constructor(
     viewModelScope.launch {
       _state.update { it.copy(isLoading = true) }
       refreshPlugins()
+      _state.update { it.copy(isLoading = false) }
     }
   }
 

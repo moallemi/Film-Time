@@ -425,3 +425,4 @@ obj/
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,linux,git,android,androidstudio,gradle,kotlin,java,intellij
 release/google-play-publish.json
+CLAUDE.md

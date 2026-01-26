@@ -19,11 +19,13 @@ import io.filmtime.core.designsystem.composable.FilmTimeSmallTopAppBar
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
 import io.filmtime.feature.settings.components.FilmTimeCard
+import io.filmtime.feature.settings.components.PluginSettingsCard
 import io.filmtime.feature.settings.components.TraktCard
 
 @Composable
 fun SettingsScreen(
   onTraktLoginClick: () -> Unit,
+  onPluginManagerClick: () -> Unit,
 ) {
   val viewModel = hiltViewModel<SettingsViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
@@ -32,6 +34,7 @@ fun SettingsScreen(
     state = state,
     onTraktLoginClick = onTraktLoginClick,
     onTraktLogoutClick = viewModel::traktLogout,
+    onPluginManagerClick = onPluginManagerClick,
   )
 }
 
@@ -41,6 +44,7 @@ private fun SettingsScreen(
   state: SettingsUiState,
   onTraktLoginClick: () -> Unit,
   onTraktLogoutClick: () -> Unit,
+  onPluginManagerClick: () -> Unit,
 ) {
   Scaffold(
     topBar = {
@@ -54,6 +58,7 @@ private fun SettingsScreen(
       contentPadding = padding,
       onTraktLoginClick = onTraktLoginClick,
       onTraktLogoutClick = onTraktLogoutClick,
+      onPluginManagerClick = onPluginManagerClick,
     )
   }
 }
@@ -64,6 +69,7 @@ private fun SettingsContent(
   contentPadding: PaddingValues,
   onTraktLoginClick: () -> Unit,
   onTraktLogoutClick: () -> Unit,
+  onPluginManagerClick: () -> Unit,
 ) {
   Box(
     modifier = Modifier
@@ -78,6 +84,13 @@ private fun SettingsContent(
           isLoggedIn = state.isTraktLoggedIn,
           onLoginClick = onTraktLoginClick,
           onLogoutClick = onTraktLogoutClick,
+        )
+      }
+      item {
+        PluginSettingsCard(
+          modifier = Modifier
+            .padding(horizontal = 16.dp),
+          onManagePluginsClick = onPluginManagerClick,
         )
       }
     }
@@ -98,6 +111,7 @@ private fun SettingsScreenPreview() {
       contentPadding = PaddingValues(16.dp),
       onTraktLoginClick = { },
       onTraktLogoutClick = { },
+      onPluginManagerClick = { },
     )
   }
 }

@@ -9,4 +9,7 @@
     <string name="feature_settings_trakt_sign_out_message">Are you sure you want to sign out from Trakt?</string>
     <string name="feature_settings_cancel">Cancel</string>
     <string name="feature_settings_version_build">Version %1$s - Build %2$d</string>
+    <string name="feature_settings_stream_providers">Stream Providers</string>
+    <string name="feature_settings_stream_providers_desc">Manage installed provider plugins for video playback</string>
+    <string name="feature_settings_manage_providers">Manage Providers</string>
 </resources>

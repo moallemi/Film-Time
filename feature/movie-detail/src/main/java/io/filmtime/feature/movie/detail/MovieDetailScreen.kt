@@ -1,5 +1,8 @@
 package io.filmtime.feature.movie.detail
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +36,7 @@ import io.filmtime.core.designsystem.composable.FilmTimeFilledTonalButton
 import io.filmtime.core.designsystem.theme.FilmTimeTheme
 import io.filmtime.core.designsystem.theme.PreviewFilmTimeTheme
 import io.filmtime.core.designsystem.theme.ThemePreviews
+import io.filmtime.core.plugin.api.PluginContract
 import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.VideoDescription
 import io.filmtime.core.ui.common.componnents.VideoInfo
@@ -43,29 +47,78 @@ import io.filmtime.core.ui.common.componnents.VideoTrailerRow
 import io.filmtime.data.model.Preview
 import io.filmtime.data.model.PreviewMovie
 import io.filmtime.data.model.Ratings
+import io.filmtime.data.model.StreamInfo
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoGenre
 import io.filmtime.data.model.VideoType
 import io.filmtime.feature.credits.components.CreditsRow
+import io.filmtime.feature.plugin.manager.NoPluginsInstalledDialog
+import io.filmtime.feature.plugin.manager.PluginSelectionDialog
 import io.filmtime.feature.similar.SimilarVideosRow
 import io.filmtime.feature.trakt.buttons.addremovehistory.TraktAddRemoveHistoryButton
 
 @Composable
 fun MovieDetailScreen(
   viewModel: MovieDetailViewModel,
-  onStreamReady: (String) -> Unit,
+  onStreamReady: (StreamInfo) -> Unit,
   onCastItemClick: (Long) -> Unit,
   onMovieClick: (Int) -> Unit,
   onGenreClick: (VideoGenre, VideoType) -> Unit,
   onBackPressed: () -> Unit,
+  onNavigateToPluginManager: () -> Unit,
 ) {
   val state by viewModel.state.collectAsStateWithLifecycle()
-  val navigateToPlayer by viewModel.navigateToPlayer.collectAsStateWithLifecycle(null)
 
-  LaunchedEffect(key1 = navigateToPlayer) {
-    navigateToPlayer?.let { streamUrl ->
-      onStreamReady(streamUrl)
+  val loginLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.StartActivityForResult(),
+  ) { result ->
+    val loginResult = result.data?.getIntExtra(
+      PluginContract.Auth.EXTRA_LOGIN_RESULT,
+      PluginContract.Auth.LOGIN_RESULT_CANCELLED,
+    ) ?: PluginContract.Auth.LOGIN_RESULT_CANCELLED
+    val success = result.resultCode == Activity.RESULT_OK &&
+      loginResult == PluginContract.Auth.LOGIN_RESULT_SUCCESS
+    viewModel.onPluginLoginResult(success)
+  }
+
+  LaunchedEffect(state.loginIntent) {
+    state.loginIntent?.let { intent ->
+      loginLauncher.launch(intent)
     }
+  }
+
+  val context = LocalContext.current
+  LaunchedEffect(Unit) {
+    viewModel.navigateToPlayer.collect { streamInfo ->
+      if (streamInfo != null) {
+        if (streamInfo.streamType == PluginContract.StreamType.EMBED) {
+          context.openUrl(streamInfo.url, isExternal = true)
+        } else {
+          onStreamReady(streamInfo)
+        }
+      }
+    }
+  }
+
+  if (state.showPluginSelection) {
+    PluginSelectionDialog(
+      plugins = state.installedPlugins,
+      selectedPluginId = null,
+      onPluginSelected = { plugin ->
+        viewModel.onPluginSelected(plugin)
+      },
+      onDismiss = viewModel::dismissPluginSelection,
+    )
+  }
+
+  if (state.showNoPluginsDialog) {
+    NoPluginsInstalledDialog(
+      onDismiss = viewModel::dismissNoPluginsDialog,
+      onOpenPluginManager = {
+        viewModel.dismissNoPluginsDialog()
+        onNavigateToPluginManager()
+      },
+    )
   }
 
   MovieDetailScreen(
@@ -75,8 +128,7 @@ fun MovieDetailScreen(
     onAddBookmark = viewModel::addBookmark,
     onRemoveBookmark = viewModel::removeBookmark,
     onGenreClick = onGenreClick,
-    onPLayClick = {
-    },
+    onPLayClick = viewModel::loadStreamInfo,
   )
 }
 

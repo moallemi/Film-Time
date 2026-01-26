@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="plugin_manager_title">Stream Providers</string>
+  <string name="plugin_manager_back">Back</string>
+  <string name="plugin_manager_version">Version %1$s</string>
+  <string name="plugin_manager_default">Default provider</string>
+  <string name="plugin_manager_no_plugins_title">No providers installed</string>
+  <string name="plugin_manager_no_plugins_description">Install a stream provider plugin to enable video playback. Provider plugins are separate apps that provide stream URLs for movies and TV shows.</string>
+  <string name="plugin_selection_title">Select a provider</string>
+  <string name="plugin_selection_cancel">Cancel</string>
+  <string name="no_plugins_dialog_title">No providers installed</string>
+  <string name="no_plugins_dialog_message">To play videos, you need to install a stream provider plugin. These are separate apps that provide stream URLs.</string>
+  <string name="no_plugins_dialog_open_manager">View providers</string>
+  <string name="no_plugins_dialog_cancel">Cancel</string>
+  <string name="plugin_manager_login">Sign in</string>
+  <string name="plugin_manager_logout">Sign out</string>
+  <string name="plugin_manager_menu">Plugin options</string>
+  <string name="plugin_manager_set_default">Set as default</string>
+  <string name="plugin_manager_remove_default">Remove default</string>
+  <string name="plugin_manager_view_info">View info</string>
+  <string name="plugin_manager_default_hint">Setting a default provider will skip the provider selection when playing content.</string>
+  <string name="plugin_selection_default_hint">Tip: Set a default provider in settings to skip this step.</string>
+</resources>

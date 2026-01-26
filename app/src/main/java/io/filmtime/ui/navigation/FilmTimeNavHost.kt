@@ -15,7 +15,9 @@ import io.filmtime.feature.movie.detail.navigateToMovieDetail
 import io.filmtime.feature.movies.moviesGraph
 import io.filmtime.feature.player.navigateToPlayer
 import io.filmtime.feature.player.playerScreen
+import io.filmtime.feature.plugin.manager.navigateToPluginManager
 import io.filmtime.feature.search.searchGraph
+import io.filmtime.feature.settings.GRAPH_SETTINGS_ROUTE
 import io.filmtime.feature.settings.settingsGraph
 import io.filmtime.feature.show.detail.navigateToShowDetail
 import io.filmtime.feature.show.detail.showDetailScreen
@@ -106,6 +108,7 @@ fun FilmTimeNavHost(
     )
 
     settingsGraph(
+      navController = navController,
       onTraktLoginClick = navController::navigateToTraktLogin,
       nestedGraphs = { rootRoute ->
         traktLoginScreen(rootRoute, navController)
@@ -136,6 +139,7 @@ private fun NavGraphBuilder.movieDetailScreen(
     onCastItemClick = { _, _ -> },
     onMovieClick = navController::navigateToMovieDetail,
     onGenreClick = navController::navigateVideoGridByGenre,
+    onNavigateToPluginManager = { navController.navigateToPluginManager(GRAPH_SETTINGS_ROUTE) },
     onBack = navController::popBackStack,
   )
 }
@@ -151,6 +155,7 @@ private fun NavGraphBuilder.showDetailScreen(
     onSimilarClick = navController::navigateToShowDetail,
     onBack = navController::popBackStack,
     onGenreClick = navController::navigateVideoGridByGenre,
+    onNavigateToPluginManager = { navController.navigateToPluginManager(GRAPH_SETTINGS_ROUTE) },
   )
 }
 

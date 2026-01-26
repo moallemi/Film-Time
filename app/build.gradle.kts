@@ -32,6 +32,7 @@ dependencies {
   implementation(project(":feature:search"))
   implementation(project(":feature:video-thumbnail-grid"))
   implementation(project(":feature:video-thumbnail-grid-genre"))
+  implementation(project(":feature:plugin-manager"))
 
   implementation(project(":core:libs:logger"))
   implementation(project(":core:libs:tracker"))

@@ -7,14 +7,16 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import io.filmtime.core.ui.navigation.DestinationRoute
 import io.filmtime.core.ui.navigation.composable
+import io.filmtime.data.model.StreamInfo
 import io.filmtime.data.model.VideoType
 
 fun NavGraphBuilder.showDetailScreen(
   rootRoute: DestinationRoute,
-  onStreamReady: (DestinationRoute, streamUrl: String) -> Unit,
+  onStreamReady: (DestinationRoute, StreamInfo) -> Unit,
   onCastItemClick: (DestinationRoute, castId: Long) -> Unit,
   onSimilarClick: (DestinationRoute, tmdbId: Int) -> Unit,
   onGenreClick: (DestinationRoute, genreId: Long, genreName: String, type: VideoType) -> Unit,
+  onNavigateToPluginManager: (DestinationRoute) -> Unit,
   onBack: () -> Unit,
 ) {
   composable(
@@ -32,6 +34,8 @@ fun NavGraphBuilder.showDetailScreen(
       onShowClick = { onSimilarClick(rootRoute, it) },
       onGenreClick = { genre, type -> onGenreClick(rootRoute, genre.id, genre.name, type) },
       onBackPressed = onBack,
+      onStreamReady = { onStreamReady(rootRoute, it) },
+      onNavigateToPluginManager = { onNavigateToPluginManager(rootRoute) },
     )
   }
 }

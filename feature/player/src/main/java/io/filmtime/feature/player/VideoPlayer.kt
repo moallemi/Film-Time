@@ -39,7 +39,7 @@ fun VideoPlayer(streamInfo: StreamInfo) {
 
     val subtitleConfigs = streamInfo.subtitles.map { subtitle ->
       MediaItem.SubtitleConfiguration.Builder(Uri.parse(subtitle.url))
-        .setMimeType(MimeTypes.TEXT_VTT)
+        .setMimeType(inferSubtitleMimeType(subtitle.url))
         .setLanguage(subtitle.language)
         .setLabel(subtitle.label ?: subtitle.language)
         .build()
@@ -92,4 +92,15 @@ fun VideoPlayer(streamInfo: StreamInfo) {
       player = exoPlayer
     }
   })
+}
+
+private fun inferSubtitleMimeType(url: String): String {
+  val extension = url.substringAfterLast('.', "").lowercase().substringBefore('?')
+  return when (extension) {
+    "vtt", "webvtt" -> MimeTypes.TEXT_VTT
+    "srt" -> MimeTypes.APPLICATION_SUBRIP
+    "ass", "ssa" -> MimeTypes.TEXT_SSA
+    "ttml", "xml", "dfxp" -> MimeTypes.APPLICATION_TTML
+    else -> MimeTypes.TEXT_VTT
+  }
 }

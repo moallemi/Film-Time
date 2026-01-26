@@ -8,6 +8,7 @@ import android.content.pm.ProviderInfo
 import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.filmtime.core.plugin.api.PluginAuthState
 import io.filmtime.core.plugin.api.PluginContract
@@ -34,6 +35,10 @@ internal class PluginDiscoveryRepositoryImpl @Inject constructor(
 ) : PluginDiscoveryRepository {
 
   private val _plugins = MutableStateFlow<List<PluginMetadata>>(emptyList())
+
+  companion object {
+    private const val TAG = "PluginDiscovery"
+  }
 
   private val contentResolver: ContentResolver
     get() = context.contentResolver
@@ -125,6 +130,7 @@ internal class PluginDiscoveryRepositoryImpl @Inject constructor(
         }
       }
     } catch (e: Exception) {
+      Log.e(TAG, "Failed to load plugin metadata for authority: $authority", e)
       null
     }
   }

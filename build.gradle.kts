@@ -1,6 +1,5 @@
 plugins {
   alias(libs.plugins.com.android.application) apply false
-  alias(libs.plugins.org.jetbrains.kotlin.android) apply false
   alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
   alias(libs.plugins.com.android.library) apply false
   alias(libs.plugins.kotlinx.serialization) apply false
@@ -21,14 +20,16 @@ spotless {
     target("**/*.kt", "**/*.kts")
     targetExclude("${layout.buildDirectory}/**/*.kt", "bin/**/*.kt", "buildSrc/**/*.kt")
 
-    ktlint()
+    ktlint("0.50.0")
   }
 }
 
 val installGitHook by tasks.registering(Copy::class) {
   from(file("${rootProject.rootDir}/.scripts/pre-commit"))
   into(file("${rootProject.rootDir}/.git/hooks"))
-  fileMode = 0b111101101
+  filePermissions {
+    unix("rwxr-xr-x")
+  }
 }
 
 project(":app").afterEvaluate {

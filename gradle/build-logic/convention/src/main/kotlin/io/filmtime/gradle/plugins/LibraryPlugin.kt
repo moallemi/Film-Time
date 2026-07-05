@@ -1,31 +1,32 @@
 package io.filmtime.gradle.plugins
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import io.filmtime.gradle.Versions
 import io.filmtime.gradle.configureFlavors
 import io.filmtime.gradle.configureKotlinAndroid
+import io.filmtime.gradle.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.kotlin
 
 class LibraryPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
       with(pluginManager) {
         apply("com.android.library")
-        apply("org.jetbrains.kotlin.android")
       }
 
       extensions.configure<LibraryExtension> {
-        configureKotlinAndroid()
-        defaultConfig.targetSdk = Versions.TARGET_SDK
+        configureKotlinAndroid(this)
+        testOptions.targetSdk = Versions.TARGET_SDK
+        lint.targetSdk = Versions.TARGET_SDK
         configureFlavors(this)
       }
 
       dependencies {
-        add("testImplementation", kotlin("test"))
+        add("testImplementation", libs.findLibrary("kotlin-test").get())
+        add("testImplementation", libs.findLibrary("junit").get())
       }
     }
   }

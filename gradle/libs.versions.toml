@@ -1,9 +1,9 @@
 [versions]
-agp = "8.13.2"
+agp = "9.2.1"
 coil-compose = "2.7.0"
-hilt-android = "2.57.2"
+hilt-android = "2.60"
 hilt-navigation-compose = "1.3.0"
-kotlin = "2.2.0"
+kotlin = "2.3.10"
 core-ktx = "1.17.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.3.0"
@@ -17,11 +17,11 @@ media3-exoplayer = "1.9.0"
 datastore = "1.2.0"
 paging = "3.3.6"
 room = "2.8.4"
-ksp = "2.3.4"
+ksp = "2.3.9"
 retrofit = "3.0.0"
 lifecycle = "2.10.0"
-google-play-publish = "3.13.0"
-advanced-gradle-build-version = "3.0.0"
+google-play-publish = "4.0.0"
+advanced-gradle-build-version = "4.0.0"
 tv-material = "1.0.1"
 coroutines = "1.10.2"
 
@@ -71,30 +71,30 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 turbine = "app.cash.turbine:turbine:1.2.0"
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
 # Dependencies of the included build-logic
-android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle-api", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 google-play-publish-gradlePlugin = { group = "com.github.triplet.gradle", name = "play-publisher", version.ref = "google-play-publish" }
-advanced-gradle-build-version-gradlePlugin = { group = "me.moallemi.gradle", name = "advanced-build-version", version.ref = "advanced-gradle-build-version" }
+advanced-gradle-build-version-gradlePlugin = { group = "me.moallemi.gradle", name = "gradle-advanced-build-version", version.ref = "advanced-gradle-build-version" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 com-android-library = { id = "com.android.library", version.ref = "agp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt-android" }
-spotless = "com.diffplug.spotless:6.20.0"
+spotless = "com.diffplug.spotless:7.2.1"
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "room" }
 advanced-gradle-build-version = { id = "me.moallemi.advanced-build-version", version.ref = "advanced-gradle-build-version" }
-google-services = "com.google.gms.google-services:4.4.4"
-firebase-crashlytics = "com.google.firebase.crashlytics:3.0.6"
+google-services = "com.google.gms.google-services:4.5.0"
+firebase-crashlytics = "com.google.firebase.crashlytics:3.0.7"
 google-play-publish = { id = "com.github.triplet.play", version.ref = "google-play-publish" }
 
 [bundles]

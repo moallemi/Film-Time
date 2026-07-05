@@ -26,9 +26,7 @@ internal fun Project.configureVersionCode(
     }
   }
 
-  applicationExtension.apply {
-    val versioning = extensions.getByName("advancedVersioning") as AdvancedBuildVersionConfig
-    this.defaultConfig.versionCode = versioning.versionCode
-    this.defaultConfig.versionName = versioning.versionName
-  }
+  val versioning = extensions.getByName("advancedVersioning") as AdvancedBuildVersionConfig
+  applicationExtension.defaultConfig.versionCode = versioning.versionCode
+  applicationExtension.defaultConfig.versionName = versioning.versionName
 }

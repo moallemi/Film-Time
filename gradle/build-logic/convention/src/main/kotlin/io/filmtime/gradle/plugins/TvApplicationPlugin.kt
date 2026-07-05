@@ -17,7 +17,6 @@ class TvApplicationPlugin : Plugin<Project> {
     with(target) {
       with(pluginManager) {
         apply("com.android.application")
-        apply("org.jetbrains.kotlin.android")
 
         apply("io.filmtime.gradle.android.application.compose")
         apply("io.filmtime.gradle.android.hilt")
@@ -26,7 +25,7 @@ class TvApplicationPlugin : Plugin<Project> {
       }
 
       extensions.configure<ApplicationExtension> {
-        configureKotlinAndroid()
+        configureKotlinAndroid(this)
 
         defaultConfig {
           targetSdk = Versions.TARGET_SDK

@@ -21,7 +21,7 @@ spotless {
     target("**/*.kt", "**/*.kts")
     targetExclude("${layout.buildDirectory}/**/*.kt", "bin/**/*.kt", "buildSrc/**/*.kt")
 
-    ktlint()
+    ktlint("0.50.0")
   }
 }
 

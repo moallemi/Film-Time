@@ -2,6 +2,7 @@ package io.filmtime.gradle
 
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.ProductFlavor
+import org.gradle.kotlin.dsl.invoke
 
 enum class FlavorDimension {
   Store,
@@ -14,7 +15,7 @@ enum class FilmTimeFlavor(val dimension: FlavorDimension) {
 }
 
 fun configureFlavors(
-  commonExtension: CommonExtension<*, *, *, *, *, *>,
+  commonExtension: CommonExtension,
   configuration: ProductFlavor.(flavor: FilmTimeFlavor) -> Unit = {},
 ) {
   commonExtension.apply {

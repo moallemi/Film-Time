@@ -21,7 +21,7 @@ ksp = "2.3.9"
 retrofit = "3.0.0"
 lifecycle = "2.10.0"
 google-play-publish = "3.13.0"
-advanced-gradle-build-version = "3.0.0"
+advanced-gradle-build-version = "4.0.0"
 tv-material = "1.0.1"
 coroutines = "1.10.2"
 
@@ -79,7 +79,7 @@ compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 google-play-publish-gradlePlugin = { group = "com.github.triplet.gradle", name = "play-publisher", version.ref = "google-play-publish" }
-advanced-gradle-build-version-gradlePlugin = { group = "me.moallemi.gradle", name = "advanced-build-version", version.ref = "advanced-gradle-build-version" }
+advanced-gradle-build-version-gradlePlugin = { group = "me.moallemi.gradle", name = "gradle-advanced-build-version", version.ref = "advanced-gradle-build-version" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }

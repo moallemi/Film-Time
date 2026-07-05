@@ -1,3 +1,5 @@
+import com.android.build.api.variant.BuildConfigField
+
 plugins {
   id("io.filmtime.gradle.android.feature")
   id("io.filmtime.gradle.android.library.compose")
@@ -6,12 +8,17 @@ plugins {
 android {
   namespace = "io.filmtime.feature.trakt.login"
 
-  defaultConfig {
-    buildConfigField("String", "TRAKT_CLIENT_ID", "\"${project.properties["FILM_TIME_TRAKT_CLIENT_ID"]}\"")
+  buildFeatures {
+    buildConfig = true
+  }
+}
 
-    buildFeatures {
-      buildConfig = true
-    }
+androidComponents {
+  onVariants { variant ->
+    variant.buildConfigFields?.put(
+      "TRAKT_CLIENT_ID",
+      BuildConfigField("String", "\"${project.properties["FILM_TIME_TRAKT_CLIENT_ID"]}\"", null),
+    )
   }
 }
 

@@ -28,7 +28,9 @@ spotless {
 val installGitHook by tasks.registering(Copy::class) {
   from(file("${rootProject.rootDir}/.scripts/pre-commit"))
   into(file("${rootProject.rootDir}/.git/hooks"))
-  fileMode = 0b111101101
+  filePermissions {
+    unix("rwxr-xr-x")
+  }
 }
 
 project(":app").afterEvaluate {

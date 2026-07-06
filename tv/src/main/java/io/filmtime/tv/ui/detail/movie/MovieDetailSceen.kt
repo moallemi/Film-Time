@@ -12,15 +12,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
 import io.filmtime.data.model.VideoDetail
+import io.filmtime.tv.R
+import io.filmtime.tv.ui.component.CastRowLoading
 import io.filmtime.tv.ui.component.CastsRow
 import io.filmtime.tv.ui.component.DetailHeader
+import io.filmtime.tv.ui.component.DetailHeaderLoadingPlaceholder
 import io.filmtime.tv.ui.component.DetailPoster
+import io.filmtime.tv.ui.component.ErrorScreen
 import io.filmtime.tv.ui.component.MovieInformation
+import io.filmtime.tv.ui.component.PosterLoadingPlaceholder
 import io.filmtime.tv.ui.component.SimilarSection
 
 @Composable
@@ -29,7 +35,8 @@ fun MovieDetailScreen(modifier: Modifier = Modifier) {
   val uiState by viewModel.state.collectAsStateWithLifecycle()
   MovieDetailContent(
     modifier = modifier,
-    videoDetail = uiState.videoDetail,
+    uiState = uiState,
+    onReload = viewModel::loadMovieDetail,
     movieBackgroundPoster = { coverUrl ->
       DetailPoster(
         coverUrl = coverUrl,
@@ -71,29 +78,61 @@ fun MovieDetailScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun MovieDetailContent(
   modifier: Modifier = Modifier,
-  videoDetail: VideoDetail?,
+  uiState: MovieDetailState,
   movieBackgroundPoster: @Composable (coverUrl: String) -> Unit,
   headerContent: @Composable (detail: VideoDetail) -> Unit,
   castsContent: @Composable (tmdbId: Int) -> Unit,
   similarContent: @Composable (tmdbId: Int) -> Unit,
   informationContent: @Composable (detail: VideoDetail) -> Unit,
+  onReload: () -> Unit = {},
 ) {
   Box(modifier = modifier) {
-    videoDetail?.let { detail ->
-      movieBackgroundPoster(detail.coverUrl)
-      LazyColumn(
-        modifier = Modifier
-          .fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 100.dp),
-        verticalArrangement = Arrangement.spacedBy(25.dp),
-      ) {
-        item(key = "Header") { headerContent(detail) }
-        detail.ids.tmdbId?.let {
-          item(key = "Casts") { castsContent(it) }
-          item(key = "Similar") { similarContent(it) }
+    when {
+      uiState.isLoading -> DetailContentLoading()
+      uiState.error != null -> ErrorScreen(
+        message = uiState.error,
+        actionTitle = stringResource(R.string.btn_retry),
+        onActionClick = onReload,
+        modifier = Modifier.fillMaxSize(),
+      )
+
+      else -> uiState.videoDetail?.let { detail ->
+        movieBackgroundPoster(detail.coverUrl)
+        LazyColumn(
+          modifier = Modifier.fillMaxSize(),
+          contentPadding = PaddingValues(vertical = 100.dp),
+          verticalArrangement = Arrangement.spacedBy(25.dp),
+        ) {
+          item(key = "Header") { headerContent(detail) }
+          detail.ids.tmdbId?.let {
+            item(key = "Casts") { castsContent(it) }
+            item(key = "Similar") { similarContent(it) }
+          }
+          item(key = "Info") { informationContent(detail) }
         }
-        item(key = "Info") { informationContent(detail) }
       }
+    }
+  }
+}
+
+@Composable
+private fun DetailContentLoading() {
+  Box(modifier = Modifier.fillMaxSize()) {
+    PosterLoadingPlaceholder(modifier = Modifier.fillMaxSize())
+    LazyColumn(
+      modifier = Modifier.fillMaxSize(),
+      contentPadding = PaddingValues(vertical = 100.dp),
+      verticalArrangement = Arrangement.spacedBy(35.dp),
+    ) {
+      item {
+        DetailHeaderLoadingPlaceholder(
+          modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(start = 50.dp),
+        )
+      }
+      item { CastRowLoading() }
     }
   }
 }

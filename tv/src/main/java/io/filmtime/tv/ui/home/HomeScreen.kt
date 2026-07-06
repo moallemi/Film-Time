@@ -20,7 +20,7 @@ import io.filmtime.core.ui.common.componnents.LoadingVideoSectionRow
 import io.filmtime.data.model.VideoType
 import io.filmtime.tv.R
 import io.filmtime.tv.ui.component.ErrorScreen
-import io.filmtime.tv.ui.component.MoviesRow
+import io.filmtime.tv.ui.component.ThumbnailsRow
 
 @Composable
 fun HomeScreen(
@@ -70,7 +70,7 @@ fun HomeScreenContent(
       contentPadding = PaddingValues(bottom = 150.dp),
     ) {
       items(homeUiState.videoSections) {
-        MoviesRow(
+        ThumbnailsRow(
           thumbnails = it.items,
           title = it.title,
           onClick = onThumbnailClick,

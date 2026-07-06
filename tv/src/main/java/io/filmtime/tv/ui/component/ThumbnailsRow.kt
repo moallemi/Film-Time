@@ -23,7 +23,7 @@ import io.filmtime.data.model.VideoType
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun MoviesRow(
+fun ThumbnailsRow(
   modifier: Modifier = Modifier,
   thumbnails: List<VideoThumbnail>,
   title: String,
@@ -58,7 +58,7 @@ fun MoviesRow(
         } else {
           Modifier
         }
-        VerticalMovieCard(
+        VerticalThumbnailCard(
           videoThumbnail = item,
           modifier = itemModifier.width(150.dp),
           onClick = { item.ids.tmdbId?.let { onClick(it, item.type) } },

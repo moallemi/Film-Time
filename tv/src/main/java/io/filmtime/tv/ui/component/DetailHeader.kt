@@ -4,7 +4,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.material.icons.Icons.Rounded
@@ -26,6 +28,7 @@ import androidx.tv.material3.WideButtonDefaults
 import io.filmtime.data.model.VideoDetail
 import io.filmtime.data.model.VideoType.Movie
 import io.filmtime.tv.R
+import io.filmtime.tv.ui.util.fadingPlaceholder
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -113,6 +116,62 @@ fun DetailHeader(
           },
           tmdbId = videoDetail.ids.tmdbId ?: 0,
           videoType = Movie,
+        )
+      }
+    }
+  }
+}
+
+@Composable
+fun DetailHeaderLoadingPlaceholder(modifier: Modifier = Modifier) {
+  Column(
+    modifier = modifier,
+    verticalArrangement = Arrangement.spacedBy(12.dp),
+  ) {
+    Spacer(
+      modifier = Modifier
+        .size(
+          width = 320.dp,
+          height = 30.dp,
+        )
+        .fadingPlaceholder(),
+    )
+    Spacer(
+      modifier = Modifier
+        .size(
+          width = 220.dp,
+          height = 70.dp,
+        )
+        .fadingPlaceholder(),
+    )
+    ActionButtons(
+      primaryButton = {
+        Spacer(
+          modifier = Modifier
+            .size(
+              width = 100.dp,
+              height = 30.dp,
+            )
+            .fadingPlaceholder(),
+        )
+      },
+    ) {
+      Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Spacer(
+          modifier = Modifier
+            .size(
+              width = 140.dp,
+              height = 30.dp,
+            )
+            .fadingPlaceholder(),
+        )
+        Spacer(
+          modifier = Modifier
+            .size(
+              width = 140.dp,
+              height = 30.dp,
+            )
+            .fadingPlaceholder(),
         )
       }
     }

@@ -33,4 +33,5 @@
     <string name="cd_bookmark_icon">Bookmark</string>
     <string name="cd_unwatched_icon">Unwatched</string>
     <string name="cd_watched_icon">Watched</string>
+    <string name="cd_poster_image">Poster Image</string>
 </resources>

@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.core.plugin.api.PluginError
 import io.filmtime.core.plugin.api.PluginMetadata
 import io.filmtime.core.plugin.api.StreamRequest
+import io.filmtime.core.ui.common.extensions.launch
 import io.filmtime.core.ui.common.toUiMessage
 import io.filmtime.data.model.EpisodeThumbnail
 import io.filmtime.data.model.Result.Failure
@@ -29,14 +30,26 @@ import io.filmtime.domain.trakt.history.AddEpisodeToHistoryUseCase
 import io.filmtime.domain.trakt.history.IsShowWatchedUseCase
 import io.filmtime.domain.trakt.history.RemoveEpisodeFromHistoryUseCase
 import io.filmtime.feature.plugin.manager.PluginPreferences
+import io.filmtime.feature.show.detail.ShowDetailAction.AddBookmark
+import io.filmtime.feature.show.detail.ShowDetailAction.AddEpisodeToHistory
+import io.filmtime.feature.show.detail.ShowDetailAction.ChangeSeason
+import io.filmtime.feature.show.detail.ShowDetailAction.DismissNoPluginsDialog
+import io.filmtime.feature.show.detail.ShowDetailAction.DismissPluginSelection
+import io.filmtime.feature.show.detail.ShowDetailAction.PlayEpisode
+import io.filmtime.feature.show.detail.ShowDetailAction.PluginLoginResult
+import io.filmtime.feature.show.detail.ShowDetailAction.Reload
+import io.filmtime.feature.show.detail.ShowDetailAction.RemoveBookmark
+import io.filmtime.feature.show.detail.ShowDetailAction.RemoveEpisodeFromHistory
+import io.filmtime.feature.show.detail.ShowDetailAction.SelectPlugin
+import io.filmtime.feature.show.detail.ShowDetailNavigationEvent.NavigateToPlayer
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -63,14 +76,38 @@ internal class ShowDetailViewModel @Inject constructor(
   private val _state: MutableStateFlow<ShowDetailState> = MutableStateFlow(ShowDetailState())
   val state = _state.asStateFlow()
 
-  val navigateToPlayer = MutableSharedFlow<StreamInfo?>()
+  private val pendingActions = MutableSharedFlow<ShowDetailAction>()
+
+  private val _navigationEvents = MutableSharedFlow<ShowDetailNavigationEvent>()
+  val navigationEvents = _navigationEvents.asSharedFlow()
 
   init {
+    collectActions()
     observeBookmark()
     load()
     loadVideos()
     observePlugins()
     refreshPluginList()
+  }
+
+  fun submitAction(action: ShowDetailAction) = launch { pendingActions.emit(action) }
+
+  private fun collectActions() = launch {
+    pendingActions.collect { action ->
+      when (action) {
+        is Reload -> load()
+        is AddBookmark -> addBookmark()
+        is RemoveBookmark -> removeBookmark()
+        is ChangeSeason -> changeSeason(action.seasonNumber)
+        is AddEpisodeToHistory -> addEpisodeToHistory(action.episode)
+        is RemoveEpisodeFromHistory -> removeEpisodeFromHistory(action.episode)
+        is PlayEpisode -> playEpisode(action.episode)
+        is SelectPlugin -> onPluginSelected(action.plugin)
+        is DismissPluginSelection -> dismissPluginSelection()
+        is DismissNoPluginsDialog -> dismissNoPluginsDialog()
+        is PluginLoginResult -> onPluginLoginResult(action.success)
+      }
+    }
   }
 
   private fun observePlugins() {
@@ -82,12 +119,12 @@ internal class ShowDetailViewModel @Inject constructor(
   }
 
   private fun refreshPluginList() {
-    viewModelScope.launch {
+    launch {
       refreshPlugins()
     }
   }
 
-  fun load() = viewModelScope.launch {
+  private fun load() = launch {
     _state.value = _state.value.copy(isLoading = true, error = null)
 
     getShowDetails(videoId)
@@ -101,7 +138,7 @@ internal class ShowDetailViewModel @Inject constructor(
       )
   }
 
-  private fun loadRatings() = viewModelScope.launch {
+  private fun loadRatings() = launch {
     _state.value.videoDetail?.ids?.tmdbId?.let { tmdbId ->
       getRatings(type = Show, tmdbId = tmdbId)
         .fold(
@@ -111,7 +148,7 @@ internal class ShowDetailViewModel @Inject constructor(
     }
   }
 
-  private fun loadEpisodesBySeason(seasonNumber: Int) = viewModelScope.launch {
+  private fun loadEpisodesBySeason(seasonNumber: Int) = launch {
     _state.update { state ->
       state.copy(
         seasonsState = state.seasonsState.copy(
@@ -159,7 +196,7 @@ internal class ShowDetailViewModel @Inject constructor(
     }
   }
 
-  private fun observeBookmark() = viewModelScope.launch {
+  private fun observeBookmark() = launch {
     observeBookmark(videoId, Show)
       .onEach { isBookmarked ->
         _state.update { state ->
@@ -169,21 +206,21 @@ internal class ShowDetailViewModel @Inject constructor(
       .collect()
   }
 
-  fun addBookmark() = viewModelScope.launch {
+  private fun addBookmark() = launch {
     addBookmark(videoId, Show)
   }
 
-  fun removeBookmark() = viewModelScope.launch {
+  private fun removeBookmark() = launch {
     deleteBookmark(videoId, Show)
   }
 
-  fun changeSeason(seasonNumber: Int) {
+  private fun changeSeason(seasonNumber: Int) {
     if (_state.value.seasonsState.seasons[seasonNumber] == null) {
       loadEpisodesBySeason(seasonNumber)
     }
   }
 
-  fun addEpisodeToHistory(episodeThumbnail: EpisodeThumbnail) = viewModelScope.launch {
+  private fun addEpisodeToHistory(episodeThumbnail: EpisodeThumbnail) = launch {
     _state.update { state ->
       state.copy(
         seasonsState = state.seasonsState.copy(
@@ -241,7 +278,7 @@ internal class ShowDetailViewModel @Inject constructor(
     }
   }
 
-  fun removeEpisodeFromHistory(episodeThumbnail: EpisodeThumbnail) = viewModelScope.launch {
+  private fun removeEpisodeFromHistory(episodeThumbnail: EpisodeThumbnail) = launch {
     _state.update { state ->
       state.copy(
         seasonsState = state.seasonsState.copy(
@@ -299,7 +336,7 @@ internal class ShowDetailViewModel @Inject constructor(
     }
   }
 
-  private fun loadVideos() = viewModelScope.launch {
+  private fun loadVideos() = launch {
     _state.update { state -> state.copy(isTrailersLoading = true) }
     getShowVideos(videoId)
       .fold(
@@ -317,7 +354,7 @@ internal class ShowDetailViewModel @Inject constructor(
       )
   }
 
-  fun playEpisode(episode: EpisodeThumbnail) {
+  private fun playEpisode(episode: EpisodeThumbnail) {
     val plugins = _state.value.installedPlugins
     _state.update { it.copy(pendingEpisode = episode) }
     when {
@@ -339,21 +376,21 @@ internal class ShowDetailViewModel @Inject constructor(
     }
   }
 
-  fun onPluginSelected(plugin: PluginMetadata) {
+  private fun onPluginSelected(plugin: PluginMetadata) {
     _state.update { it.copy(showPluginSelection = false) }
     val episode = _state.value.pendingEpisode ?: return
     loadStreamFromPlugin(plugin, episode)
   }
 
-  fun dismissPluginSelection() {
+  private fun dismissPluginSelection() {
     _state.update { it.copy(showPluginSelection = false, pendingEpisode = null) }
   }
 
-  fun dismissNoPluginsDialog() {
+  private fun dismissNoPluginsDialog() {
     _state.update { it.copy(showNoPluginsDialog = false, pendingEpisode = null) }
   }
 
-  private fun loadStreamFromPlugin(plugin: PluginMetadata, episode: EpisodeThumbnail) = viewModelScope.launch {
+  private fun loadStreamFromPlugin(plugin: PluginMetadata, episode: EpisodeThumbnail) = launch {
     val videoDetail = _state.value.videoDetail ?: return@launch
     val tmdbId = videoDetail.ids.tmdbId ?: return@launch
 
@@ -387,7 +424,7 @@ internal class ShowDetailViewModel @Inject constructor(
             },
           )
           _state.update { it.copy(isStreamLoading = false, pendingEpisode = null) }
-          navigateToPlayer.emit(streamInfo)
+          _navigationEvents.emit(NavigateToPlayer(streamInfo))
         } else {
           _state.update {
             it.copy(
@@ -421,7 +458,7 @@ internal class ShowDetailViewModel @Inject constructor(
     )
   }
 
-  fun onPluginLoginResult(success: Boolean) {
+  private fun onPluginLoginResult(success: Boolean) {
     val plugin = _state.value.pendingAuthPlugin
     val episode = _state.value.pendingEpisode
     _state.update { it.copy(pendingAuthPlugin = null, loginIntent = null) }

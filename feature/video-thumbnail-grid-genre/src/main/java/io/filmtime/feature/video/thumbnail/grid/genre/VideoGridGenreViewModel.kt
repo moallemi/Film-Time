@@ -13,6 +13,7 @@ import io.filmtime.domain.tmdb.movies.GetMoviesByGenreUseCase
 import io.filmtime.domain.tmdb.shows.GetShowsByGenreUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -27,11 +28,12 @@ internal class VideoGridGenreViewModel @Inject constructor(
   private val genreId = args.genreId
   private val videoType = args.videoType
 
-  val state = MutableStateFlow(
+  private val _state = MutableStateFlow(
     VideoThumbnailGridUiState(
       title = args.genreName,
     ),
   )
+  val state = _state.asStateFlow()
 
   val pagedList: Flow<PagingData<VideoThumbnail>> =
     videosByGenreUseCase(genreId, videoType)

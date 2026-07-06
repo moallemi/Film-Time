@@ -251,7 +251,7 @@ class HomeViewModelTest {
     val movies = TestDataFactory.createMovies(2)
     getMoviesList.setResult(VideoListType.Trending, Result.Success(movies))
 
-    viewModel.reload()
+    viewModel.submitAction(HomeAction.Reload)
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -273,7 +273,7 @@ class HomeViewModelTest {
     getMoviesList.setResult(VideoListType.Trending, Result.Success(newMovies))
     getTrendingShows.setResult(Result.Success(emptyList()))
 
-    viewModel.reload()
+    viewModel.submitAction(HomeAction.Reload)
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -295,7 +295,7 @@ class HomeViewModelTest {
 
     assertNotNull(viewModel.state.value.bookmarkedMovies)
 
-    viewModel.reload()
+    viewModel.submitAction(HomeAction.Reload)
     advanceUntilIdle()
 
     assertNotNull(viewModel.state.value.bookmarkedMovies)

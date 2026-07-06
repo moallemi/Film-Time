@@ -4,7 +4,7 @@ import io.filmtime.core.ui.common.UiMessage
 import io.filmtime.data.model.VideoThumbnail
 
 internal data class HomeUiState(
-  val isLoading: Boolean,
+  val isLoading: Boolean = true,
   val videoSections: List<VideoSection> = emptyList(),
   val bookmarkedMovies: VideoSection? = null,
   val bookmarkedShows: VideoSection? = null,

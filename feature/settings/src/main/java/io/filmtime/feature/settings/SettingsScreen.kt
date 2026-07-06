@@ -32,8 +32,8 @@ fun SettingsScreen(
 
   SettingsScreen(
     state = state,
+    onAction = viewModel::submitAction,
     onTraktLoginClick = onTraktLoginClick,
-    onTraktLogoutClick = viewModel::traktLogout,
     onPluginManagerClick = onPluginManagerClick,
   )
 }
@@ -42,8 +42,8 @@ fun SettingsScreen(
 @Composable
 private fun SettingsScreen(
   state: SettingsUiState,
+  onAction: (SettingsAction) -> Unit,
   onTraktLoginClick: () -> Unit,
-  onTraktLogoutClick: () -> Unit,
   onPluginManagerClick: () -> Unit,
 ) {
   Scaffold(
@@ -56,8 +56,8 @@ private fun SettingsScreen(
     SettingsContent(
       state = state,
       contentPadding = padding,
+      onAction = onAction,
       onTraktLoginClick = onTraktLoginClick,
-      onTraktLogoutClick = onTraktLogoutClick,
       onPluginManagerClick = onPluginManagerClick,
     )
   }
@@ -67,8 +67,8 @@ private fun SettingsScreen(
 private fun SettingsContent(
   state: SettingsUiState,
   contentPadding: PaddingValues,
+  onAction: (SettingsAction) -> Unit,
   onTraktLoginClick: () -> Unit,
-  onTraktLogoutClick: () -> Unit,
   onPluginManagerClick: () -> Unit,
 ) {
   Box(
@@ -83,7 +83,7 @@ private fun SettingsContent(
             .padding(16.dp),
           isLoggedIn = state.isTraktLoggedIn,
           onLoginClick = onTraktLoginClick,
-          onLogoutClick = onTraktLogoutClick,
+          onLogoutClick = { onAction(SettingsAction.TraktLogout) },
         )
       }
       item {
@@ -109,8 +109,8 @@ private fun SettingsScreenPreview() {
     SettingsContent(
       state = SettingsUiState(),
       contentPadding = PaddingValues(16.dp),
+      onAction = { },
       onTraktLoginClick = { },
-      onTraktLogoutClick = { },
       onPluginManagerClick = { },
     )
   }

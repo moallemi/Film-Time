@@ -22,7 +22,6 @@ import io.filmtime.core.ui.common.componnents.LoadingVideoSectionRow
 import io.filmtime.core.ui.common.componnents.VideoSectionRow
 import io.filmtime.data.model.VideoListType
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowsScreen(
   onShowClick: (tmdbId: Int) -> Unit,
@@ -31,6 +30,20 @@ fun ShowsScreen(
   val viewModel = hiltViewModel<ShowsViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
 
+  ShowsScreen(
+    state = state,
+    onShowClick = onShowClick,
+    onSectionClick = onSectionClick,
+  )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ShowsScreen(
+  state: ShowsUiState,
+  onShowClick: (tmdbId: Int) -> Unit,
+  onSectionClick: (VideoListType) -> Unit,
+) {
   val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
   Scaffold(

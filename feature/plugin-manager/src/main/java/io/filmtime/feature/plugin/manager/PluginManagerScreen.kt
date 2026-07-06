@@ -57,7 +57,7 @@ fun PluginManagerScreen(
     ) ?: PluginContract.Auth.LOGIN_RESULT_CANCELLED
     val success = result.resultCode == Activity.RESULT_OK &&
       loginResult == PluginContract.Auth.LOGIN_RESULT_SUCCESS
-    viewModel.onLoginResult(success)
+    viewModel.submitAction(PluginManagerAction.LoginResult(success))
   }
 
   LaunchedEffect(state.loginIntent) {
@@ -67,18 +67,13 @@ fun PluginManagerScreen(
   }
 
   LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-    viewModel.refresh()
+    viewModel.submitAction(PluginManagerAction.Refresh)
   }
 
   PluginManagerScreen(
     state = state,
+    onAction = viewModel::submitAction,
     onBackClick = onBackClick,
-    onPluginClick = { plugin ->
-      val newDefault = if (state.defaultPluginId == plugin.pluginId) null else plugin.pluginId
-      viewModel.setDefaultPlugin(newDefault)
-    },
-    onLoginClick = viewModel::loginPlugin,
-    onLogoutClick = viewModel::logoutPlugin,
     onViewInfoClick = { plugin ->
       val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
         data = Uri.parse("package:${plugin.packageName}")
@@ -92,10 +87,8 @@ fun PluginManagerScreen(
 @Composable
 private fun PluginManagerScreen(
   state: PluginManagerUiState,
+  onAction: (PluginManagerAction) -> Unit,
   onBackClick: () -> Unit,
-  onPluginClick: (PluginMetadata) -> Unit,
-  onLoginClick: (PluginMetadata) -> Unit,
-  onLogoutClick: (PluginMetadata) -> Unit,
   onViewInfoClick: (PluginMetadata) -> Unit,
 ) {
   Scaffold(
@@ -116,9 +109,7 @@ private fun PluginManagerScreen(
     PluginManagerContent(
       state = state,
       contentPadding = padding,
-      onPluginClick = onPluginClick,
-      onLoginClick = onLoginClick,
-      onLogoutClick = onLogoutClick,
+      onAction = onAction,
       onViewInfoClick = onViewInfoClick,
     )
   }
@@ -128,9 +119,7 @@ private fun PluginManagerScreen(
 private fun PluginManagerContent(
   state: PluginManagerUiState,
   contentPadding: PaddingValues,
-  onPluginClick: (PluginMetadata) -> Unit,
-  onLoginClick: (PluginMetadata) -> Unit,
-  onLogoutClick: (PluginMetadata) -> Unit,
+  onAction: (PluginManagerAction) -> Unit,
   onViewInfoClick: (PluginMetadata) -> Unit,
 ) {
   LazyColumn(
@@ -165,9 +154,12 @@ private fun PluginManagerContent(
           plugin = plugin,
           isDefault = plugin.pluginId == state.defaultPluginId,
           authState = state.authStates[plugin.pluginId],
-          onClick = { onPluginClick(plugin) },
-          onLoginClick = { onLoginClick(plugin) },
-          onLogoutClick = { onLogoutClick(plugin) },
+          onClick = {
+            val newDefault = if (state.defaultPluginId == plugin.pluginId) null else plugin.pluginId
+            onAction(PluginManagerAction.SetDefaultPlugin(newDefault))
+          },
+          onLoginClick = { onAction(PluginManagerAction.LoginPlugin(plugin)) },
+          onLogoutClick = { onAction(PluginManagerAction.LogoutPlugin(plugin)) },
           onViewInfoClick = { onViewInfoClick(plugin) },
         )
         Spacer(modifier = Modifier.height(8.dp))

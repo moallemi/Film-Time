@@ -4,7 +4,7 @@ import android.content.Intent
 import io.filmtime.core.plugin.api.PluginAuthState
 import io.filmtime.core.plugin.api.PluginMetadata
 
-data class PluginManagerUiState(
+internal data class PluginManagerUiState(
   val isLoading: Boolean = true,
   val plugins: List<PluginMetadata> = emptyList(),
   val defaultPluginId: String? = null,

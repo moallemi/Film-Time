@@ -5,21 +5,27 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.core.plugin.api.PluginAuthState
 import io.filmtime.core.plugin.api.PluginMetadata
+import io.filmtime.core.ui.common.extensions.launch
 import io.filmtime.domain.plugin.CreatePluginLoginIntentUseCase
 import io.filmtime.domain.plugin.GetInstalledPluginsUseCase
 import io.filmtime.domain.plugin.GetPluginAuthStateUseCase
 import io.filmtime.domain.plugin.LogoutPluginUseCase
 import io.filmtime.domain.plugin.RefreshPluginsUseCase
+import io.filmtime.feature.plugin.manager.PluginManagerAction.LoginPlugin
+import io.filmtime.feature.plugin.manager.PluginManagerAction.LoginResult
+import io.filmtime.feature.plugin.manager.PluginManagerAction.LogoutPlugin
+import io.filmtime.feature.plugin.manager.PluginManagerAction.Refresh
+import io.filmtime.feature.plugin.manager.PluginManagerAction.SetDefaultPlugin
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PluginManagerViewModel @Inject constructor(
+internal class PluginManagerViewModel @Inject constructor(
   private val getInstalledPlugins: GetInstalledPluginsUseCase,
   private val refreshPlugins: RefreshPluginsUseCase,
   private val getPluginAuthState: GetPluginAuthStateUseCase,
@@ -28,12 +34,29 @@ class PluginManagerViewModel @Inject constructor(
   private val pluginPreferences: PluginPreferences,
 ) : ViewModel() {
 
+  private val pendingActions = MutableSharedFlow<PluginManagerAction>()
+
   private val _state = MutableStateFlow(PluginManagerUiState())
   val state = _state.asStateFlow()
 
   init {
+    collectActions()
     observePlugins()
     refresh()
+  }
+
+  fun submitAction(action: PluginManagerAction) = launch { pendingActions.emit(action) }
+
+  private fun collectActions() = launch {
+    pendingActions.collect { action ->
+      when (action) {
+        Refresh -> refresh()
+        is SetDefaultPlugin -> setDefaultPlugin(action.pluginId)
+        is LoginPlugin -> loginPlugin(action.plugin)
+        is LoginResult -> onLoginResult(action.success)
+        is LogoutPlugin -> logoutPlugin(action.plugin)
+      }
+    }
   }
 
   private fun observePlugins() {
@@ -52,7 +75,7 @@ class PluginManagerViewModel @Inject constructor(
   }
 
   private fun loadAuthStates(plugins: List<PluginMetadata>) {
-    viewModelScope.launch {
+    launch {
       val authStates = mutableMapOf<String, PluginAuthState>()
       plugins.filter { it.requiresAuth }.forEach { plugin ->
         getPluginAuthState(plugin.pluginId).fold(
@@ -64,31 +87,31 @@ class PluginManagerViewModel @Inject constructor(
     }
   }
 
-  fun refresh() {
-    viewModelScope.launch {
+  private fun refresh() {
+    launch {
       _state.update { it.copy(isLoading = true) }
       refreshPlugins()
       _state.update { it.copy(isLoading = false) }
     }
   }
 
-  fun setDefaultPlugin(pluginId: String?) {
-    viewModelScope.launch {
+  private fun setDefaultPlugin(pluginId: String?) {
+    launch {
       pluginPreferences.setDefaultPluginId(pluginId)
       _state.update { it.copy(defaultPluginId = pluginId) }
     }
   }
 
-  fun loginPlugin(plugin: PluginMetadata) {
+  private fun loginPlugin(plugin: PluginMetadata) {
     val intent = createPluginLoginIntent(plugin) ?: return
     _state.update { it.copy(loginIntent = intent, pendingLoginPluginId = plugin.pluginId) }
   }
 
-  fun onLoginResult(success: Boolean) {
+  private fun onLoginResult(success: Boolean) {
     val pluginId = _state.value.pendingLoginPluginId
     _state.update { it.copy(loginIntent = null, pendingLoginPluginId = null) }
     if (success && pluginId != null) {
-      viewModelScope.launch {
+      launch {
         getPluginAuthState(pluginId).fold(
           onSuccess = { authState ->
             _state.update { it.copy(authStates = it.authStates + (pluginId to authState)) }
@@ -99,8 +122,8 @@ class PluginManagerViewModel @Inject constructor(
     }
   }
 
-  fun logoutPlugin(plugin: PluginMetadata) {
-    viewModelScope.launch {
+  private fun logoutPlugin(plugin: PluginMetadata) {
+    launch {
       logoutPluginUseCase(plugin.pluginId).fold(
         onSuccess = {
           _state.update {

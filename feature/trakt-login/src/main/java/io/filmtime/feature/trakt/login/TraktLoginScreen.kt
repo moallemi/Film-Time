@@ -25,24 +25,23 @@ fun TraktLoginScreen(
   onBackClick: () -> Unit,
 ) {
   val viewModel = hiltViewModel<TraktLoginViewModel>()
-  val loginState by viewModel.loginState.collectAsStateWithLifecycle()
-  val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
+  val state by viewModel.state.collectAsStateWithLifecycle()
 
-  LaunchedEffect(isLoggedIn) {
-    if (isLoggedIn) {
+  LaunchedEffect(state.isLoggedIn) {
+    if (state.isLoggedIn) {
       onBackClick()
     }
   }
 
   TraktLoginScreen(
-    loginState = loginState,
+    state = state,
     onBackClick = onBackClick,
   )
 }
 
 @Composable
 private fun TraktLoginScreen(
-  loginState: LoginState,
+  state: TraktLoginUiState,
   onBackClick: () -> Unit,
 ) {
   Scaffold(
@@ -59,7 +58,7 @@ private fun TraktLoginScreen(
       verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-      when (loginState) {
+      when (state.loginState) {
         LoginState.Loading -> {
           Text(text = "Logging in to Trakt...")
           CircularProgressIndicator()
@@ -82,10 +81,10 @@ private fun TraktLoginScreen(
 
 @ThemePreviews
 @Composable
-fun TraktLoginScreenPreview() {
+private fun TraktLoginScreenPreview() {
   PreviewFilmTimeTheme {
     TraktLoginScreen(
-      loginState = LoginState.Loading,
+      state = TraktLoginUiState(),
       onBackClick = {},
     )
   }

@@ -8,6 +8,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.filmtime.data.model.VideoType
 import io.filmtime.tv.R
+import io.filmtime.tv.ui.similar.SimilarAction
 import io.filmtime.tv.ui.similar.SimilarViewModel
 
 @Composable
@@ -20,9 +21,11 @@ fun SimilarSection(
   val uiState by viewModel.state.collectAsStateWithLifecycle()
 
   LaunchedEffect(Unit) {
-    viewModel.loadSimilar(
-      videoId = tmdbId,
-      videoType = type,
+    viewModel.submitAction(
+      SimilarAction.LoadSimilar(
+        videoId = tmdbId,
+        videoType = type,
+      ),
     )
   }
   MoviesRow(

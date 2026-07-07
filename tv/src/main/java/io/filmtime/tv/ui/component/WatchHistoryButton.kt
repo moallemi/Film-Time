@@ -18,6 +18,7 @@ import androidx.tv.material3.Text
 import androidx.tv.material3.WideButtonDefaults
 import io.filmtime.data.model.VideoType
 import io.filmtime.tv.R
+import io.filmtime.tv.ui.traktbutton.TraktAddRemoveAction
 import io.filmtime.tv.ui.traktbutton.TraktAddRemoveUiState
 import io.filmtime.tv.ui.traktbutton.TraktMovieHistoryViewModel
 
@@ -30,13 +31,13 @@ fun WatchHistoryButton(
   val viewModel: TraktMovieHistoryViewModel = hiltViewModel()
   val uiState by viewModel.state.collectAsStateWithLifecycle()
   LaunchedEffect(videoType, tmdbId) {
-    viewModel.checkIfIsWatched(videoType, tmdbId)
+    viewModel.submitAction(TraktAddRemoveAction.CheckIfWatched(videoType, tmdbId))
   }
   WatchHistoryButtonContent(
     modifier = modifier,
     uiState = uiState,
-    onRemove = viewModel::removeItemFromHistory,
-    onAdd = viewModel::addItemToHistory,
+    onRemove = { viewModel.submitAction(TraktAddRemoveAction.RemoveFromHistory) },
+    onAdd = { viewModel.submitAction(TraktAddRemoveAction.AddToHistory) },
   )
 }
 

@@ -26,6 +26,7 @@ import androidx.tv.material3.Text
 import io.filmtime.data.model.Person
 import io.filmtime.data.model.VideoType
 import io.filmtime.tv.R
+import io.filmtime.tv.ui.credits.CreditsAction
 import io.filmtime.tv.ui.credits.CreditsViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -41,7 +42,7 @@ fun CastsRow(
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   LaunchedEffect(tmdbId) {
-    viewModel.loadCredits(tmdbId, type)
+    viewModel.submitAction(CreditsAction.LoadCredits(tmdbId, type))
   }
   Column(modifier.focusGroup()) {
     Text(

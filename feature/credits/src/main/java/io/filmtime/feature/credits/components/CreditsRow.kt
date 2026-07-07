@@ -29,6 +29,7 @@ import io.filmtime.data.model.Person
 import io.filmtime.data.model.PreviewCast
 import io.filmtime.data.model.PreviewCrew
 import io.filmtime.data.model.VideoType
+import io.filmtime.feature.credits.CreditsAction
 import io.filmtime.feature.credits.CreditsViewModel
 
 @Composable
@@ -41,7 +42,7 @@ fun CreditsRow(
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   LaunchedEffect(tmdbId, videoType) {
-    viewModel.loadCredits(tmdbId, videoType)
+    viewModel.submitAction(CreditsAction.LoadCredits(tmdbId, videoType))
   }
 
   CreditsRow(
@@ -49,7 +50,7 @@ fun CreditsRow(
     credits = state.credit,
     modifier = modifier,
     error = state.error,
-    onRetryClick = { viewModel.loadCredits(tmdbId, videoType) },
+    onRetryClick = { viewModel.submitAction(CreditsAction.LoadCredits(tmdbId, videoType)) },
   )
 }
 

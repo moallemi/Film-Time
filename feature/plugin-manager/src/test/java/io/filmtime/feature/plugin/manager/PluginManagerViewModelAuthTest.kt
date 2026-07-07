@@ -118,7 +118,8 @@ class PluginManagerViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.loginPlugin(authPlugin)
+    viewModel.submitAction(PluginManagerAction.LoginPlugin(authPlugin))
+    advanceUntilIdle()
 
     val state = viewModel.state.value
     assertNotNull(state.loginIntent)
@@ -139,14 +140,15 @@ class PluginManagerViewModelAuthTest {
     assertEquals(PluginAuthState.NotAuthenticated, viewModel.state.value.authStates[authPlugin.pluginId])
 
     createPluginLoginIntent.setIntent(Intent("io.filmtime.plugin.ACTION_LOGIN"))
-    viewModel.loginPlugin(authPlugin)
+    viewModel.submitAction(PluginManagerAction.LoginPlugin(authPlugin))
+    advanceUntilIdle()
 
     getPluginAuthState.setAuthState(
       authPlugin.pluginId,
       Result.Success(PluginAuthState.Authenticated),
     )
 
-    viewModel.onLoginResult(true)
+    viewModel.submitAction(PluginManagerAction.LoginResult(true))
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -167,9 +169,10 @@ class PluginManagerViewModelAuthTest {
     advanceUntilIdle()
 
     createPluginLoginIntent.setIntent(Intent("io.filmtime.plugin.ACTION_LOGIN"))
-    viewModel.loginPlugin(authPlugin)
+    viewModel.submitAction(PluginManagerAction.LoginPlugin(authPlugin))
+    advanceUntilIdle()
 
-    viewModel.onLoginResult(false)
+    viewModel.submitAction(PluginManagerAction.LoginResult(false))
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -191,7 +194,7 @@ class PluginManagerViewModelAuthTest {
 
     assertEquals(PluginAuthState.Authenticated, viewModel.state.value.authStates[authPlugin.pluginId])
 
-    viewModel.logoutPlugin(authPlugin)
+    viewModel.submitAction(PluginManagerAction.LogoutPlugin(authPlugin))
     advanceUntilIdle()
 
     assertEquals(authPlugin.pluginId, logoutPlugin.lastPluginId)
@@ -206,7 +209,8 @@ class PluginManagerViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.loginPlugin(authPlugin)
+    viewModel.submitAction(PluginManagerAction.LoginPlugin(authPlugin))
+    advanceUntilIdle()
 
     val state = viewModel.state.value
     assertNull(state.loginIntent)

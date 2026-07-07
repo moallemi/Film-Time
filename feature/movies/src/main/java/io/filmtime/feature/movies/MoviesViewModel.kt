@@ -2,8 +2,8 @@ package io.filmtime.feature.movies
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.filmtime.core.ui.common.extensions.launch
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
 import io.filmtime.data.model.VideoListType
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,11 +22,11 @@ internal class MoviesViewModel @Inject constructor(
   private val getMoviesList: GetMoviesListUseCase,
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow(MoviesUiState(isLoading = false))
+  private val _state = MutableStateFlow(MoviesUiState())
   val state = _state.asStateFlow()
 
   init {
-    viewModelScope.launch {
+    launch {
       loadMoviesSection(VideoListType.Trending)
       loadMoviesSection(VideoListType.NowPlaying)
       loadMoviesSection(VideoListType.Popular)

@@ -1,21 +1,21 @@
 package io.filmtime.tv.ui.home
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.filmtime.core.ui.common.extensions.launch
 import io.filmtime.core.ui.common.toUiMessage
 import io.filmtime.data.model.Result.Failure
 import io.filmtime.data.model.Result.Success
 import io.filmtime.data.model.VideoListType
 import io.filmtime.domain.tmdb.movies.GetMoviesListUseCase
 import io.filmtime.domain.tmdb.shows.GetTrendingShowsUseCase
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,21 +24,34 @@ internal class HomeViewModel @Inject constructor(
   private val getTrendingShows: GetTrendingShowsUseCase,
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow(HomeUiState(isLoading = false))
+  private val pendingActions = MutableSharedFlow<HomeAction>()
+
+  private val _state = MutableStateFlow(HomeUiState())
   val state = _state.asStateFlow()
 
   init {
+    collectActions()
     load()
   }
 
+  fun submitAction(action: HomeAction) = launch { pendingActions.emit(action) }
+
+  private fun collectActions() = launch {
+    pendingActions.collect { action ->
+      when (action) {
+        is HomeAction.Reload -> reload()
+      }
+    }
+  }
+
   private fun load() {
-    viewModelScope.launch {
+    launch {
       loadTrendingMovies()
       loadTrendingShows()
     }
   }
 
-  fun reload() {
+  private fun reload() {
     _state.update { state -> state.copy(error = null, videoSections = emptyList()) }
     load()
   }

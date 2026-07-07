@@ -1,6 +1,5 @@
 package io.filmtime.feature.search
 
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -20,7 +19,6 @@ fun NavGraphBuilder.searchGraph(
   ) {
     composable("${GRAPH_SEARCH_ROUTE.route}/$ROUTE_SEARCH_SCREEN") {
       SearchScreen(
-        viewModel = hiltViewModel(),
         onMovieClick = { onMovieClick(GRAPH_SEARCH_ROUTE, it) },
         onShowClick = { onShowClick(GRAPH_SEARCH_ROUTE, it) },
         onPersonClick = {},

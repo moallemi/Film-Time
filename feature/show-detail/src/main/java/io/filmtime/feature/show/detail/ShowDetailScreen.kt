@@ -28,6 +28,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.filmtime.core.browser.openUrl
 import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
@@ -57,7 +58,6 @@ import io.filmtime.feature.similar.SimilarVideosRow
 
 @Composable
 internal fun ShowDetailScreen(
-  viewModel: ShowDetailViewModel,
   onCastItemClick: (Long) -> Unit,
   onShowClick: (Int) -> Unit,
   onGenreClick: (VideoGenre, VideoType) -> Unit,
@@ -65,6 +65,7 @@ internal fun ShowDetailScreen(
   onStreamReady: (StreamInfo) -> Unit,
   onNavigateToPluginManager: () -> Unit,
 ) {
+  val viewModel = hiltViewModel<ShowDetailViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   val loginLauncher = rememberLauncherForActivityResult(
@@ -76,7 +77,7 @@ internal fun ShowDetailScreen(
     ) ?: PluginContract.Auth.LOGIN_RESULT_CANCELLED
     val success = result.resultCode == Activity.RESULT_OK &&
       loginResult == PluginContract.Auth.LOGIN_RESULT_SUCCESS
-    viewModel.onPluginLoginResult(success)
+    viewModel.submitAction(ShowDetailAction.PluginLoginResult(success))
   }
 
   LaunchedEffect(state.loginIntent) {
@@ -87,12 +88,14 @@ internal fun ShowDetailScreen(
 
   val context = LocalContext.current
   LaunchedEffect(Unit) {
-    viewModel.navigateToPlayer.collect { streamInfo ->
-      if (streamInfo != null) {
-        if (streamInfo.streamType == PluginContract.StreamType.EMBED) {
-          context.openUrl(streamInfo.url, isExternal = true)
-        } else {
-          onStreamReady(streamInfo)
+    viewModel.navigationEvents.collect { event ->
+      when (event) {
+        is ShowDetailNavigationEvent.NavigateToPlayer -> {
+          if (event.streamInfo.streamType == PluginContract.StreamType.EMBED) {
+            context.openUrl(event.streamInfo.url, isExternal = true)
+          } else {
+            onStreamReady(event.streamInfo)
+          }
         }
       }
     }
@@ -103,17 +106,17 @@ internal fun ShowDetailScreen(
       plugins = state.installedPlugins,
       selectedPluginId = null,
       onPluginSelected = { plugin ->
-        viewModel.onPluginSelected(plugin)
+        viewModel.submitAction(ShowDetailAction.SelectPlugin(plugin))
       },
-      onDismiss = viewModel::dismissPluginSelection,
+      onDismiss = { viewModel.submitAction(ShowDetailAction.DismissPluginSelection) },
     )
   }
 
   if (state.showNoPluginsDialog) {
     NoPluginsInstalledDialog(
-      onDismiss = viewModel::dismissNoPluginsDialog,
+      onDismiss = { viewModel.submitAction(ShowDetailAction.DismissNoPluginsDialog) },
       onOpenPluginManager = {
-        viewModel.dismissNoPluginsDialog()
+        viewModel.submitAction(ShowDetailAction.DismissNoPluginsDialog)
         onNavigateToPluginManager()
       },
     )
@@ -121,37 +124,18 @@ internal fun ShowDetailScreen(
 
   ShowDetailScreen(
     state = state,
-    onRetry = viewModel::load,
+    onAction = viewModel::submitAction,
     onShowClick = onShowClick,
-    onAddBookmark = viewModel::addBookmark,
-    onRemoveBookmark = viewModel::removeBookmark,
-    onSeasonChange = viewModel::changeSeason,
-    addToHistory = viewModel::addEpisodeToHistory,
-    removeFromHistory = viewModel::removeEpisodeFromHistory,
     onGenreClick = onGenreClick,
-    onPrimaryButtonClick = {
-      val firstEpisode = state.seasonsState.seasons[1]?.firstOrNull()
-      if (firstEpisode != null) {
-        viewModel.playEpisode(firstEpisode)
-      }
-    },
-    onEpisodeClick = viewModel::playEpisode,
   )
 }
 
 @Composable
 private fun ShowDetailScreen(
   state: ShowDetailState,
-  onRetry: () -> Unit,
+  onAction: (ShowDetailAction) -> Unit,
   onShowClick: (Int) -> Unit,
-  onAddBookmark: () -> Unit,
-  onRemoveBookmark: () -> Unit,
   onGenreClick: (VideoGenre, VideoType) -> Unit,
-  onSeasonChange: (Int) -> Unit,
-  onPrimaryButtonClick: () -> Unit,
-  onEpisodeClick: (EpisodeThumbnail) -> Unit,
-  addToHistory: (EpisodeThumbnail) -> Unit,
-  removeFromHistory: (EpisodeThumbnail) -> Unit,
 ) {
   val videoDetail = state.videoDetail
   val context = LocalContext.current
@@ -165,26 +149,31 @@ private fun ShowDetailScreen(
   } else if (state.error != null) {
     ErrorContent(
       uiMessage = state.error,
-      onRetryClick = onRetry,
+      onRetryClick = { onAction(ShowDetailAction.Reload) },
     )
   } else if (videoDetail != null) {
     ShowDetailContent(
       videoDetail = videoDetail,
       ratings = state.ratings,
       isBookmarked = state.isBookmarked,
-      onAddBookmark = onAddBookmark,
+      onAddBookmark = { onAction(ShowDetailAction.AddBookmark) },
       onGenreClick = onGenreClick,
-      onRemoveBookmark = onRemoveBookmark,
+      onRemoveBookmark = { onAction(ShowDetailAction.RemoveBookmark) },
       seasonsState = state.seasonsState,
-      onSeasonChange = onSeasonChange,
-      addToHistory = addToHistory,
-      onEpisodeClick = onEpisodeClick,
-      removeFromHistory = removeFromHistory,
+      onSeasonChange = { onAction(ShowDetailAction.ChangeSeason(it)) },
+      addToHistory = { onAction(ShowDetailAction.AddEpisodeToHistory(it)) },
+      onEpisodeClick = { onAction(ShowDetailAction.PlayEpisode(it)) },
+      removeFromHistory = { onAction(ShowDetailAction.RemoveEpisodeFromHistory(it)) },
       primaryButton = {
         FilmTimeFilledButton(
           modifier = Modifier
             .fillMaxWidth(),
-          onClick = onPrimaryButtonClick,
+          onClick = {
+            val firstEpisode = state.seasonsState.seasons[1]?.firstOrNull()
+            if (firstEpisode != null) {
+              onAction(ShowDetailAction.PlayEpisode(firstEpisode))
+            }
+          },
         ) {
           Text("Play First Episode")
         }

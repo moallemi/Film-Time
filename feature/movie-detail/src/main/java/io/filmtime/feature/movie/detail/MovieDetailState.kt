@@ -9,7 +9,7 @@ import io.filmtime.data.model.Ratings
 import io.filmtime.data.model.StreamInfo
 import io.filmtime.data.model.VideoDetail
 
-data class MovieDetailState(
+internal data class MovieDetailState(
   val isLoading: Boolean = false,
   val isBookmarked: Boolean = false,
   val isCollectionLoading: Boolean = false,

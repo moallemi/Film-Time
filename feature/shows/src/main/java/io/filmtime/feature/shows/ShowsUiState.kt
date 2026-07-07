@@ -4,7 +4,7 @@ import io.filmtime.data.model.VideoListType
 import io.filmtime.data.model.VideoThumbnail
 
 internal data class ShowsUiState(
-  val isLoading: Boolean,
+  val isLoading: Boolean = false,
   val videoSections: List<VideoSection> = emptyList(),
 )
 

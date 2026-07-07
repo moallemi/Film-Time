@@ -101,7 +101,7 @@ class MovieDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.loadStreamInfo()
+    viewModel.submitAction(MovieDetailAction.Play)
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -117,7 +117,7 @@ class MovieDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.loadStreamInfo()
+    viewModel.submitAction(MovieDetailAction.Play)
     advanceUntilIdle()
 
     assertNotNull(viewModel.state.value.pendingAuthPlugin)
@@ -136,7 +136,7 @@ class MovieDetailViewModelAuthTest {
     )
     getStreamFromPlugin.setResult(Result.Success(streamResponse))
 
-    viewModel.onPluginLoginResult(true)
+    viewModel.submitAction(MovieDetailAction.PluginLoginResult(true))
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -153,12 +153,12 @@ class MovieDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.loadStreamInfo()
+    viewModel.submitAction(MovieDetailAction.Play)
     advanceUntilIdle()
 
     assertNotNull(viewModel.state.value.pendingAuthPlugin)
 
-    viewModel.onPluginLoginResult(false)
+    viewModel.submitAction(MovieDetailAction.PluginLoginResult(false))
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -176,7 +176,7 @@ class MovieDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.loadStreamInfo()
+    viewModel.submitAction(MovieDetailAction.Play)
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -192,7 +192,7 @@ class MovieDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.loadStreamInfo()
+    viewModel.submitAction(MovieDetailAction.Play)
     advanceUntilIdle()
 
     assertEquals(testPlugin, createPluginLoginIntent.lastPlugin)
@@ -217,7 +217,7 @@ class MovieDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.loadStreamInfo()
+    viewModel.submitAction(MovieDetailAction.Play)
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -227,7 +227,7 @@ class MovieDetailViewModelAuthTest {
   }
 
   @Test
-  fun `embed stream emits to navigateToPlayer`() = runTest {
+  fun `embed stream emits navigate to player event`() = runTest {
     val streamResponse = StreamResponse(
       streams = listOf(
         PluginStream(
@@ -245,14 +245,13 @@ class MovieDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.navigateToPlayer.test {
-      viewModel.loadStreamInfo()
+    viewModel.navigationEvents.test {
+      viewModel.submitAction(MovieDetailAction.Play)
       advanceUntilIdle()
 
-      val streamInfo = awaitItem()
-      assertNotNull(streamInfo)
-      assertEquals(PluginContract.StreamType.EMBED, streamInfo?.streamType)
-      assertEquals("https://example.com/embed/movie/123", streamInfo?.url)
+      val event = awaitItem() as MovieDetailNavigationEvent.NavigateToPlayer
+      assertEquals(PluginContract.StreamType.EMBED, event.streamInfo.streamType)
+      assertEquals("https://example.com/embed/movie/123", event.streamInfo.url)
     }
   }
 
@@ -275,7 +274,7 @@ class MovieDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.loadStreamInfo()
+    viewModel.submitAction(MovieDetailAction.Play)
     advanceUntilIdle()
 
     val state = viewModel.state.value

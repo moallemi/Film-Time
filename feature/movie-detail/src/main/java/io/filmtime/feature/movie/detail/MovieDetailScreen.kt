@@ -29,6 +29,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.filmtime.core.browser.openUrl
 import io.filmtime.core.designsystem.composable.FilmTimeFilledButton
@@ -59,7 +60,6 @@ import io.filmtime.feature.trakt.buttons.addremovehistory.TraktAddRemoveHistoryB
 
 @Composable
 fun MovieDetailScreen(
-  viewModel: MovieDetailViewModel,
   onStreamReady: (StreamInfo) -> Unit,
   onCastItemClick: (Long) -> Unit,
   onMovieClick: (Int) -> Unit,
@@ -67,6 +67,7 @@ fun MovieDetailScreen(
   onBackPressed: () -> Unit,
   onNavigateToPluginManager: () -> Unit,
 ) {
+  val viewModel = hiltViewModel<MovieDetailViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   val loginLauncher = rememberLauncherForActivityResult(
@@ -78,7 +79,7 @@ fun MovieDetailScreen(
     ) ?: PluginContract.Auth.LOGIN_RESULT_CANCELLED
     val success = result.resultCode == Activity.RESULT_OK &&
       loginResult == PluginContract.Auth.LOGIN_RESULT_SUCCESS
-    viewModel.onPluginLoginResult(success)
+    viewModel.submitAction(MovieDetailAction.PluginLoginResult(success))
   }
 
   LaunchedEffect(state.loginIntent) {
@@ -89,12 +90,14 @@ fun MovieDetailScreen(
 
   val context = LocalContext.current
   LaunchedEffect(Unit) {
-    viewModel.navigateToPlayer.collect { streamInfo ->
-      if (streamInfo != null) {
-        if (streamInfo.streamType == PluginContract.StreamType.EMBED) {
-          context.openUrl(streamInfo.url, isExternal = true)
-        } else {
-          onStreamReady(streamInfo)
+    viewModel.navigationEvents.collect { event ->
+      when (event) {
+        is MovieDetailNavigationEvent.NavigateToPlayer -> {
+          if (event.streamInfo.streamType == PluginContract.StreamType.EMBED) {
+            context.openUrl(event.streamInfo.url, isExternal = true)
+          } else {
+            onStreamReady(event.streamInfo)
+          }
         }
       }
     }
@@ -105,17 +108,17 @@ fun MovieDetailScreen(
       plugins = state.installedPlugins,
       selectedPluginId = null,
       onPluginSelected = { plugin ->
-        viewModel.onPluginSelected(plugin)
+        viewModel.submitAction(MovieDetailAction.SelectPlugin(plugin))
       },
-      onDismiss = viewModel::dismissPluginSelection,
+      onDismiss = { viewModel.submitAction(MovieDetailAction.DismissPluginSelection) },
     )
   }
 
   if (state.showNoPluginsDialog) {
     NoPluginsInstalledDialog(
-      onDismiss = viewModel::dismissNoPluginsDialog,
+      onDismiss = { viewModel.submitAction(MovieDetailAction.DismissNoPluginsDialog) },
       onOpenPluginManager = {
-        viewModel.dismissNoPluginsDialog()
+        viewModel.submitAction(MovieDetailAction.DismissNoPluginsDialog)
         onNavigateToPluginManager()
       },
     )
@@ -123,23 +126,17 @@ fun MovieDetailScreen(
 
   MovieDetailScreen(
     state = state,
-    onRetry = viewModel::reload,
+    onAction = viewModel::submitAction,
     onMovieClick = onMovieClick,
-    onAddBookmark = viewModel::addBookmark,
-    onRemoveBookmark = viewModel::removeBookmark,
     onGenreClick = onGenreClick,
-    onPLayClick = viewModel::loadStreamInfo,
   )
 }
 
 @Composable
-fun MovieDetailScreen(
+private fun MovieDetailScreen(
   state: MovieDetailState,
-  onRetry: () -> Unit,
+  onAction: (MovieDetailAction) -> Unit,
   onMovieClick: (Int) -> Unit,
-  onAddBookmark: () -> Unit,
-  onRemoveBookmark: () -> Unit,
-  onPLayClick: () -> Unit,
   onGenreClick: (VideoGenre, VideoType) -> Unit,
 ) {
   val videoDetail = state.videoDetail
@@ -154,21 +151,21 @@ fun MovieDetailScreen(
   } else if (state.error != null) {
     ErrorContent(
       uiMessage = state.error,
-      onRetryClick = onRetry,
+      onRetryClick = { onAction(MovieDetailAction.Reload) },
     )
   } else if (videoDetail != null) {
     MovieDetailContent(
       videoDetail = videoDetail,
       ratings = state.ratings,
       isBookmarked = state.isBookmarked,
-      onAddBookmark = onAddBookmark,
-      onRemoveBookmark = onRemoveBookmark,
+      onAddBookmark = { onAction(MovieDetailAction.AddBookmark) },
+      onRemoveBookmark = { onAction(MovieDetailAction.RemoveBookmark) },
       onGenreClick = onGenreClick,
       primaryButton = {
         FilmTimeFilledButton(
           modifier = Modifier
             .fillMaxWidth(),
-          onClick = onPLayClick,
+          onClick = { onAction(MovieDetailAction.Play) },
         ) {
           Text("Play")
         }

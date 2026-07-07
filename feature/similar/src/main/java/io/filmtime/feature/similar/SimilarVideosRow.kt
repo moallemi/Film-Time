@@ -20,7 +20,7 @@ fun SimilarVideosRow(
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   LaunchedEffect(tmdbId, videoType) {
-    viewModel.loadSimilar(tmdbId, videoType)
+    viewModel.submitAction(SimilarAction.LoadSimilar(tmdbId, videoType))
   }
 
   VideoSectionRow(
@@ -33,7 +33,7 @@ fun SimilarVideosRow(
     onShowClick = onVideoClick,
     onSectionClick = null,
     onRetryClick = {
-      viewModel.loadSimilar(tmdbId, videoType)
+      viewModel.submitAction(SimilarAction.LoadSimilar(tmdbId, videoType))
     },
   )
 }

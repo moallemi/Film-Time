@@ -21,7 +21,6 @@ import io.filmtime.core.ui.common.componnents.ErrorContent
 import io.filmtime.core.ui.common.componnents.LoadingVideoSectionRow
 import io.filmtime.core.ui.common.componnents.VideoSectionRow
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
   onMovieClick: (tmdbId: Int) -> Unit,
@@ -32,6 +31,26 @@ fun HomeScreen(
   val viewModel = hiltViewModel<HomeViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
 
+  HomeScreen(
+    state = state,
+    onAction = viewModel::submitAction,
+    onMovieClick = onMovieClick,
+    onShowClick = onShowClick,
+    onTrendingMoviesClick = onTrendingMoviesClick,
+    onTrendingShowsClick = onTrendingShowsClick,
+  )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HomeScreen(
+  state: HomeUiState,
+  onAction: (HomeAction) -> Unit,
+  onMovieClick: (tmdbId: Int) -> Unit,
+  onShowClick: (tmdbId: Int) -> Unit,
+  onTrendingMoviesClick: () -> Unit,
+  onTrendingShowsClick: () -> Unit,
+) {
   Scaffold(
     topBar = {
       FilmTimeSmallTopAppBar(
@@ -45,7 +64,7 @@ fun HomeScreen(
       } else if (state.error != null) {
         ErrorContent(
           uiMessage = state.error!!,
-          onRetryClick = viewModel::reload,
+          onRetryClick = { onAction(HomeAction.Reload) },
         )
       } else {
         LazyColumn(

@@ -13,4 +13,6 @@ dependencies {
 
   implementation(libs.lottie)
   implementation(libs.paging.compose)
+
+  api(libs.lifecycle.viewmodel.ktx)
 }

@@ -4,7 +4,7 @@ import io.filmtime.core.ui.common.UiMessage
 import io.filmtime.data.model.VideoThumbnail
 
 data class HomeUiState(
-  val isLoading: Boolean,
+  val isLoading: Boolean = false,
   val videoSections: List<VideoSection> = emptyList(),
   val error: UiMessage? = null,
 )

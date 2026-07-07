@@ -14,11 +14,12 @@ import io.filmtime.domain.tmdb.movies.ObserveMoviesStreamUseCase
 import io.filmtime.domain.tmdb.shows.ObserveShowsStreamUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
-class VideoThumbnailGridViewModel @Inject constructor(
+internal class VideoThumbnailGridViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   private val observeMoviesStream: ObserveMoviesStreamUseCase,
   private val observeShowsStream: ObserveShowsStreamUseCase,
@@ -28,11 +29,12 @@ class VideoThumbnailGridViewModel @Inject constructor(
   private val videoType = args.videoType
   private val listType = args.listType
 
-  val state = MutableStateFlow(
+  private val _state = MutableStateFlow(
     VideoThumbnailGridUiState(
       title = generateTitle(),
     ),
   )
+  val state = _state.asStateFlow()
 
   val pagedList: Flow<PagingData<VideoThumbnail>> =
     loadVideoThumbnails()

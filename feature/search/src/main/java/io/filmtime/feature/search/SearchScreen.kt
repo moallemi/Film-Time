@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -41,10 +42,29 @@ import io.filmtime.data.model.SearchResult.Video
 import io.filmtime.data.model.SearchType
 import io.filmtime.feature.search.components.SearchTypeChip
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-  viewModel: SearchViewModel,
+  onMovieClick: (tmdbId: Int) -> Unit,
+  onShowClick: (tmdbId: Int) -> Unit,
+  onPersonClick: (personId: Int) -> Unit,
+) {
+  val viewModel = hiltViewModel<SearchViewModel>()
+  val pagedList = viewModel.pagedList.collectAsLazyPagingItems()
+
+  SearchScreen(
+    pagedList = pagedList,
+    onAction = viewModel::submitAction,
+    onMovieClick = onMovieClick,
+    onShowClick = onShowClick,
+    onPersonClick = onPersonClick,
+  )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SearchScreen(
+  pagedList: LazyPagingItems<SearchResult>,
+  onAction: (SearchAction) -> Unit,
   onMovieClick: (tmdbId: Int) -> Unit,
   onShowClick: (tmdbId: Int) -> Unit,
   onPersonClick: (personId: Int) -> Unit,
@@ -65,7 +85,7 @@ fun SearchScreen(
         onSearch = {
           keyboardController?.hide()
           focusManager.clearFocus()
-          viewModel.search(it, searchType)
+          onAction(SearchAction.Search(it, searchType))
         },
         active = false,
         onActiveChange = {},
@@ -86,7 +106,7 @@ fun SearchScreen(
         onChange = { type ->
           searchType = type
           if (text.isNotEmpty()) {
-            viewModel.search(text, type)
+            onAction(SearchAction.Search(text, type))
           }
         },
       )
@@ -94,10 +114,8 @@ fun SearchScreen(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier.fillMaxSize(),
       ) {
-        val items = viewModel.state.collectAsLazyPagingItems()
-
         SearchListGrid(
-          pagedList = items,
+          pagedList = pagedList,
           onTap = { item ->
             when (item) {
               is Person -> {
@@ -113,7 +131,7 @@ fun SearchScreen(
             }
           },
         )
-        if (items.loadState.refresh is LoadState.Loading) {
+        if (pagedList.loadState.refresh is LoadState.Loading) {
           CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
       }

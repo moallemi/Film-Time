@@ -26,7 +26,7 @@ fun TraktAddRemoveHistoryButton(
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   LaunchedEffect(videoType, tmdbId) {
-    viewModel.checkIfIsWatched(videoType, tmdbId)
+    viewModel.submitAction(TraktAddRemoveAction.CheckIfWatched(videoType, tmdbId))
   }
 
   TraktAddRemoveHistoryButton(
@@ -34,9 +34,9 @@ fun TraktAddRemoveHistoryButton(
     modifier = modifier,
     onClick = {
       if (state.isWatched) {
-        viewModel.removeItemFromHistory()
+        viewModel.submitAction(TraktAddRemoveAction.RemoveFromHistory)
       } else {
-        viewModel.addItemToHistory()
+        viewModel.submitAction(TraktAddRemoveAction.AddToHistory)
       }
     },
   )

@@ -40,7 +40,7 @@ fun HomeScreen(
   }
   HomeScreenContent(
     homeUiState = uiState,
-    onReload = viewModel::reload,
+    onReload = { viewModel.submitAction(HomeAction.Reload) },
     lazyListState = lazyColumnState,
     onThumbnailClick = onThumbnailClick,
   )

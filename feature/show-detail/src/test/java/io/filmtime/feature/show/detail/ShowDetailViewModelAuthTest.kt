@@ -118,7 +118,7 @@ class ShowDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.playEpisode(testEpisode)
+    viewModel.submitAction(ShowDetailAction.PlayEpisode(testEpisode))
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -135,7 +135,7 @@ class ShowDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.playEpisode(testEpisode)
+    viewModel.submitAction(ShowDetailAction.PlayEpisode(testEpisode))
     advanceUntilIdle()
 
     assertNotNull(viewModel.state.value.pendingAuthPlugin)
@@ -155,7 +155,7 @@ class ShowDetailViewModelAuthTest {
     )
     getStreamFromPlugin.setResult(Result.Success(streamResponse))
 
-    viewModel.onPluginLoginResult(true)
+    viewModel.submitAction(ShowDetailAction.PluginLoginResult(true))
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -171,12 +171,12 @@ class ShowDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.playEpisode(testEpisode)
+    viewModel.submitAction(ShowDetailAction.PlayEpisode(testEpisode))
     advanceUntilIdle()
 
     assertNotNull(viewModel.state.value.pendingAuthPlugin)
 
-    viewModel.onPluginLoginResult(false)
+    viewModel.submitAction(ShowDetailAction.PluginLoginResult(false))
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -194,7 +194,7 @@ class ShowDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.playEpisode(testEpisode)
+    viewModel.submitAction(ShowDetailAction.PlayEpisode(testEpisode))
     advanceUntilIdle()
 
     val state = viewModel.state.value
@@ -223,14 +223,13 @@ class ShowDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.navigateToPlayer.test {
-      viewModel.playEpisode(testEpisode)
+    viewModel.navigationEvents.test {
+      viewModel.submitAction(ShowDetailAction.PlayEpisode(testEpisode))
       advanceUntilIdle()
 
-      val streamInfo = awaitItem()
-      assertNotNull(streamInfo)
-      assertEquals(PluginContract.StreamType.EMBED, streamInfo?.streamType)
-      assertEquals("https://example.com/embed/tv/123/1/1", streamInfo?.url)
+      val event = awaitItem() as ShowDetailNavigationEvent.NavigateToPlayer
+      assertEquals(PluginContract.StreamType.EMBED, event.streamInfo.streamType)
+      assertEquals("https://example.com/embed/tv/123/1/1", event.streamInfo.url)
     }
   }
 
@@ -253,14 +252,13 @@ class ShowDetailViewModelAuthTest {
     val viewModel = createViewModel()
     advanceUntilIdle()
 
-    viewModel.navigateToPlayer.test {
-      viewModel.playEpisode(testEpisode)
+    viewModel.navigationEvents.test {
+      viewModel.submitAction(ShowDetailAction.PlayEpisode(testEpisode))
       advanceUntilIdle()
 
-      val streamInfo = awaitItem()
-      assertNotNull(streamInfo)
-      assertEquals(PluginContract.StreamType.HLS, streamInfo?.streamType)
-      assertEquals("https://example.com/episode.m3u8", streamInfo?.url)
+      val event = awaitItem() as ShowDetailNavigationEvent.NavigateToPlayer
+      assertEquals(PluginContract.StreamType.HLS, event.streamInfo.streamType)
+      assertEquals("https://example.com/episode.m3u8", event.streamInfo.url)
     }
   }
 }

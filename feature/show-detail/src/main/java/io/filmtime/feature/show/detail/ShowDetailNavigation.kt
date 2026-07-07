@@ -1,6 +1,5 @@
 package io.filmtime.feature.show.detail
 
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -29,7 +28,6 @@ fun NavGraphBuilder.showDetailScreen(
     ),
   ) {
     ShowDetailScreen(
-      viewModel = hiltViewModel(),
       onCastItemClick = { onCastItemClick(rootRoute, it) },
       onShowClick = { onSimilarClick(rootRoute, it) },
       onGenreClick = { genre, type -> onGenreClick(rootRoute, genre.id, genre.name, type) },

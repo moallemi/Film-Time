@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.filmtime.core.plugin.api.PluginError
 import io.filmtime.core.plugin.api.PluginMetadata
 import io.filmtime.core.plugin.api.StreamRequest
+import io.filmtime.core.ui.common.extensions.launch
 import io.filmtime.core.ui.common.toUiMessage
 import io.filmtime.data.model.StreamInfo
 import io.filmtime.data.model.SubtitleInfo
@@ -22,19 +23,28 @@ import io.filmtime.domain.tmdb.movies.GetMovieCollectionUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieDetailsUseCase
 import io.filmtime.domain.tmdb.movies.GetMovieVideosUseCase
 import io.filmtime.domain.trakt.GetRatingsUseCase
+import io.filmtime.feature.movie.detail.MovieDetailAction.AddBookmark
+import io.filmtime.feature.movie.detail.MovieDetailAction.DismissNoPluginsDialog
+import io.filmtime.feature.movie.detail.MovieDetailAction.DismissPluginSelection
+import io.filmtime.feature.movie.detail.MovieDetailAction.Play
+import io.filmtime.feature.movie.detail.MovieDetailAction.PluginLoginResult
+import io.filmtime.feature.movie.detail.MovieDetailAction.Reload
+import io.filmtime.feature.movie.detail.MovieDetailAction.RemoveBookmark
+import io.filmtime.feature.movie.detail.MovieDetailAction.SelectPlugin
+import io.filmtime.feature.movie.detail.MovieDetailNavigationEvent.NavigateToPlayer
 import io.filmtime.feature.plugin.manager.PluginPreferences
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieDetailViewModel @Inject constructor(
+internal class MovieDetailViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   private val getMovieDetail: GetMovieDetailsUseCase,
   private val addBookmark: AddBookmarkUseCase,
@@ -52,17 +62,38 @@ class MovieDetailViewModel @Inject constructor(
 
   private val videoId: Int = savedStateHandle["video_id"] ?: throw IllegalStateException("videoId is required")
 
+  private val pendingActions = MutableSharedFlow<MovieDetailAction>()
+
   private val _state = MutableStateFlow(MovieDetailState())
   val state = _state.asStateFlow()
 
-  val navigateToPlayer = MutableSharedFlow<StreamInfo?>()
+  private val _navigationEvents = MutableSharedFlow<MovieDetailNavigationEvent>()
+  val navigationEvents = _navigationEvents.asSharedFlow()
 
   init {
+    collectActions()
     loadMovieDetail()
     observeBookmark()
     loadVideos()
     observePlugins()
     refreshPluginList()
+  }
+
+  fun submitAction(action: MovieDetailAction) = launch { pendingActions.emit(action) }
+
+  private fun collectActions() = launch {
+    pendingActions.collect { action ->
+      when (action) {
+        is Reload -> reload()
+        is Play -> loadStreamInfo()
+        is AddBookmark -> addBookmark()
+        is RemoveBookmark -> removeBookmark()
+        is SelectPlugin -> onPluginSelected(action.plugin)
+        is DismissPluginSelection -> dismissPluginSelection()
+        is DismissNoPluginsDialog -> dismissNoPluginsDialog()
+        is PluginLoginResult -> onPluginLoginResult(action.success)
+      }
+    }
   }
 
   private fun observePlugins() {
@@ -74,17 +105,17 @@ class MovieDetailViewModel @Inject constructor(
   }
 
   private fun refreshPluginList() {
-    viewModelScope.launch {
+    launch {
       refreshPlugins()
     }
   }
 
-  fun reload() {
+  private fun reload() {
     loadMovieDetail()
     loadVideos()
   }
 
-  private fun loadMovieDetail() = viewModelScope.launch {
+  private fun loadMovieDetail() = launch {
     _state.value = _state.value.copy(isLoading = true, error = null)
 
     getMovieDetail(videoId)
@@ -105,7 +136,7 @@ class MovieDetailViewModel @Inject constructor(
       }
   }
 
-  private fun loadRatings() = viewModelScope.launch {
+  private fun loadRatings() = launch {
     _state.value.videoDetail?.ids?.tmdbId?.let { tmdbId ->
       getRatings(type = Movie, tmdbId = tmdbId)
         .fold(
@@ -115,7 +146,7 @@ class MovieDetailViewModel @Inject constructor(
     }
   }
 
-  fun loadStreamInfo() {
+  private fun loadStreamInfo() {
     val plugins = _state.value.installedPlugins
     when {
       plugins.isEmpty() -> {
@@ -136,20 +167,20 @@ class MovieDetailViewModel @Inject constructor(
     }
   }
 
-  fun onPluginSelected(plugin: PluginMetadata) {
+  private fun onPluginSelected(plugin: PluginMetadata) {
     _state.update { it.copy(showPluginSelection = false) }
     loadStreamFromPlugin(plugin)
   }
 
-  fun dismissPluginSelection() {
+  private fun dismissPluginSelection() {
     _state.update { it.copy(showPluginSelection = false) }
   }
 
-  fun dismissNoPluginsDialog() {
+  private fun dismissNoPluginsDialog() {
     _state.update { it.copy(showNoPluginsDialog = false) }
   }
 
-  private fun loadStreamFromPlugin(plugin: PluginMetadata) = viewModelScope.launch {
+  private fun loadStreamFromPlugin(plugin: PluginMetadata) = launch {
     val videoDetail = _state.value.videoDetail ?: return@launch
     val tmdbId = videoDetail.ids.tmdbId ?: return@launch
 
@@ -181,7 +212,7 @@ class MovieDetailViewModel @Inject constructor(
             },
           )
           _state.update { it.copy(streamInfo = streamInfo, isStreamLoading = false) }
-          navigateToPlayer.emit(streamInfo)
+          _navigationEvents.emit(NavigateToPlayer(streamInfo))
         } else {
           _state.update {
             it.copy(
@@ -213,7 +244,7 @@ class MovieDetailViewModel @Inject constructor(
     )
   }
 
-  fun onPluginLoginResult(success: Boolean) {
+  private fun onPluginLoginResult(success: Boolean) {
     val plugin = _state.value.pendingAuthPlugin
     _state.update { it.copy(pendingAuthPlugin = null, loginIntent = null) }
     if (success && plugin != null) {
@@ -221,7 +252,7 @@ class MovieDetailViewModel @Inject constructor(
     }
   }
 
-  private fun loadCollection(collectionId: Int?) = viewModelScope.launch {
+  private fun loadCollection(collectionId: Int?) = launch {
     if (collectionId == null) return@launch
     _state.value = _state.value.copy(isCollectionLoading = true)
     getCollection(collectionId)
@@ -240,7 +271,7 @@ class MovieDetailViewModel @Inject constructor(
       )
   }
 
-  private fun observeBookmark() = viewModelScope.launch {
+  private fun observeBookmark() = launch {
     observeBookmark(videoId, Movie)
       .onEach { isBookmarked ->
         _state.update { state ->
@@ -250,15 +281,15 @@ class MovieDetailViewModel @Inject constructor(
       .collect()
   }
 
-  fun addBookmark() = viewModelScope.launch {
+  private fun addBookmark() = launch {
     addBookmark(videoId, Movie)
   }
 
-  fun removeBookmark() = viewModelScope.launch {
+  private fun removeBookmark() = launch {
     deleteBookmark(videoId, Movie)
   }
 
-  private fun loadVideos() = viewModelScope.launch {
+  private fun loadVideos() = launch {
     _state.update { state -> state.copy(isTrailersLoading = true) }
     getMovieVideos(videoId)
       .fold(

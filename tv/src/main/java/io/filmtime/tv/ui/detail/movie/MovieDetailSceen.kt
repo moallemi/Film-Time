@@ -45,8 +45,8 @@ fun MovieDetailScreen(modifier: Modifier = Modifier) {
           .wrapContentHeight()
           .padding(start = 50.dp),
         isBookmark = uiState.isBookmarked,
-        onRemoveBookmark = { viewModel.removeBookmark() },
-        onAddBookmark = { viewModel.addBookmark() },
+        onRemoveBookmark = { viewModel.submitAction(MovieDetailAction.RemoveBookmark) },
+        onAddBookmark = { viewModel.submitAction(MovieDetailAction.AddBookmark) },
       )
     },
     castsContent = {

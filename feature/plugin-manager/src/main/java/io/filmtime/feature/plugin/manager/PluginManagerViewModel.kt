@@ -50,7 +50,7 @@ internal class PluginManagerViewModel @Inject constructor(
   private fun collectActions() = launch {
     pendingActions.collect { action ->
       when (action) {
-        Refresh -> refresh()
+        is Refresh -> refresh()
         is SetDefaultPlugin -> setDefaultPlugin(action.pluginId)
         is LoginPlugin -> loginPlugin(action.plugin)
         is LoginResult -> onLoginResult(action.success)

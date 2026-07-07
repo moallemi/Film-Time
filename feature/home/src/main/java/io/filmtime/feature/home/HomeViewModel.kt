@@ -45,7 +45,7 @@ internal class HomeViewModel @Inject constructor(
   private fun collectActions() = launch {
     pendingActions.collect { action ->
       when (action) {
-        Reload -> reload()
+        is Reload -> reload()
       }
     }
   }

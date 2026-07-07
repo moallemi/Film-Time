@@ -35,7 +35,7 @@ internal class SettingsViewModel @Inject constructor(
   private fun collectActions() = launch {
     pendingActions.collect { action ->
       when (action) {
-        TraktLogout -> logoutTrakt()
+        is TraktLogout -> logoutTrakt()
       }
     }
   }
